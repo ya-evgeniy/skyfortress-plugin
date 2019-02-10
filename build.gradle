@@ -1,0 +1,21 @@
+group 'ru.jekarus'
+version '3.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'sponge'
+        url = 'https://repo.spongepowered.org/maven'
+    }
+}
+
+dependencies {
+    compile 'org.spongepowered:spongeapi:7.0.0'
+}
+
+compileJava.options.encoding = 'UTF-8'
+libsDirName = "$projectDir/run/mods"
