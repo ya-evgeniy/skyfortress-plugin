@@ -7,9 +7,7 @@ import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class SfScoreboards {
 
@@ -151,6 +149,9 @@ public class SfScoreboards {
         }
     }
 
+    public List<SfScoreboard> asList() {
+        return new ArrayList<>(this.scoreboardsByLocale.values());
+    }
 
     public enum Types
     {

@@ -18,9 +18,11 @@ import ru.jekarus.skyfortress.v3.castle.SfCastleContainer;
 import ru.jekarus.skyfortress.v3.castle.SfCastlePositions;
 import ru.jekarus.skyfortress.v3.engine.SfEngineManager;
 import ru.jekarus.skyfortress.v3.listener.*;
+import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
+import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
@@ -107,45 +109,39 @@ public class InGameStage extends SfGameStage {
         SfTeamContainer teamContainer = this.plugin.getTeamContainer();
         for (SfGameTeam gameTeam : teamContainer.getGameCollection())
         {
-            Collection<SfPlayer> offlinePlayers = new ArrayList<>();
             for (SfPlayer sfPlayer : gameTeam.getPlayers())
             {
-                if (sfPlayer.getLastPlayed() != -1)
+                Optional<Player> optionalPlayer = sfPlayer.getPlayer();
+                if (optionalPlayer.isPresent())
                 {
-                    offlinePlayers.add(sfPlayer);
+                    Player player = optionalPlayer.get();
+                    setupPlayer(sfPlayer, player);
                 }
-                else
-                {
-                    Optional<Player> optionalPlayer = sfPlayer.getPlayer();
-                    if (optionalPlayer.isPresent())
-                    {
-                        Player player = optionalPlayer.get();
-                        SfCastlePositions positions = gameTeam.getCastle().getPositions();
-                        player.setLocationAndRotation(
-                                positions.getRespawn().getLocation(),
-                                positions.getRespawn().getRotation()
-                        );
-
-                        player.offer(Keys.GAME_MODE, GameModes.SURVIVAL);
-                        player.offer(Keys.FOOD_LEVEL, 20);
-                        player.offer(Keys.SATURATION, 20.0);
-                        player.offer(Keys.HEALTH, 20.0);
-                        player.offer(Keys.POTION_EFFECTS, new ArrayList<>());
-                        player.getInventory().clear();
-                        Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class));
-                        hotbar.offer(ItemStack.of(ItemTypes.IRON_INGOT, 1));
-                    }
-                    else
-                    {
-                        offlinePlayers.add(sfPlayer);
-                    }
-                }
-            }
-            for (SfPlayer sfPlayer : offlinePlayers)
-            {
-                teamContainer.getNoneTeam().addPlayer(this.plugin, sfPlayer);
             }
         }
+    }
+
+    public void setupPlayer(SfPlayer sfPlayer, Player player) {
+        if (sfPlayer.getTeam().getType() != SfTeam.Type.GAME) {
+            return;
+        }
+        SfGameTeam team = (SfGameTeam) sfPlayer.getTeam();
+        sfPlayer.setZone(PlayerZone.GAME);
+
+        SfCastlePositions positions = team.getCastle().getPositions();
+        player.setLocationAndRotation(
+                positions.getRespawn().getLocation(),
+                positions.getRespawn().getRotation()
+        );
+
+        player.offer(Keys.GAME_MODE, GameModes.SURVIVAL);
+        player.offer(Keys.FOOD_LEVEL, 20);
+        player.offer(Keys.SATURATION, 20.0);
+        player.offer(Keys.HEALTH, 20.0);
+        player.offer(Keys.POTION_EFFECTS, new ArrayList<>());
+        player.getInventory().clear();
+        Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class));
+        hotbar.offer(ItemStack.of(ItemTypes.IRON_INGOT, 1));
     }
 
     private void spawnEntityShops()

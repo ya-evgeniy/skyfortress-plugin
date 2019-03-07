@@ -4,10 +4,7 @@ import org.spongepowered.api.text.format.TextColor;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class SfTeam {
 
@@ -44,7 +41,7 @@ public class SfTeam {
     {
         this.players.add(player);
         SfTeam team = player.getTeam();
-        if (team != null)
+        if (team != null && team != this)
         {
             team.removePlayer(plugin, player);
         }

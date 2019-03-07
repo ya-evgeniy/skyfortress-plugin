@@ -10,6 +10,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.game.SfGameStageType;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 
@@ -44,11 +45,15 @@ public class LobbyButtonsListener {
             BlockType type = original.getState().getType();
             if (type.equals(BlockTypes.HEAVY_WEIGHTED_PRESSURE_PLATE))
             {
-                this.plugin.getLobby().standOnPlate(player, sfPlayer, original);
+                if (plugin.getGame().getStage() == SfGameStageType.PRE_GAME) {
+                    this.plugin.getLobby().standOnPlate(player, sfPlayer, original);
+                }
             }
             else if (type.equals(BlockTypes.WOODEN_BUTTON))
             {
-                this.plugin.getLobby().pressButton(player, sfPlayer, original);
+                if (plugin.getGame().getStage() == SfGameStageType.PRE_GAME) {
+                    this.plugin.getLobby().pressButton(player, sfPlayer, original);
+                }
             }
         }
     }

@@ -1,19 +1,23 @@
 package ru.jekarus.skyfortress.v3.distribution.captain;
 
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CaptainsState {
 
-    public int max_players = 24;
-    public int select_time = 60;
+    public boolean started = false;
 
-    public SfLocation captain;
-    public Map<SfGameTeam, CaptainState> captains;
+    public int maxCaptains = 1;
 
-    public List<PlayerState> players;
+    public Map<SfGameTeam, Captain> captainByTeam = new HashMap<>();
+
+    public Iterator<Captain> captainsIterator = Collections.emptyIterator();
+
+    public Map<UUID, CaptainTarget> targetByPlayerUniqueId = new HashMap<>();
+
+    public Map<UUID, CaptainTarget> targetByEntityUniqueId = new HashMap<>();
+
+    public List<CaptainTarget> unselectedTargets = new ArrayList<>();
 
 }

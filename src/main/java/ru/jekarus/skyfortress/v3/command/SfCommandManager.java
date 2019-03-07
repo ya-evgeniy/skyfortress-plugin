@@ -25,6 +25,12 @@ public class SfCommandManager {
                 .child(
                         new SfLanguageCommand().create(this.plugin), "language"
                 )
+                .child(
+                        new DistributionCommand().create(this.plugin), "distribution"
+                )
+                .child(
+                        new SfSettingsCommand().create(this.plugin), "settings"
+                )
                 .build();
 
         Sponge.getCommandManager().register(this.plugin, sfCmd, "skyfortress", "sf");

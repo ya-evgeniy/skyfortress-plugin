@@ -2,7 +2,6 @@ package ru.jekarus.skyfortress.v3.player;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.translation.locale.Locales;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.Locale;
@@ -16,14 +15,20 @@ public class SfPlayer {
     private final String name;
 
     private SfTeam team = null;
-    private Locale locale = Locales.RU_RU;
+    private Locale locale = null;
 
+    private PlayerZone zone = PlayerZone.LOBBY;
     private long lastPlayed = -1;
 
-    public SfPlayer(Player player)
-    {
-        this.uniqueId = player.getUniqueId();
-        this.name = player.getName();
+    public int captureMessageTimeout = 0;
+
+    public SfPlayer(Player player) {
+        this(player.getUniqueId(), player.getName());
+    }
+
+    public SfPlayer(UUID uniqueId, String name) {
+        this.uniqueId = uniqueId;
+        this.name = name;
     }
 
     public UUID getUniqueId()
@@ -61,6 +66,14 @@ public class SfPlayer {
         return Sponge.getServer().getPlayer(this.uniqueId);
     }
 
+    public PlayerZone getZone() {
+        return this.zone;
+    }
+
+    public void setZone(PlayerZone zone) {
+        this.zone = zone;
+    }
+
     public void setLocale(Locale locale)
     {
         this.locale = locale;
@@ -92,4 +105,8 @@ public class SfPlayer {
         return Objects.hash(uniqueId);
     }
 
+    @Override
+    public String toString() {
+        return String.format("SfPlayer{uniqueId=%s, name='%s'}", uniqueId, name);
+    }
 }

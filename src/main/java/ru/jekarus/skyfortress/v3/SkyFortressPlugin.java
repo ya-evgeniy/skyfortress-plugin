@@ -6,12 +6,15 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.castle.SfCastleContainer;
 import ru.jekarus.skyfortress.v3.command.SfCommandManager;
+import ru.jekarus.skyfortress.v3.distribution.DistributionController;
+import ru.jekarus.skyfortress.v3.engine.PlayersEngine;
 import ru.jekarus.skyfortress.v3.engine.SfEngineManager;
 import ru.jekarus.skyfortress.v3.game.SfGame;
 import ru.jekarus.skyfortress.v3.lang.SfLanguages;
@@ -61,6 +64,8 @@ public class SkyFortressPlugin {
 
     private final SfScoreboards scoreboards = new SfScoreboards(this);
 
+    private DistributionController distributionController;
+
     private final SfLanguages languages = new SfLanguages();
     private final SfMessages messages = new SfMessages(this);
 
@@ -86,6 +91,8 @@ public class SkyFortressPlugin {
         this.castleContainer.init(this);
         this.resourceContainer.init(this);
 
+        this.distributionController = new DistributionController(this);
+
         SfLanguagesSerializer languagesSerializer = new SfLanguagesSerializer(this);
         languagesSerializer.load();
 
@@ -100,6 +107,13 @@ public class SkyFortressPlugin {
 
         this.lobby.init();
         this.game.init();
+
+        new PlayersEngine(this).start(); //FIXME
+    }
+
+    @Listener
+    public void onServerStopping(GameStoppingServerEvent event) {
+        this.distributionController.serverStopping();
     }
 
     public World getWorld()
@@ -150,6 +164,10 @@ public class SkyFortressPlugin {
     public SfScoreboards getScoreboards()
     {
         return this.scoreboards;
+    }
+
+    public DistributionController getDistributionController() {
+        return this.distributionController;
     }
 
     public SfLanguages getLanguages()

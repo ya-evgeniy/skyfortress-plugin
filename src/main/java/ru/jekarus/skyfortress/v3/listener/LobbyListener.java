@@ -9,11 +9,11 @@ import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.game.SfGameStageType;
+import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
-
-import java.util.Optional;
 
 public class LobbyListener {
 
@@ -37,65 +37,62 @@ public class LobbyListener {
     }
 
     @Listener
-    public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player)
-    {
-        Optional<SfPlayer> optionalSfPlayer = this.players.getPlayer(player);
-        if (optionalSfPlayer.isPresent())
-        {
-            SfPlayer sfPlayer = optionalSfPlayer.get();
-            if (sfPlayer.getTeam() == null)
-            {
-                sfPlayer.setTeam(this.plugin.getTeamContainer().getNoneTeam());
-            }
+    public void onConnect(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player player) {
+//        Optional<SfPlayer> optionalSfPlayer = this.players.getPlayer(player);
+//        if (optionalSfPlayer.isPresent())
+//        {
+//            SfPlayer sfPlayer = optionalSfPlayer.get();
+//            if (sfPlayer.getTeam() == null)
+//            {
+//                sfPlayer.setTeam(this.plugin.getTeamContainer().getNoneTeam());
+//            }
+//
+//            if (sfPlayer.getTeam().getType() == SfTeam.Type.NONE)
+//            {
+//                if (plugin.getGame().getStage() == SfGameStageType.PRE_GAME) {
+//                    this.plugin.getLobby().playerDisconnect(sfPlayer, player);
+//                }
+//            }
+//        }
+    }
 
-            if (sfPlayer.getTeam().getType() == SfTeam.Type.NONE)
-            {
-                this.plugin.getLobby().playerDisconnect(sfPlayer, player);
-            }
+    @Listener
+    public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
+        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
+
+        SfGameStageType stage = this.plugin.getGame().getStage();
+
+        SfTeam playerTeam = sfPlayer.getTeam();
+        PlayerZone playerZone = sfPlayer.getZone();
+
+        if (playerZone == PlayerZone.TEAM_ROOM && stage == SfGameStageType.PRE_GAME) {
+            this.plugin.getLobby().playerDisconnect(sfPlayer, player);
         }
     }
 
     @Listener
-    public void onMove(MoveEntityEvent event, @Getter("getTargetEntity") Player player)
-    {
+    public void onMove(MoveEntityEvent event, @Getter("getTargetEntity") Player player) {
         double playerY = event.getToTransform().getPosition().getY();
         double lobbyY = this.plugin.getLobby().getSettings().min_y;
 
-        if (playerY < lobbyY)
-        {
-            Optional<SfPlayer> optionalSfPlayer = this.players.getPlayer(player);
-            if (optionalSfPlayer.isPresent())
-            {
-                SfPlayer sfPlayer = optionalSfPlayer.get();
-                if (sfPlayer.getTeam() == null)
-                {
-                    sfPlayer.setTeam(this.plugin.getTeamContainer().getNoneTeam());
-                }
-                if (sfPlayer.getTeam().getType() == SfTeam.Type.NONE)
-                {
-                    event.setToTransform(
-                            new Transform<>(this.plugin.getLobby().getSettings().center.getLocation())
-                    );
-                }
+        if (playerY < lobbyY) {
+            SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
+            PlayerZone playerZone = sfPlayer.getZone();
+            if (playerZone == PlayerZone.LOBBY) {
+                event.setToTransform(
+                        new Transform<>(this.plugin.getLobby().getSettings().center.getLocation())
+                );
             }
         }
     }
 
     @Listener
-    public void onEntityDamage(DamageEntityEvent event, @Getter("getTargetEntity") Player player)
-    {
-        Optional<SfPlayer> optionalSfPlayer = this.players.getPlayer(player);
-        if (optionalSfPlayer.isPresent())
-        {
-            SfPlayer sfPlayer = optionalSfPlayer.get();
-            if (sfPlayer.getTeam() == null)
-            {
-                sfPlayer.setTeam(this.plugin.getTeamContainer().getNoneTeam());
-            }
-            if (sfPlayer.getTeam().getType() == SfTeam.Type.NONE)
-            {
-                event.setCancelled(true);
-            }
+    public void onEntityDamage(DamageEntityEvent event, @Getter("getTargetEntity") Player player) {
+        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
+        PlayerZone playerZone = sfPlayer.getZone();
+
+        if (playerZone == PlayerZone.LOBBY || playerZone == PlayerZone.TEAM_ROOM) {
+            event.setCancelled(true);
         }
     }
 

@@ -29,6 +29,7 @@ public class SfLobbyTeamSettings {
 
     public SfGameTeam team;
     public SfPlayer waitingPlayer;
+    public SfPlayer captain;
 
     public boolean ready = false;
 

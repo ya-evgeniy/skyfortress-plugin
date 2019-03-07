@@ -40,11 +40,12 @@ public class SfScore {
         {
             return;
         }
-        String name = this.objectivePrefix + MINECRAFT_COLOR_CODE + CHARS[index] + " ";
+        int correctIndex = index % CHARS.length;
+        String name = this.objectivePrefix + MINECRAFT_COLOR_CODE + CHARS[correctIndex] + " ";
         this.score = objective.getOrCreateScore(Text.of(name));
         this.score.setScore(value);
 
-        this.team = Team.builder().name(this.originalObjectivePrefix + "_" + CHARS[index]).build();
+        this.team = Team.builder().name(this.originalObjectivePrefix + "_" + CHARS[correctIndex]).build();
         this.team.addMember(this.score.getName());
 
         for (Scoreboard scoreboard : objective.getScoreboards())

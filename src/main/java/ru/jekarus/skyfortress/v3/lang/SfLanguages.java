@@ -14,6 +14,10 @@ public class SfLanguages {
 
     }
 
+    public boolean has(Locale locale) {
+        return this.languages.containsKey(locale);
+    }
+
     public void add(SfLanguage language)
     {
         this.languages.put(language.locale, language);

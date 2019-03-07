@@ -10,6 +10,7 @@ import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class SfScoreboardTeams {
 
@@ -56,6 +57,10 @@ public class SfScoreboardTeams {
         {
             team.removeMember(Text.of(name));
         }
+    }
+
+    public Optional<Team> getTeam(SfTeam sfTeam) {
+        return Optional.ofNullable(this.teamBySfTeam.get(sfTeam));
     }
 
 }

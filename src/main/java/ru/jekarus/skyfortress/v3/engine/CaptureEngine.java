@@ -4,8 +4,13 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
+import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.chat.ChatTypes;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -62,7 +67,7 @@ public class CaptureEngine {
     public void addCapture(SfCastle castle, SfPlayer sfPlayer)
     {
         Collection<SfPlayer> players = this.castleCaptures.computeIfAbsent(castle, k -> new HashSet<>());
-        if (players.add(sfPlayer))
+        if (players.add(sfPlayer) && sfPlayer.captureMessageTimeout < 1)
         {
             SfMessages messages = this.plugin.getMessages();
             messages.broadcast(
@@ -116,6 +121,17 @@ public class CaptureEngine {
             }
             if (!capturePlayers.isEmpty())
             {
+                capturePlayers.forEach(sfPlayer -> sfPlayer.captureMessageTimeout = 60);
+                for (SfPlayer player : castle.getTeam().getPlayers()) {
+                    player.getPlayer().ifPresent(spongePlayer -> {
+                        spongePlayer.sendMessage(
+                                ChatTypes.ACTION_BAR, Text.of(TextColors.RED, "ТЕБЯ ЗАХВАТЫВАЮТ, БЕГИ НА БАЗУ!")
+                        );
+                        if (castle.getHealth() % 5 == 0) {
+                            spongePlayer.playSound(SoundTypes.BLOCK_WOOD_BUTTON_CLICK_ON, spongePlayer.getPosition(), 0.1, 2.0);
+                        }
+                    });
+                }
                 if (castle.capture(this.scoreboards, -capturePlayers.size()))
                 {
                     CastleDeathEngine.checkCapturedCastle(this.plugin, castle);

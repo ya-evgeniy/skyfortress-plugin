@@ -1,15 +1,22 @@
 package ru.jekarus.skyfortress.v3.lobby;
 
+import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lobby.interactive.*;
+import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 public class SfLobbyTeam {
@@ -37,15 +44,15 @@ public class SfLobbyTeam {
         this.plugin = plugin;
         this.settings.init(plugin);
 
-        this.joinPlate = new SfLobbyPlateJoin(plugin, this.settings);
-        this.leavePlate = new SfLobbyPlateLeave(plugin, this.settings);
+        this.joinPlate = new SfLobbyPlateJoin(plugin, this, this.settings);
+        this.leavePlate = new SfLobbyPlateLeave(plugin, this, this.settings);
 
-        this.leaveButton = new SfLobbyButtonLeave(plugin, this.settings);
+        this.leaveButton = new SfLobbyButtonLeave(plugin, this, this.settings);
 
-        this.acceptButton = new SfLobbyButtonAccept(plugin, this.settings);
-        this.denyButton = new SfLobbyButtonDeny(plugin, this.settings);
+        this.acceptButton = new SfLobbyButtonAccept(plugin, this, this.settings);
+        this.denyButton = new SfLobbyButtonDeny(plugin, this, this.settings);
 
-        this.buttonReady = new SfLobbyButtonReady(plugin, this.settings);
+        this.buttonReady = new SfLobbyButtonReady(plugin, this, this.settings);
     }
 
     public SfLobbyTeamSettings getSettings()
@@ -60,81 +67,118 @@ public class SfLobbyTeam {
 
     public boolean standOnPlate(Player player, SfPlayer sfPlayer, BlockSnapshot snapshot)
     {
-        return
-                this.joinPlate.activate(player, sfPlayer, snapshot)
-                || this.leavePlate.activate(player, sfPlayer, snapshot);
+        if (this.joinPlate.activate(player, sfPlayer, snapshot)) {
+            return true;
+        }
+        if (this.leavePlate.activate(player, sfPlayer, snapshot)) {
+            this.checkReady();
+            return true;
+        }
+        return false;
     }
 
     public boolean pressButton(Player player, SfPlayer sfPlayer, BlockSnapshot snapshot)
     {
         return
                 this.leaveButton.pressButton(player, sfPlayer, snapshot)
-                || this.denyButton.pressButton(player, sfPlayer, snapshot)
                 || this.acceptButton.pressButton(player, sfPlayer, snapshot)
+                || this.denyButton.pressButton(player, sfPlayer, snapshot)
                 || this.buttonReady.pressButton(player, sfPlayer, snapshot);
     }
 
     public void playerDisconnect(SfPlayer sfPlayer, Player player)
     {
-        SfTeam gameTeam = sfPlayer.getTeam();
-        if (gameTeam != this.settings.team)
-        {
+        if (this.settings.waitingPlayer == sfPlayer) {
+            this.settings.waitingPlayer = null;
+            this.setWaitingPlayer(
+                    getJoinedPlayer()
+            );
             return;
         }
 
-        this.plugin.getTeamContainer().getNoneTeam().addPlayer(this.plugin, sfPlayer);
-        if (this.settings.waitingPlayer != null && this.settings.waitingPlayer.getUniqueId().equals(player.getUniqueId()))
+        SfTeam gameTeam = sfPlayer.getTeam();
+        if (gameTeam != this.settings.team)
         {
-            this.settings.waitingPlayer = null;
-            for (Player anotherPlayer : Sponge.getServer().getOnlinePlayers())
-            {
-                if (SfUtils.compare(anotherPlayer.getLocation(), settings.joinPlate))
-                {
-                    settings.waitingPlayer = SfPlayers.getInstance().getOrCreatePlayer(player);
-                    player.setLocationAndRotation(
-                            settings.waitingLocation.getLocation(),
-                            settings.waitingLocation.getRotation()
-                    );
-                    break;
+            System.out.println(gameTeam.getUniqueId() + " != " + this.settings.teamId);
+            return;
+        }
+
+        Collection<SfPlayer> players = this.settings.team.getPlayers();
+        int countOnlinePlayers = (int) players.stream().filter(pla -> pla.getPlayer().isPresent()).count();
+
+        SfTeam noneTeam = this.plugin.getTeamContainer().getNoneTeam();
+        System.out.println(countOnlinePlayers);
+        if (countOnlinePlayers - 1 < 1) {
+            new ArrayList<>(players).forEach(pla -> noneTeam.addPlayer(plugin, pla));
+            if (this.settings.waitingPlayer != null) {
+                this.settings.team.addPlayer(plugin, this.settings.waitingPlayer);
+
+                setCaptainPlayer(this.settings.waitingPlayer);
+
+                this.settings.waitingPlayer = null;
+                this.setWaitingPlayer(
+                        getJoinedPlayer()
+                );
+            }
+            else {
+                this.setCaptainPlayer(
+                        getJoinedPlayer()
+                );
+                if (this.settings.captain == null) {
+                    this.checkReady();
                 }
             }
         }
-        else
-        {
+    }
 
-            if (this.settings.team.getPlayers().size() > 0)
-            {
-                return;
+    public SfPlayer getJoinedPlayer() {
+        for (Player anotherPlayer : Sponge.getServer().getOnlinePlayers()) {
+            if (SfUtils.compareByInt(anotherPlayer.getLocation(), settings.joinPlate)) {
+                return SfPlayers.getInstance().getOrCreatePlayer(anotherPlayer);
             }
+        }
+        return null;
+    }
 
-            if (settings.waitingPlayer != null)
-            {
-                Optional<Player> optionalWaiting = settings.waitingPlayer.getPlayer();
-                if (optionalWaiting.isPresent())
-                {
-                    Player waitingPlayer = optionalWaiting.get();
-                    settings.team.addPlayer(this.plugin, settings.waitingPlayer);
-                    waitingPlayer.setLocationAndRotation(
-                            settings.accepted.getLocation(),
-                            settings.accepted.getRotation()
-                    );
-                }
-                settings.waitingPlayer = null;
+    public void setWaitingPlayer(SfPlayer sfPlayer) {
+        if (sfPlayer == null) return;
+        if (this.settings.waitingPlayer != null) {
+            SfPlayer waitingPlayer = this.settings.waitingPlayer;
+            if (waitingPlayer == sfPlayer) return;
+            plugin.getLobby().moveToLobby(sfPlayer);
+        }
+        this.settings.waitingPlayer = sfPlayer;
+        sfPlayer.setZone(PlayerZone.TEAM_ROOM);
+        sfPlayer.getPlayer().ifPresent(player -> {
+            player.setLocationAndRotation(
+                    settings.waitingLocation.getLocation(),
+                    settings.waitingLocation.getRotation()
+            );
+        });
+    }
 
-                for (Player anotherPlayer : Sponge.getServer().getOnlinePlayers())
-                {
-                    if (SfUtils.compare(anotherPlayer.getLocation(), settings.joinPlate))
-                    {
-                        settings.waitingPlayer = SfPlayers.getInstance().getOrCreatePlayer(player);
-                        player.setLocationAndRotation(
-                                settings.waitingLocation.getLocation(),
-                                settings.waitingLocation.getRotation()
-                        );
-                        break;
-                    }
-                }
-            }
+    public void setCaptainPlayer(SfPlayer sfPlayer) {
+        if (sfPlayer == null) return;
+        this.settings.captain = sfPlayer;
+        addToTeam(sfPlayer);
+    }
 
+    public void addToTeam(SfPlayer sfPlayer) {
+        if (sfPlayer == null) return;
+        sfPlayer.setZone(PlayerZone.TEAM_ROOM);
+        this.settings.team.addPlayer(plugin, sfPlayer);
+        sfPlayer.getPlayer().ifPresent(player -> {
+            player.setLocationAndRotation(
+                    settings.accepted.getLocation(),
+                    settings.accepted.getRotation()
+            );
+        });
+    }
+
+    private void checkReady() {
+        int size = this.settings.team.getPlayers().size();
+        if (size < 1) {
+            this.buttonReady.setReady(false);
         }
     }
 

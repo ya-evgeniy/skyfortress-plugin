@@ -2,10 +2,7 @@ package ru.jekarus.skyfortress.v3.player;
 
 import org.spongepowered.api.entity.living.player.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class SfPlayers {
 
@@ -51,5 +48,9 @@ public class SfPlayers {
     public void remove(Player player)
     {
         this.remove(player.getUniqueId());
+    }
+
+    public List<SfPlayer> asList() {
+        return new ArrayList<>(this.players.values());
     }
 }

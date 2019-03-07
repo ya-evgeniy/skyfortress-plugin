@@ -3,17 +3,20 @@ package ru.jekarus.skyfortress.v3.lobby;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class SfLobby {
 
     private final SkyFortressPlugin plugin;
     private final SfLobbySettings settings = new SfLobbySettings();
 
-    private Collection<SfLobbyTeam> teams = new ArrayList<>();
+    private List<SfLobbyTeam> teams = new ArrayList<>();
 
     public SfLobby(SkyFortressPlugin plugin)
     {
@@ -86,4 +89,24 @@ public class SfLobby {
         return allReady;
     }
 
+    public List<SfLobbyTeam> getTeams() {
+        return this.teams;
+    }
+
+    public void clearWaitingPlayers() {
+        for (SfLobbyTeam team : this.teams) {
+            team.getSettings().waitingPlayer = null;
+        }
+    }
+
+    public void moveToLobby(SfPlayer sfPlayer) {
+        sfPlayer.setZone(PlayerZone.LOBBY);
+        sfPlayer.getPlayer().ifPresent(player -> {
+            SfLocation center = this.settings.center;
+            player.setLocationAndRotation(
+                    center.getLocation(),
+                    center.getRotation()
+            );
+        });
+    }
 }
