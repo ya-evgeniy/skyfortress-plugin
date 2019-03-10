@@ -22,7 +22,7 @@ public class SfScoreboards {
 
     public void init()
     {
-        Map<Locale, SfLanguage> languages = this.plugin.getLanguages().getMap();
+        Map<Locale, SfLanguage> languages = this.plugin.getLanguages().getLanguageByLocale();
         for (Map.Entry<Locale, SfLanguage> entry : languages.entrySet())
         {
             Locale locale = entry.getKey();

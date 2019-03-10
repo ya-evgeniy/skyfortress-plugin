@@ -80,7 +80,7 @@ public class SfMessages {
         Map<Locale, Text> locatedText = new HashMap<>();
         SfLanguages languages = this.plugin.getLanguages();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getMap().entrySet())
+        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
         {
             Locale locale = entry.getKey();
             SfLanguage language = entry.getValue();
@@ -103,7 +103,7 @@ public class SfMessages {
         Map<Locale, Text> locatedText = new HashMap<>();
         SfLanguages languages = this.plugin.getLanguages();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getMap().entrySet())
+        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
         {
             Locale locale = entry.getKey();
             SfLanguage language = entry.getValue();
@@ -125,7 +125,7 @@ public class SfMessages {
         Map<Locale, Text> locatedText = new HashMap<>();
         SfLanguages languages = this.plugin.getLanguages();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getMap().entrySet())
+        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
         {
             Locale locale = entry.getKey();
             SfLanguage language = entry.getValue();
@@ -147,7 +147,7 @@ public class SfMessages {
         Map<Locale, Text> locatedText = new HashMap<>();
         SfLanguages languages = this.plugin.getLanguages();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getMap().entrySet())
+        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
         {
             Locale locale = entry.getKey();
             SfLanguage language = entry.getValue();
@@ -175,7 +175,7 @@ public class SfMessages {
         Map<Locale, Text> locatedText = new HashMap<>();
         SfLanguages languages = this.plugin.getLanguages();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getMap().entrySet())
+        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
         {
             Locale locale = entry.getKey();
             SfLanguage language = entry.getValue();
@@ -214,7 +214,7 @@ public class SfMessages {
         Map<Locale, Text> locatedText = new HashMap<>();
         SfLanguages languages = this.plugin.getLanguages();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getMap().entrySet())
+        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
         {
             Locale locale = entry.getKey();
             SfLanguage language = entry.getValue();
@@ -245,7 +245,7 @@ public class SfMessages {
         Map<Locale, Text> locatedText = new HashMap<>();
         SfLanguages languages = this.plugin.getLanguages();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getMap().entrySet())
+        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
         {
             Locale locale = entry.getKey();
             SfLanguage language = entry.getValue();
@@ -276,7 +276,7 @@ public class SfMessages {
         Map<Locale, Text> locatedText = new HashMap<>();
         SfLanguages languages = this.plugin.getLanguages();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getMap().entrySet())
+        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
         {
             Locale locale = entry.getKey();
             SfLanguage language = entry.getValue();

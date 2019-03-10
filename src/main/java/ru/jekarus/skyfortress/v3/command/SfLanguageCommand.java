@@ -20,7 +20,7 @@ public class SfLanguageCommand extends SfCommand {
     public CommandSpec create(SkyFortressPlugin plugin)
     {
         Map<String, Locale> langs = new HashMap<>();
-        for (Locale locale : plugin.getLanguages().getMap().keySet())
+        for (Locale locale : plugin.getLanguages().getLanguageByLocale().keySet())
         {
             langs.put(String.format("%s_%s", locale.getLanguage(), locale.getCountry()), locale);
         }
@@ -50,7 +50,7 @@ public class SfLanguageCommand extends SfCommand {
                         return CommandResult.empty();
                     }
 
-                    SfLanguage language = plugin.getLanguages().getMap().get(locale);
+                    SfLanguage language = plugin.getLanguages().getLanguageByLocale().get(locale);
 
                     if (language == null)
                     {
