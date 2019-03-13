@@ -28,7 +28,7 @@ public class SfGameMessages {
         return messages.construct(
                 lang -> messages.chooseRandom(lang.messages.game.castleCapture),
                 vars -> vars.
-                        playerKey().name(player)
+                        playerKey().color(player.getTeam()).name(player)
                         .teamKey().name(team)
         );
     }
