@@ -11,6 +11,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
+import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbySettings;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
@@ -45,28 +47,43 @@ public class SfLobbyButtonReady extends SfLobbyButton {
             return false;
         }
 
+        SfMessages messages = plugin.getMessages();
+        SfLobbyMessages lobby = messages.getLobby();
 
         if (this.settings.captain != sfPlayer && plugin.getLobby().getSettings().useLobbyCaptainSystem) {
-            player.sendMessage(Text.of("Ты не капитан :("));
+            if (settings.ready) {
+                player.sendMessage(
+                        lobby.teammateCaptainCantUnready(sfPlayer)
+                );
+            }
+            else {
+                player.sendMessage(
+                        lobby.teammateCaptainCantReady(sfPlayer)
+                );
+            }
             return true;
         }
 
         SfLobbySettings settings = this.plugin.getLobby().getSettings();
-        if (!settings.canReady && !settings.canUnready) {
-            player.sendMessage(Text.of("(all) Готовность выключена"));
-            return true;
-        }
+//        if (!settings.canReady && !settings.canUnready) {
+//            player.sendMessage(Text.of("(all) Готовность выключена"));
+//            return true;
+//        }
 
         boolean newValue = !this.settings.ready;
         if (newValue) {
             if (!settings.canReady) {
-                player.sendMessage(Text.of("Готовность выключена"));
+                player.sendMessage(
+                        lobby.cantReady(sfPlayer)
+                );
                 return true;
             }
         }
         else {
             if (!settings.canUnready) {
-                player.sendMessage(Text.of("(Ан)готовность выключена"));
+                player.sendMessage(
+                        lobby.cantUnready(sfPlayer)
+                );
                 return true;
             }
         }

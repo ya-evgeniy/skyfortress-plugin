@@ -6,6 +6,7 @@ import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.lang.LanguageVariables;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.lang.SfTeamLanguage;
@@ -53,9 +54,7 @@ public class PreGameObjective extends SfObjective {
 
             SfTeamLanguage teamLanguage = this.language.teams.get(gameTeam);
             score.setSuffix(
-                    this.language.scoreboard.preGame.team.apply(
-                            SfMessages.appendTeamNames(new HashMap<>(), "", gameTeam, teamLanguage, false)
-                    ).build()
+                    new LanguageVariables(this.language).teamKey().name(gameTeam, false).apply(language.scoreboard.preGame.team) // fixme
             );
             this.teamScores.put(
                     gameTeam, score

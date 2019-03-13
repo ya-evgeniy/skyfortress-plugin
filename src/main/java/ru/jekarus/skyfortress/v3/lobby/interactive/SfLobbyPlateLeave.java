@@ -4,6 +4,7 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
@@ -37,19 +38,22 @@ public class SfLobbyPlateLeave extends SfLobbyPlate {
             return false;
         }
 
+        SfMessages messages = this.plugin.getMessages();
+        SfLobbyMessages lobby = messages.getLobby();
         if (!plugin.getLobby().getSettings().canLeave) {
-            player.sendMessage(Text.of("Выход в команд выключен"));
+            player.sendMessage(
+                    lobby.cantLeave(sfPlayer)
+            );
             return true;
         }
 
         this.plugin.getTeamContainer().getNoneTeam().addPlayer(this.plugin, sfPlayer);
         this.plugin.getLobby().moveToLobby(sfPlayer);
 
-        SfMessages messages = this.plugin.getMessages();
-        player.sendMessage(messages.player_leave(sfPlayer, settings.team));
+        player.sendMessage(lobby.playerLeaved(sfPlayer, settings.team));
         messages.send(
                 settings.team.getPlayers(),
-                messages.teammate_leave(sfPlayer, settings.team)
+                lobby.teammateLeaved(sfPlayer)
         );
 
         if (settings.captain == sfPlayer) {
@@ -68,7 +72,7 @@ public class SfLobbyPlateLeave extends SfLobbyPlate {
         {
             this.lobbyTeam.setCaptainPlayer(settings.waitingPlayer);
             settings.waitingPlayer.getPlayer().ifPresent(waitingPlayer -> {
-                waitingPlayer.sendMessage(messages.player_joined(sfPlayer, settings.team));
+                waitingPlayer.sendMessage(lobby.playerJoined(sfPlayer, settings.team));
             });
 
             this.lobbyTeam.setWaitingPlayer(

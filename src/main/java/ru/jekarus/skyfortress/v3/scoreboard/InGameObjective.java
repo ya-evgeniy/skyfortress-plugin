@@ -6,6 +6,7 @@ import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.lang.LanguageVariables;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
@@ -47,9 +48,7 @@ public class InGameObjective extends SfObjective {
             score.createScore(this.objective, gameTeam.getOrigin(), gameTeam.getCastle().getHealth());
             score.setPrefix(Text.builder().append(Text.of()).color(TextColors.DARK_RED).build());
             score.setSuffix(
-                    this.language.scoreboard.inGame.alive.apply(
-                            SfMessages.appendTeamNames(new HashMap<>(), "", gameTeam, this.language.teams.get(gameTeam))
-                    ).build()
+                    new LanguageVariables(language).teamKey().color(gameTeam).name(gameTeam).apply(language.scoreboard.inGame.alive) // FIXME: 11.03.2019
             );
             this.teamScores.put(
                     gameTeam, score
@@ -93,9 +92,7 @@ public class InGameObjective extends SfObjective {
         {
             score.setPrefix(Text.builder().append(Text.of()).color(TextColors.DARK_RED).build());
             score.setSuffix(
-                    this.language.scoreboard.inGame.death.apply(
-                            SfMessages.appendTeamNames(new HashMap<>(), "", gameTeam, this.language.teams.get(gameTeam), false)
-                    ).build()
+                    new LanguageVariables(language).teamKey().name(gameTeam).apply(language.scoreboard.inGame.death) // FIXME: 11.03.2019
             );
         }
     }

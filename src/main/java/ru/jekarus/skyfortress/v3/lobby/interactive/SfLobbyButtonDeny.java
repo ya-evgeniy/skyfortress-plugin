@@ -4,6 +4,7 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbySettings;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
@@ -11,6 +12,7 @@ import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class SfLobbyButtonDeny extends SfLobbyButton {
@@ -34,25 +36,36 @@ public class SfLobbyButtonDeny extends SfLobbyButton {
             return false;
         }
 
+        SfMessages messages = this.plugin.getMessages();
+        SfLobbyMessages lobby = messages.getLobby();
+
         if (this.settings.captain != sfPlayer && plugin.getLobby().getSettings().useLobbyCaptainSystem) {
-            player.sendMessage(Text.of("Ты не капитан :("));
+            player.sendMessage(
+                    lobby.teammateCaptainCantDeny(sfPlayer)
+            );
             return true;
         }
 
         if (!plugin.getLobby().getSettings().canCancel) {
-            player.sendMessage(Text.of("Отклонение игроков выключено"));
+            player.sendMessage(
+                    lobby.cantDeny(sfPlayer)
+            );
             return true;
         }
 
-        SfMessages messages = this.plugin.getMessages();
         if (this.settings.waitingPlayer != null)
         {
             this.plugin.getLobby().moveToLobby(this.settings.waitingPlayer);
             this.settings.waitingPlayer.getPlayer().ifPresent(waitingPlayer -> {
-                waitingPlayer.sendMessage(messages.player_deny(sfPlayer, settings.waitingPlayer, settings.team));
+                waitingPlayer.sendMessage(lobby.playerDeniedBy(settings.waitingPlayer, sfPlayer, settings.team));
+                ArrayList<SfPlayer> teamPlayers = new ArrayList<>(settings.team.getPlayers());
+                teamPlayers.remove(sfPlayer);
                 messages.send(
-                        settings.team.getPlayers(),
-                        messages.teammate_deny(sfPlayer, settings.waitingPlayer, settings.team)
+                        teamPlayers,
+                        lobby.teammateDeniedBy(sfPlayer, settings.waitingPlayer, settings.team)
+                );
+                player.sendMessage(
+                        lobby.teammateYouDenied(sfPlayer, settings.waitingPlayer)
                 );
             });
 

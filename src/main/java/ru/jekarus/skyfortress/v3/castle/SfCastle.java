@@ -115,7 +115,7 @@ public class SfCastle {
         {
             SfMessages messages = plugin.getMessages();
             messages.broadcast(
-                    messages.lost(this.getTeam()), true
+                    messages.getGame().teamLost(this.getTeam()), true
             );
         }
 

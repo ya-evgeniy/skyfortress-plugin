@@ -4,6 +4,7 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbySettings;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
@@ -11,6 +12,7 @@ import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class SfLobbyButtonAccept extends SfLobbyButton {
@@ -34,28 +36,39 @@ public class SfLobbyButtonAccept extends SfLobbyButton {
             return false;
         }
 
+        SfMessages messages = this.plugin.getMessages();
+        SfLobbyMessages lobby = messages.getLobby();
+
         if (this.settings.captain != sfPlayer && plugin.getLobby().getSettings().useLobbyCaptainSystem) {
-            player.sendMessage(Text.of("Ты не капитан :("));
+            player.sendMessage(
+                    lobby.teammateCaptainCantAccept(sfPlayer)
+            );
             return true;
         }
 
         if (!plugin.getLobby().getSettings().canAccept) {
-            player.sendMessage(Text.of("Принятие игроков выключено"));
+            player.sendMessage(
+                    lobby.cantAccept(sfPlayer)
+            );
             return true;
         }
 
-        SfMessages messages = this.plugin.getMessages();
         if (settings.waitingPlayer != null)
         {
-            this.lobbyTeam.addToTeam(settings.waitingPlayer);
             settings.waitingPlayer.getPlayer().ifPresent(waitingPlayer -> {
-                waitingPlayer.sendMessage(messages.player_accept(sfPlayer, settings.waitingPlayer, settings.team));
-                waitingPlayer.sendMessage(messages.player_joined(settings.waitingPlayer, settings.team));
+                waitingPlayer.sendMessage(lobby.playerAcceptedBy(settings.waitingPlayer, sfPlayer, settings.team));
+                waitingPlayer.sendMessage(lobby.playerJoined(settings.waitingPlayer, settings.team));
+                ArrayList<SfPlayer> teamPlayers = new ArrayList<>(settings.team.getPlayers());
+                teamPlayers.remove(sfPlayer);
                 messages.send(
-                        settings.team.getPlayers(),
-                        messages.teammate_accept(sfPlayer, settings.waitingPlayer, settings.team)
+                        teamPlayers,
+                        lobby.teammateAcceptedBy(sfPlayer, settings.waitingPlayer, settings.team)
+                );
+                player.sendMessage(
+                        lobby.teammateYouAccepted(sfPlayer, settings.waitingPlayer, settings.team)
                 );
             });
+            this.lobbyTeam.addToTeam(settings.waitingPlayer);
 
             settings.waitingPlayer = null;
             this.lobbyTeam.setWaitingPlayer(

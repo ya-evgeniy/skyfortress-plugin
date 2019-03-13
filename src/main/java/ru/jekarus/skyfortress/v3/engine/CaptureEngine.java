@@ -71,7 +71,7 @@ public class CaptureEngine {
         {
             SfMessages messages = this.plugin.getMessages();
             messages.broadcast(
-                    messages.capture(castle.getTeam(), sfPlayer), true
+                    messages.getGame().castleCapture(sfPlayer, castle.getTeam()), true
             );
         }
         this.start();
@@ -138,7 +138,7 @@ public class CaptureEngine {
 
                     SfMessages messages = this.plugin.getMessages();
                     messages.broadcast(
-                            messages.captured(castle.getTeam()), true
+                            messages.getGame().castleCaptured(castle.getTeam()), true
                     );
                     for (SfPlayer sfPlayer : castle.getTeam().getPlayers())
                     {

@@ -81,7 +81,7 @@ public class SfGame {
 
         SfMessages messages = this.plugin.getMessages();
         messages.broadcast(
-                messages.win(winCastle.getTeam()), true
+                messages.getGame().teamWin(winCastle.getTeam()), true
         );
         this.stop();
     }
