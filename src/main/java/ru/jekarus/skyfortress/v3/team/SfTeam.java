@@ -1,5 +1,6 @@
 package ru.jekarus.skyfortress.v3.team;
 
+import lombok.Getter;
 import org.spongepowered.api.text.format.TextColor;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
@@ -11,10 +12,10 @@ public class SfTeam {
     private static int ID = 0;
     private int id = ID++;
 
-    private String uniqueId;
-    private TextColor color;
+    @Getter private String uniqueId;
+    @Getter private TextColor color;
 
-    private Set<SfPlayer> players = new HashSet<>();
+    @Getter private Set<SfPlayer> players = new HashSet<>();
 
     public SfTeam()
     {
@@ -30,11 +31,6 @@ public class SfTeam {
     public void init(SkyFortressPlugin plugin)
     {
 
-    }
-
-    public Collection<SfPlayer> getPlayers()
-    {
-        return this.players;
     }
 
     public void addPlayer(SkyFortressPlugin plugin, SfPlayer player)
@@ -53,26 +49,6 @@ public class SfTeam {
     {
         this.players.remove(player);
         plugin.getScoreboards().removeTeam(this, player);
-    }
-
-    public String getUniqueId()
-    {
-        return this.uniqueId;
-    }
-
-    public void setUniqueId(String uniqueId)
-    {
-        this.uniqueId = uniqueId;
-    }
-
-    public TextColor getColor()
-    {
-        return this.color;
-    }
-
-    public void setColor(TextColor color)
-    {
-        this.color = color;
     }
 
     public Type getType()
