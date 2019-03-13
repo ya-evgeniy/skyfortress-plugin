@@ -10,10 +10,12 @@ import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.command.SfCommand;
 import ru.jekarus.skyfortress.v3.distribution.DistributionController;
+import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
+import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
 
 import java.util.*;
@@ -323,10 +325,65 @@ public class CaptainDistributionCommand extends SfCommand {
             return CommandSpec.builder()
                     .executor((src, args) -> {
 
+                        if (!(src instanceof Player)) {
+                            for (Map.Entry<SfGameTeam, Target> entry : this.command.targetsByTeam.entrySet()) {
+                                src.sendMessage(Text.of(TextColors.GRAY,
+                                        entry.getKey().getUniqueId() + " - " + entry.getValue()
+                                ));
+                            }
+                            return CommandResult.empty();
+                        }
+
+                        Player player = (Player) src;
+                        SfPlayer sfPlayer = SfPlayers.getInstance().getOrCreatePlayer(player);
+
+
+                        List<SfTeam> disabledTeams = new ArrayList<>();
+                        HashMap<SfGameTeam, Target> enabledTeams = new HashMap<>();
+
                         for (Map.Entry<SfGameTeam, Target> entry : this.command.targetsByTeam.entrySet()) {
-                            src.sendMessage(Text.of(TextColors.GRAY,
-                                    entry.getKey().getUniqueId() + " - " + entry.getValue()
-                            ));
+                            SfGameTeam team = entry.getKey();
+                            Target target = entry.getValue();
+
+                            if (target.getType() == Target.Type.DISABLED) {
+                                disabledTeams.add(team);
+                            }
+                            else {
+                                enabledTeams.put(team, target);
+                            }
+                        }
+
+                        SfDistributionMessages distribution = plugin.getMessages().getDistribution();
+
+                        List<Text> settings = new ArrayList<>();
+
+                        for (Map.Entry<SfGameTeam, Target> entry : enabledTeams.entrySet()) {
+                            SfGameTeam team = entry.getKey();
+                            Target target = entry.getValue();
+
+                            if (target.getType() == Target.Type.RANDOM) {
+                                Text randomText = distribution.commandInfoRandom(sfPlayer, team);
+                                settings.add(randomText);
+                            }
+                            else {
+                                PlayerTarget playerTarget = (PlayerTarget) target;
+                                Text playerText = distribution.commandInfoPlayer(sfPlayer, playerTarget.player, team);
+                                settings.add(playerText);
+                            }
+                        }
+
+                        Text header = distribution.commandInfoHeader(sfPlayer);
+                        Text disabled = null;
+                        if (disabledTeams.size() > 0) {
+                            disabled = distribution.commandInfoDisabled(sfPlayer, disabledTeams);
+                        }
+
+                        player.sendMessage(header);
+                        for (Text setting : settings) {
+                            player.sendMessage(setting);
+                        }
+                        if (disabled != null) {
+                            player.sendMessage(disabled);
                         }
 
                         return CommandResult.success();
