@@ -12,6 +12,7 @@ import ru.jekarus.skyfortress.v3.lang.SfLanguage;
 import ru.jekarus.skyfortress.v3.lang.SfLanguages;
 import ru.jekarus.skyfortress.v3.lang.SfMapLanguage;
 import ru.jekarus.skyfortress.v3.lang.SfTeamLanguage;
+import ru.jekarus.skyfortress.v3.lang.messages.SfDistributionLanguage;
 import ru.jekarus.skyfortress.v3.lang.messages.SfMessagesLanguage;
 import ru.jekarus.skyfortress.v3.lang.scoreboard.SfScoreboardLanguage;
 import ru.jekarus.skyfortress.v3.serializer.SfSerializers;
@@ -118,6 +119,7 @@ public class SfLanguagesSerializer {
 
         language.scoreboard = node.getNode("scoreboard").getValue(TypeToken.of(SfScoreboardLanguage.class));
         language.messages = node.getNode("messages").getValue(TypeToken.of(SfMessagesLanguage.class));
+        language.distribution = node.getNode("distribution").getValue(TypeToken.of(SfDistributionLanguage.class));
 
         languages.add(language);
     }

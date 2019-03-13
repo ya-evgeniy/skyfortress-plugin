@@ -4,54 +4,111 @@ import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
+import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.lang.messages.SfLobbyMessagesLanguage;
 import ru.jekarus.skyfortress.v3.serializer.text.SfTextParser;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class SfLobbyMessagesLanguageSerializer implements TypeSerializer<SfLobbyMessagesLanguage> {
 
     @Override
     public SfLobbyMessagesLanguage deserialize(TypeToken<?> typeToken, ConfigurationNode node) throws ObjectMappingException
     {
-        SfLobbyMessagesLanguage language = new SfLobbyMessagesLanguage();
+        SfLobbyMessagesLanguage lang = new SfLobbyMessagesLanguage();
+
+        ConfigurationNode cantNode = node.getNode("cant");
+        lang.cantJoin = parseText(cantNode, "join");
+        lang.cantLeave = parseText(cantNode, "leave");
+        lang.cantReady = parseText(cantNode, "ready");
+        lang.cantUnready = parseText(cantNode, "unready");
+        lang.cantAccept = parseText(cantNode, "accept");
+        lang.cantDeny = parseText(cantNode, "deny");
 
         ConfigurationNode playerNode = node.getNode("player");
-        language.player_join = SfTextParser.parse(playerNode.getNode("join").getString(), TextColors.GRAY);
-        language.player_joined = SfTextParser.parse(playerNode.getNode("joined").getString(), TextColors.GRAY);
-        language.player_leave = SfTextParser.parse(playerNode.getNode("leave").getString(), TextColors.GRAY);
-        language.player_accept = SfTextParser.parse(playerNode.getNode("accept").getString(), TextColors.GRAY);
-        language.player_deny = SfTextParser.parse(playerNode.getNode("deny").getString(), TextColors.GRAY);
-        language.player_cant_join = SfTextParser.parse(playerNode.getNode("cant", "join").getString(), TextColors.GRAY);
-        language.player_cant_leave = SfTextParser.parse(playerNode.getNode("cant", "leave").getString(), TextColors.GRAY);
+        lang.playerWaitAccepted = parseText(playerNode, "wait_accepted");
+        lang.playerWaitAcceptedByCaptain = parseText(playerNode, "wait_accepted_by_captain");
+        lang.playerJoined = parseText(playerNode, "joined");
+        lang.playerLeaved = parseText(playerNode, "leaved");
+        lang.playerAcceptedBy = parseText(playerNode, "accepted_by");
+        lang.playerDeniedBy = parseText(playerNode, "denied_by");
 
         ConfigurationNode teammateNode = node.getNode("teammate");
-        language.teammate_join = SfTextParser.parse(teammateNode.getNode("join").getString(), TextColors.GRAY);
-        language.teammate_joined = SfTextParser.parse(teammateNode.getNode("joined").getString(), TextColors.GRAY);
-        language.teammate_leave = SfTextParser.parse(teammateNode.getNode("leave").getString(), TextColors.GRAY);
-        language.teammate_accept = SfTextParser.parse(teammateNode.getNode("accept").getString(), TextColors.GRAY);
-        language.teammate_deny = SfTextParser.parse(teammateNode.getNode("deny").getString(), TextColors.GRAY);
+        lang.teammateWaitAccepted = parseText(teammateNode, "wait_accepted");
+        lang.teammateJoined = parseText(teammateNode, "joined");
+        lang.teammateLeaved = parseText(teammateNode, "leaved");
+        lang.teammateYouAccepted = parseText(teammateNode, "you_accepted");
+        lang.teammateAcceptedBy = parseText(teammateNode, "accepted_by");
+        lang.teammateYouDenied = parseText(teammateNode, "you_denied");
+        lang.teammateDeniedBy = parseText(teammateNode, "denied_by");
+
+        ConfigurationNode teammatesCaptainNode = teammateNode.getNode("captain");
+        lang.teammates_captain_wait_accepted = parseText(teammatesCaptainNode, "wait_accepted");
+        lang.teammates_captain_accepted_by = parseText(teammatesCaptainNode, "accepted_by");
+        lang.teammates_captain_denied_by = parseText(teammatesCaptainNode, "denied_by");
+        lang.teammatesCaptainYouAreNew = parseText(teammatesCaptainNode, "you_are_new");
+        lang.teammatesCaptainNew = parseText(teammatesCaptainNode, "are_new");
+        lang.teammates_captain_you_replaced = parseText(teammatesCaptainNode, "you_replaced");
+        lang.teammatesCaptainReplaced = parseText(teammatesCaptainNode, "replaced");
+        lang.teammatesCaptainLeaved = parseText(teammatesCaptainNode, "leaved");
+        lang.teammatesCaptainLeavedYouNew = parseText(teammatesCaptainNode, "leaved_you_new");
+
+        ConfigurationNode teammatesCaptainCantNode = teammatesCaptainNode.getNode("cant");
+        lang.teammatesCaptainCantReady = parseText(teammatesCaptainCantNode, "ready");
+        lang.teammatesCaptainCantUnready = parseText(teammatesCaptainCantNode, "unready");
+        lang.teammatesCaptainCantAccept = parseText(teammatesCaptainCantNode, "accept");
+        lang.teammatesCaptainCantDeny = parseText(teammatesCaptainCantNode, "deny");
 
         ConfigurationNode commandNode = node.getNode("command");
         ConfigurationNode commandPlayerNode = commandNode.getNode("player");
-        language.command_player_set_self_team = SfTextParser.parse(commandPlayerNode.getNode("set_self_team").getString(), TextColors.GRAY);
-        language.command_player_set_player_team = SfTextParser.parse(commandPlayerNode.getNode("set_player_team").getString(), TextColors.GRAY);
-        language.command_player_you_already_in_team = SfTextParser.parse(commandPlayerNode.getNode("you_already_in_team").getString(), TextColors.GRAY);
-        language.command_player_target_already_in_team = SfTextParser.parse(commandPlayerNode.getNode("target_already_in_team").getString(), TextColors.GRAY);
+        lang.commandPlayerChangeSelfTeam = parseText(commandPlayerNode, "change_self_team");
+        lang.commandPlayerChangePlayerTeam = parseText(commandPlayerNode, "change_player_team");
+        lang.commandPlayerYouAlreadyInTeam = parseText(commandPlayerNode, "you_already_in_team");
+        lang.commandPlayerAlreadyInTeam = parseText(commandPlayerNode,"already_in_team");
 
-        ConfigurationNode commandTargetNode = commandNode.getNode("player");
-        language.command_target_set_team = SfTextParser.parse(commandTargetNode.getNode("set_team").getString(), TextColors.GRAY);
+        ConfigurationNode commandTargetNode = commandNode.getNode("target");
+        lang.commandTargetSetTeam = parseText(commandTargetNode, "set_team");
 
-        ConfigurationNode commandGlobalNode = commandNode.getNode("player");
-        language.command_global_set_self_team = SfTextParser.parse(commandGlobalNode.getNode("set_self_team").getString(), TextColors.GRAY);
-        language.command_global_set_player_team = SfTextParser.parse(commandGlobalNode.getNode("set_player_team").getString(), TextColors.GRAY);
+        ConfigurationNode commandGlobalNode = commandNode.getNode("global");
+        lang.commandGlobalSetSelfTeam = parseText(commandGlobalNode, "set_self_team");
+        lang.commandGlobalSetPlayerTeam = parseText(commandGlobalNode, "set_player_team");
 
-        return language;
+        return lang;
     }
 
     @Override
     public void serialize(TypeToken<?> type, SfLobbyMessagesLanguage obj, ConfigurationNode value) throws ObjectMappingException
     {
 
+    }
+
+    private TextTemplate parseText(ConfigurationNode node, String subNodeName) {
+        ConfigurationNode subNode = node.getNode(subNodeName);
+        String string = subNode.getString();
+        if (string == null) return TextTemplate.of(buildPath(subNode.getPath()));
+        return SfTextParser.parse(string, TextColors.GRAY);
+    }
+
+    private String buildPath(Object[] path) {
+        StringBuilder builder = new StringBuilder();
+        List<Object> objects = Arrays.asList(path);
+        Iterator<Object> iterator = objects.iterator();
+        if (iterator.hasNext()) {
+            Object obj = iterator.next();
+            if (obj instanceof String) {
+                builder.append(obj);
+            }
+            while (iterator.hasNext()) {
+                obj = iterator.next();
+                if (obj instanceof String) {
+                    builder.append(".").append(obj);
+                }
+            }
+        }
+        return builder.toString();
     }
 
 }

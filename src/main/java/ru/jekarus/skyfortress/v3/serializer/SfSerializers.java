@@ -13,9 +13,7 @@ import ru.jekarus.skyfortress.v3.castle.SfCastlePositions;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.gui.ShopGui;
 import ru.jekarus.skyfortress.v3.lang.SfMapLanguage;
-import ru.jekarus.skyfortress.v3.lang.messages.SfGameMessagesLanguage;
-import ru.jekarus.skyfortress.v3.lang.messages.SfLobbyMessagesLanguage;
-import ru.jekarus.skyfortress.v3.lang.messages.SfMessagesLanguage;
+import ru.jekarus.skyfortress.v3.lang.messages.*;
 import ru.jekarus.skyfortress.v3.lang.scoreboard.SfInGameScoreboardLanguage;
 import ru.jekarus.skyfortress.v3.lang.scoreboard.SfPostGameScoreboardLanguage;
 import ru.jekarus.skyfortress.v3.lang.scoreboard.SfPreGameScoreboardLanguage;
@@ -23,10 +21,9 @@ import ru.jekarus.skyfortress.v3.lang.scoreboard.SfScoreboardLanguage;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.resource.SfResource;
 import ru.jekarus.skyfortress.v3.serializer.distribution.CaptainConfigSerializer;
+import ru.jekarus.skyfortress.v3.serializer.language.SfDistributionLanguageSerializer;
 import ru.jekarus.skyfortress.v3.serializer.language.SfMapLanguageSerializer;
-import ru.jekarus.skyfortress.v3.serializer.language.messages.SfGameMessagesLanguageSerializer;
-import ru.jekarus.skyfortress.v3.serializer.language.messages.SfLobbyMessagesLanguageSerializer;
-import ru.jekarus.skyfortress.v3.serializer.language.messages.SfMessagesLanguageSerializer;
+import ru.jekarus.skyfortress.v3.serializer.language.messages.*;
 import ru.jekarus.skyfortress.v3.serializer.language.scoreboard.SfInGameScoreboardLanguageSerializer;
 import ru.jekarus.skyfortress.v3.serializer.language.scoreboard.SfPostGameScoreboardLanguageSerializer;
 import ru.jekarus.skyfortress.v3.serializer.language.scoreboard.SfPreGameScoreboardLanguageSerializer;
@@ -69,6 +66,8 @@ public class SfSerializers {
         DEF_SERIALIZERS.registerType(TypeToken.of(SfMessagesLanguage.class), new SfMessagesLanguageSerializer());
         DEF_SERIALIZERS.registerType(TypeToken.of(SfLobbyMessagesLanguage.class), new SfLobbyMessagesLanguageSerializer());
         DEF_SERIALIZERS.registerType(TypeToken.of(SfGameMessagesLanguage.class), new SfGameMessagesLanguageSerializer());
+        DEF_SERIALIZERS.registerType(TypeToken.of(SfDistributionLanguage.class), new SfDistributionLanguageSerializer());
+        DEF_SERIALIZERS.registerType(TypeToken.of(SfTitleMessagesLanguage.class), new SfTitleMessagesLanguageSerializer());
 
         DEF_SERIALIZERS.registerType(TypeToken.of(CaptainConfig.class), new CaptainConfigSerializer());
 
