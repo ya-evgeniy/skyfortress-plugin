@@ -1,5 +1,6 @@
 package ru.jekarus.skyfortress.v3.lang;
 
+import ru.jekarus.skyfortress.v3.lang.messages.SfDistributionLanguage;
 import ru.jekarus.skyfortress.v3.lang.messages.SfMessagesLanguage;
 import ru.jekarus.skyfortress.v3.lang.scoreboard.SfScoreboardLanguage;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -16,5 +17,6 @@ public class SfLanguage {
     public Map<SfTeam, SfTeamLanguage> teams = new HashMap<>();
     public SfScoreboardLanguage scoreboard = new SfScoreboardLanguage();
     public SfMessagesLanguage messages = new SfMessagesLanguage();
+    public SfDistributionLanguage distribution = new SfDistributionLanguage();
 
 }
