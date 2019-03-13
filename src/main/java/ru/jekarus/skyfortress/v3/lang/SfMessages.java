@@ -6,6 +6,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
+import org.spongepowered.api.text.chat.ChatType;
+import org.spongepowered.api.text.chat.ChatTypes;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
@@ -65,10 +67,14 @@ public class SfMessages {
     }
 
     public void send(Collection<SfPlayer> targets, Map<Locale, Text> locatedTexts) {
+        this.send(targets, locatedTexts, ChatTypes.CHAT);
+    }
+
+    public void send(Collection<SfPlayer> targets, Map<Locale, Text> locatedTexts, ChatType chatType) {
         for (SfPlayer sfPlayer : targets) {
             sfPlayer.getPlayer().ifPresent(player -> {
                 Text text = locatedTexts.get(sfPlayer.getLocale());
-                player.sendMessage(text);
+                player.sendMessage(chatType, text);
             });
         }
     }
