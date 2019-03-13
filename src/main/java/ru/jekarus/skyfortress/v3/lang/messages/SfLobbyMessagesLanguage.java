@@ -2,7 +2,6 @@ package ru.jekarus.skyfortress.v3.lang.messages;
 
 import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.format.TextColors;
-import ru.jekarus.skyfortress.v3.serializer.text.SfTextParser;
 
 import static ru.jekarus.skyfortress.v3.serializer.text.SfTextParser.parse;
 

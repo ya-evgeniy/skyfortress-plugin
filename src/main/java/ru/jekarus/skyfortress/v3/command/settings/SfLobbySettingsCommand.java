@@ -1,7 +1,6 @@
 package ru.jekarus.skyfortress.v3.command.settings;
 
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.CommandFlags;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
@@ -12,8 +11,6 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.command.SfCommand;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbySettings;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
-
-import java.util.Optional;
 
 import static org.spongepowered.api.command.args.GenericArguments.*;
 

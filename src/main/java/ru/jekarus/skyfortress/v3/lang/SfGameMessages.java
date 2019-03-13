@@ -9,7 +9,6 @@ import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class SfGameMessages {
 

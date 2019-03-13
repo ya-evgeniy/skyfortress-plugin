@@ -1,11 +1,7 @@
 package ru.jekarus.skyfortress.v3.lang;
 
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
-import org.spongepowered.api.text.format.TextColor;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
-import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.HashMap;
 import java.util.Map;

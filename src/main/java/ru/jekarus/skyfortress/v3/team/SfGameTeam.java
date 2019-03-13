@@ -1,6 +1,5 @@
 package ru.jekarus.skyfortress.v3.team;
 
-import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.text.format.TextColor;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;

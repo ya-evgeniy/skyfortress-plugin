@@ -8,7 +8,6 @@ import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.LanguageVariables;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
-import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.lang.SfTeamLanguage;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 

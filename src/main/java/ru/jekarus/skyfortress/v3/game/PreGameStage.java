@@ -2,7 +2,6 @@ package ru.jekarus.skyfortress.v3.game;
 
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.listener.LobbyButtonsListener;
-import ru.jekarus.skyfortress.v3.listener.LobbyListener;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 
 public class PreGameStage extends SfGameStage {

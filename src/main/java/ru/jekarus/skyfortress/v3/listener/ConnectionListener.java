@@ -1,30 +1,18 @@
 package ru.jekarus.skyfortress.v3.listener;
 
-import com.google.common.reflect.TypeToken;
-import ninja.leaping.configurate.ConfigurationOptions;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
-import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.Getter;
-import org.spongepowered.api.event.filter.cause.First;
-import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.item.inventory.ItemStack;
-import ru.jekarus.jserializer.itemstack.ItemStackSerializer;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.distribution.random.RandomDistribution;
 import ru.jekarus.skyfortress.v3.engine.CastleDeathEngine;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
-import ru.jekarus.skyfortress.v3.gui.ShopGui;
 import ru.jekarus.skyfortress.v3.lang.SfLanguages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobby;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
@@ -32,14 +20,11 @@ import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
-import ru.jekarus.skyfortress.v3.serializer.SfSerializers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Locale;
 

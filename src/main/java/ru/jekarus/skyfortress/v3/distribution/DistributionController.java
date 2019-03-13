@@ -7,7 +7,6 @@ import ru.jekarus.skyfortress.v3.distribution.captain.CaptainController;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
-import java.util.List;
 import java.util.Map;
 
 public class DistributionController {

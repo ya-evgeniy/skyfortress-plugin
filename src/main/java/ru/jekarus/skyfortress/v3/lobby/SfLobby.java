@@ -8,7 +8,6 @@ import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class SfLobby {

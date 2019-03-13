@@ -4,7 +4,6 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.title.Title;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
-import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.TargetUtils;
 
 import java.util.List;

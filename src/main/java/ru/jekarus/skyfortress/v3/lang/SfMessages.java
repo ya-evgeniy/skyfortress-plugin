@@ -1,6 +1,5 @@
 package ru.jekarus.skyfortress.v3.lang;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
@@ -8,11 +7,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.game.SfGame;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
-import ru.jekarus.skyfortress.v3.team.SfGameTeam;
-import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;

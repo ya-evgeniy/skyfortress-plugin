@@ -1,10 +1,7 @@
 package ru.jekarus.skyfortress.v3.lang.messages;
 
 import org.spongepowered.api.text.TextTemplate;
-import org.spongepowered.api.text.format.TextColors;
-import ru.jekarus.skyfortress.v3.serializer.text.SfTextParser;
 
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;

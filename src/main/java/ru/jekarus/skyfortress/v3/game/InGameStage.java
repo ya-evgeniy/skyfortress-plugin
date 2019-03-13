@@ -27,7 +27,6 @@ import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Optional;
 
 public class InGameStage extends SfGameStage {

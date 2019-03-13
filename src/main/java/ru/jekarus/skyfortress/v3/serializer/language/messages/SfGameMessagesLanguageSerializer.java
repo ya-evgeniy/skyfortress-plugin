@@ -8,10 +8,6 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.TypeTokens;
 import ru.jekarus.skyfortress.v3.lang.messages.SfGameMessagesLanguage;
 import ru.jekarus.skyfortress.v3.lang.messages.SfTitleMessagesLanguage;
-import ru.jekarus.skyfortress.v3.serializer.text.SfTextParser;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 import static ru.jekarus.skyfortress.v3.serializer.text.SfTextParser.parse;
 import static ru.jekarus.skyfortress.v3.serializer.text.SfTextParser.templates;

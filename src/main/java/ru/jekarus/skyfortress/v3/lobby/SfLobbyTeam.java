@@ -1,12 +1,8 @@
 package ru.jekarus.skyfortress.v3.lobby;
 
-import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lobby.interactive.*;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
@@ -17,7 +13,6 @@ import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 public class SfLobbyTeam {
 
