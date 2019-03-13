@@ -1,12 +1,14 @@
 package ru.jekarus.skyfortress.v3.lang;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.Getter;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.game.SfGame;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
@@ -14,6 +16,9 @@ import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class SfMessages {
 
@@ -23,51 +28,48 @@ public class SfMessages {
 
     private ThreadLocalRandom random;
 
-    public SfMessages(SkyFortressPlugin plugin)
-    {
+    @Getter SfLobbyMessages lobby;
+    @Getter SfGameMessages game;
+    @Getter SfDistributionMessages distribution;
+
+    public SfMessages(SkyFortressPlugin plugin) {
         this.plugin = plugin;
         this.server = Sponge.getServer();
         this.players = SfPlayers.getInstance();
 
         this.random = ThreadLocalRandom.current();
+
+        this.lobby = new SfLobbyMessages(plugin, this);
+        this.game = new SfGameMessages(plugin, this);
+        this.distribution = new SfDistributionMessages(plugin, this);
     }
 
-    public void broadcast(Text text)
-    {
+    public void broadcast(Text text) {
         this.server.getBroadcastChannel().send(text);
     }
 
-    public void broadcast(Map<Locale, Text> locatedTexts)
-    {
+    public void broadcast(Map<Locale, Text> locatedTexts) {
         broadcast(locatedTexts, false);
     }
 
-    public void broadcast(Map<Locale, Text> locatedTexts, boolean need_spaces)
-    {
-        for (Player player : this.server.getOnlinePlayers())
-        {
+    public void broadcast(Map<Locale, Text> locatedTexts, boolean need_spaces) {
+        for (Player player : this.server.getOnlinePlayers()) {
             SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
             Text text = locatedTexts.get(sfPlayer.getLocale());
-            if (text != null)
-            {
-                if (need_spaces)
-                {
+            if (text != null) {
+                if (need_spaces) {
                     player.sendMessage(Text.of());
                     player.sendMessage(text);
                     player.sendMessage(Text.of());
-                }
-                else
-                {
+                } else {
                     player.sendMessage(text);
                 }
             }
         }
     }
 
-    public void send(Collection<SfPlayer> targets, Map<Locale, Text> locatedTexts)
-    {
-        for (SfPlayer sfPlayer : targets)
-        {
+    public void send(Collection<SfPlayer> targets, Map<Locale, Text> locatedTexts) {
+        for (SfPlayer sfPlayer : targets) {
             sfPlayer.getPlayer().ifPresent(player -> {
                 Text text = locatedTexts.get(sfPlayer.getLocale());
                 player.sendMessage(text);
@@ -75,261 +77,60 @@ public class SfMessages {
         }
     }
 
-    public Map<Locale, Text> capture(SfGameTeam team, SfPlayer player)
-    {
-        Map<Locale, Text> locatedText = new HashMap<>();
-        SfLanguages languages = this.plugin.getLanguages();
+    public void sendToPlayers(Collection<Player> targets, Map<Locale, Text> locatedTexts) {
+        List<SfPlayer> sfTargets = targets.stream().map(this.players::getOrCreatePlayer).collect(Collectors.toList());
+        this.send(sfTargets, locatedTexts);
+    }
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
-        {
-            Locale locale = entry.getKey();
-            SfLanguage language = entry.getValue();
+    public SfLanguage getLang(SfPlayer player) {
+        return this.plugin.getLanguages().get(player.getLocale());
+    }
 
-            List<TextTemplate> captureMessage = language.messages.game.castle_capture;
-            TextTemplate capture = captureMessage.get(this.random.nextInt(captureMessage.size()));
+    public Text construct(SfPlayer player, Function<SfLanguage, TextTemplate> textFromLanguage, Consumer<LanguageVariables> appendVariables) {
+        SfLanguage lang = getLang(player);
+        TextTemplate template = textFromLanguage.apply(lang);
+        LanguageVariables variables = new LanguageVariables(lang);
+        appendVariables.accept(variables);
+        return variables.apply(template);
+    }
 
-            Map<String, Text> params = new HashMap<>();
-            params.put("player.name", Text.builder(player.getName()).color(player.getTeam().getColor()).build());
-            appendTeamNames(params, "", team, language.teams.get(team));
+    public Map<Locale, Text> construct(Function<SfLanguage, TextTemplate> textFromLanguage) {
+        Collection<SfLanguage> languages = this.plugin.getLanguages().getLanguageByLocale().values();
+        Map<Locale, Text> result = new HashMap<>();
 
-            locatedText.put(locale, capture.apply(params).build());
+        for (SfLanguage language : languages) {
+            TextTemplate template = textFromLanguage.apply(language);
+            result.put(language.locale, template.toText());
         }
-
-        return locatedText;
+        return result;
     }
 
-    public Map<Locale, Text> captured(SfGameTeam team)
-    {
-        Map<Locale, Text> locatedText = new HashMap<>();
-        SfLanguages languages = this.plugin.getLanguages();
+    public <T> Map<Locale, T> constructAbstract(Function<SfLanguage, T> textFromLanguage) {
+        Collection<SfLanguage> languages = this.plugin.getLanguages().getLanguageByLocale().values();
+        Map<Locale, T> result = new HashMap<>();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
-        {
-            Locale locale = entry.getKey();
-            SfLanguage language = entry.getValue();
-
-            List<TextTemplate> capturedMessage = language.messages.game.castle_captured;
-            TextTemplate captured = capturedMessage.get(this.random.nextInt(capturedMessage.size()));
-
-            Map<String, Text> params = new HashMap<>();
-            appendTeamNames(params, "", team, language.teams.get(team));
-
-            locatedText.put(locale, captured.apply(params).build());
+        for (SfLanguage language : languages) {
+            T template = textFromLanguage.apply(language);
+            result.put(language.locale, template);
         }
-
-        return locatedText;
+        return result;
     }
 
-    public Map<Locale, Text> lost(SfGameTeam team)
-    {
-        Map<Locale, Text> locatedText = new HashMap<>();
-        SfLanguages languages = this.plugin.getLanguages();
+    public Map<Locale, Text> construct(Function<SfLanguage, TextTemplate> textFromLanguage, Consumer<LanguageVariables> appendVariables) {
+        Collection<SfLanguage> languages = this.plugin.getLanguages().getLanguageByLocale().values();
+        Map<Locale, Text> result = new HashMap<>();
 
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
-        {
-            Locale locale = entry.getKey();
-            SfLanguage language = entry.getValue();
-
-            List<TextTemplate> lostMessages = language.messages.game.team_lost;
-            TextTemplate lost = lostMessages.get(this.random.nextInt(lostMessages.size()));
-
-            Map<String, Text> params = new HashMap<>();
-            appendTeamNames(params, "", team, language.teams.get(team));
-
-            locatedText.put(locale, lost.apply(params).build());
+        for (SfLanguage language : languages) {
+            TextTemplate template = textFromLanguage.apply(language);
+            LanguageVariables variables = new LanguageVariables(language);
+            appendVariables.accept(variables);
+            result.put(language.locale, variables.apply(template));
         }
-
-        return locatedText;
+        return result;
     }
 
-    public Map<Locale, Text> win(SfGameTeam team)
-    {
-        Map<Locale, Text> locatedText = new HashMap<>();
-        SfLanguages languages = this.plugin.getLanguages();
-
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
-        {
-            Locale locale = entry.getKey();
-            SfLanguage language = entry.getValue();
-
-            List<TextTemplate> winMessages = language.messages.game.team_win;
-            TextTemplate win = winMessages.get(this.random.nextInt(winMessages.size()));
-
-            Map<String, Text> params = new HashMap<>();
-            appendTeamNames(params, "", team, language.teams.get(team));
-
-            locatedText.put(locale, win.apply(params).build());
-        }
-
-        return locatedText;
+    public <T> T chooseRandom(List<T> templates) {
+        return templates.get(random.nextInt(templates.size()));
     }
-
-    public Text player_join(SfPlayer sfPlayer, SfTeam team)
-    {
-        SfLanguage language = this.plugin.getLanguages().get(sfPlayer.getLocale());
-        return language.messages.lobby.player_join.toText();
-    }
-
-    public Map<Locale, Text> teammate_join(SfPlayer sfPlayer, SfGameTeam team)
-    {
-        Map<Locale, Text> locatedText = new HashMap<>();
-        SfLanguages languages = this.plugin.getLanguages();
-
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
-        {
-            Locale locale = entry.getKey();
-            SfLanguage language = entry.getValue();
-
-            TextTemplate message = language.messages.lobby.teammate_join;
-
-            Map<String, Text> params = new HashMap<>();
-            params.put("player.name", Text.of(sfPlayer.getName()));
-
-            locatedText.put(locale, message.apply(params).build());
-        }
-
-        return locatedText;
-    }
-
-    public Text player_joined(SfPlayer sfPlayer, SfTeam team)
-    {
-        SfLanguage language = this.plugin.getLanguages().get(sfPlayer.getLocale());
-        TextTemplate message = language.messages.lobby.player_joined;
-        return message.apply(
-                appendTeamNames(new HashMap<>(), "", team, language.teams.get(team))
-        ).build();
-    }
-
-    public Text player_accept(SfPlayer player, SfPlayer target, SfTeam team)
-    {
-        SfLanguage language = this.plugin.getLanguages().get(target.getLocale());
-        TextTemplate message = language.messages.lobby.player_accept;
-        return message.apply(
-                ImmutableMap.of("player.name", Text.builder(player.getName()).color(team.getColor()).build())
-        ).build();
-    }
-
-    public Map<Locale, Text> teammate_accept(SfPlayer player, SfPlayer target, SfGameTeam team)
-    {
-        Map<Locale, Text> locatedText = new HashMap<>();
-        SfLanguages languages = this.plugin.getLanguages();
-
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
-        {
-            Locale locale = entry.getKey();
-            SfLanguage language = entry.getValue();
-
-            TextTemplate message = language.messages.lobby.teammate_accept;
-
-            Map<String, Text> params = new HashMap<>();
-            params.put("player.name", Text.builder(player.getName()).color(team.getColor()).build());
-            params.put("target.player.name", Text.builder(target.getName()).color(team.getColor()).build());
-
-            locatedText.put(locale, message.apply(params).build());
-        }
-
-        return locatedText;
-    }
-
-    public Text player_deny(SfPlayer player, SfPlayer target, SfGameTeam team)
-    {
-        SfLanguage language = this.plugin.getLanguages().get(target.getLocale());
-        TextTemplate message = language.messages.lobby.player_deny;
-        return message.apply(
-                ImmutableMap.of("player.name", Text.builder(player.getName()).color(team.getColor()).build())
-        ).build();
-    }
-
-    public Map<Locale, Text> teammate_deny(SfPlayer player, SfPlayer target, SfGameTeam team)
-    {
-        Map<Locale, Text> locatedText = new HashMap<>();
-        SfLanguages languages = this.plugin.getLanguages();
-
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
-        {
-            Locale locale = entry.getKey();
-            SfLanguage language = entry.getValue();
-
-            TextTemplate message = language.messages.lobby.teammate_deny;
-
-            Map<String, Text> params = new HashMap<>();
-            params.put("player.name", Text.builder(player.getName()).color(team.getColor()).build());
-            params.put("target.player.name", Text.builder(target.getName()).color(team.getColor()).build());
-
-            locatedText.put(locale, message.apply(params).build());
-        }
-
-        return locatedText;
-    }
-
-    public Text player_leave(SfPlayer player, SfGameTeam team)
-    {
-        SfLanguage language = this.plugin.getLanguages().get(player.getLocale());
-        TextTemplate message = language.messages.lobby.player_leave;
-        return message.apply(
-                appendTeamNames(new HashMap<>(), "", team, language.teams.get(team))
-        ).build();
-    }
-
-    public Map<Locale, Text> teammate_leave(SfPlayer player, SfGameTeam team)
-    {
-        Map<Locale, Text> locatedText = new HashMap<>();
-        SfLanguages languages = this.plugin.getLanguages();
-
-        for (Map.Entry<Locale, SfLanguage> entry : languages.getLanguageByLocale().entrySet())
-        {
-            Locale locale = entry.getKey();
-            SfLanguage language = entry.getValue();
-
-            TextTemplate message = language.messages.lobby.teammate_leave;
-
-            Map<String, Text> params = new HashMap<>();
-            params.put("player.name", Text.builder(player.getName()).color(team.getColor()).build());
-
-            locatedText.put(locale, message.apply(params).build());
-        }
-
-        return locatedText;
-    }
-
-    public static Map<String, Text> appendTeamNames(Map<String, Text> params, String prefix, SfTeam team, SfTeamLanguage language)
-    {
-        return appendTeamNames(params, prefix, team, language, true);
-    }
-
-    public static Map<String, Text> appendTeamNames(Map<String, Text> params, String prefix, SfTeam team, SfTeamLanguage language, boolean color)
-    {
-        int index = -1;
-        for (String name : language.names)
-        {
-            if (color)
-            {
-                params.put(prefix + "team.name." + ++index, Text.builder(name).color(team.getColor()).build());
-            }
-            else
-            {
-                params.put(prefix + "team.name." + ++index, Text.builder(name).build());
-            }
-        }
-        return params;
-    }
-
-//    public static TextTemplate applyTeam(TextTemplate template, String prefix, SfTeam team, SfTeamLanguage language)
-//    {
-//        return applyTeam(template, prefix, team, language, true);
-//    }
-//
-//    public static TextTemplate applyTeam(TextTemplate template, SfTeam team, SfTeamLanguage language, boolean color)
-//    {
-//        return applyTeam(template, "", team, language, color);
-//    }
-//
-//    public static TextTemplate applyTeam(TextTemplate template, String prefix, SfTeam team, SfTeamLanguage language, boolean color)
-//    {
-//        Map<String, Text> params = new HashMap<>();
-//        appendTeamNames(params, prefix, team, language, color);
-//        template.apply(params);
-//        return template;
-//    }
 
 }
