@@ -3,6 +3,7 @@ package ru.jekarus.skyfortress.v3.serializer.text;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 
@@ -19,6 +20,10 @@ public class SfTextParser {
             templates.add(SfTextParser.parse(string, color));
         }
         return templates;
+    }
+
+    public static TextTemplate parse(String raw) {
+        return parse(raw, TextColors.GRAY);
     }
 
     public static TextTemplate parse(String raw, TextColor color)
