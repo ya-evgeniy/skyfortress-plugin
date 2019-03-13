@@ -10,10 +10,12 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
+import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
+import ru.jekarus.skyfortress.v3.lang.SfLanguage;
+import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class CaptainRandomizer {
@@ -22,7 +24,7 @@ public class CaptainRandomizer {
     private final CaptainDistribution distribution;
     private final CaptainConfig config;
 
-    private ServerBossBar bar;
+    private Map<Locale, ServerBossBar> localizedBar;
     private int currentValue;
 
     private Task task;
@@ -31,18 +33,36 @@ public class CaptainRandomizer {
         this.plugin = plugin;
         this.distribution = distribution;
         this.config = config;
-        bar = ServerBossBar.builder()
-                .name(Text.of())
-                .color(BossBarColors.WHITE)
-                .playEndBossMusic(false)
-                .percent(1.0f)
-                .overlay(BossBarOverlays.PROGRESS)
-                .build();
+
+        this.localizedBar = new HashMap<>();
+
+        Collection<SfLanguage> langs = plugin.getLanguages().getLanguageByLocale().values();
+        for (SfLanguage lang : langs) {
+            ServerBossBar bar = ServerBossBar.builder()
+                    .name(Text.of())
+                    .color(BossBarColors.WHITE)
+                    .playEndBossMusic(false)
+                    .percent(1.0f)
+                    .overlay(BossBarOverlays.PROGRESS)
+                    .build();
+            this.localizedBar.put(lang.locale, bar);
+        }
+
     }
 
     public void reset() {
-        this.bar.setName(Text.of(TextColors.GRAY, config.maxSelectTime));
-        this.bar.setPercent(1.0f);
+        SfDistributionMessages distribution = this.plugin.getMessages().getDistribution();
+        Map<Locale, Text> localizedBarText = distribution.randomSelectedTime(config.maxSelectTime);
+        for (Map.Entry<Locale, Text> entry : localizedBarText.entrySet()) {
+            Locale locale = entry.getKey();
+            Text text = entry.getValue();
+
+            ServerBossBar bar = this.localizedBar.get(locale);
+            if (bar != null) {
+                bar.setName(text);
+                bar.setPercent(1.0f);
+            }
+        }
         this.currentValue = config.maxSelectTime;
 
         start();
@@ -55,29 +75,49 @@ public class CaptainRandomizer {
         CaptainsState state = this.distribution.getState();
         for (CaptainTarget target : state.targetByPlayerUniqueId.values()) {
             target.player.getPlayer().ifPresent(player -> {
-                this.bar.addPlayer(player);
+                showBarTo(player, target.player);
             });
         }
         for (Captain captain : state.captainByTeam.values()) {
-            captain.player.getPlayer().ifPresent(this::showBarTo);
+            captain.player.getPlayer().ifPresent(player -> {
+                showBarTo(player, captain.player);
+            });
         }
     }
 
     public void stop() {
         if (task == null) return;
-        this.bar.removePlayers(this.bar.getPlayers());
+        for (ServerBossBar bar : this.localizedBar.values()) {
+            bar.removePlayers(bar.getPlayers());
+        }
         this.task.cancel();
         this.task = null;
     }
 
-    public void showBarTo(Player player) {
-        this.bar.addPlayer(player);
+    public void showBarTo(Player player, SfPlayer sfPlayer) {
+        ServerBossBar bar = this.localizedBar.get(sfPlayer.getLocale());
+        if (bar != null) {
+            bar.addPlayer(player);
+        }
     }
 
     private void onSecond() {
         float percent = 1.0f / ((float) config.maxSelectTime / (float) currentValue);
-        this.bar.setName(Text.of(TextColors.GRAY, this.currentValue));
-        bar.setPercent(percent);
+
+        SfDistributionMessages distribution = this.plugin.getMessages().getDistribution();
+        Map<Locale, Text> localizedBarText = distribution.randomSelectedTime(this.currentValue);
+
+        for (Map.Entry<Locale, Text> entry : localizedBarText.entrySet()) {
+            Locale locale = entry.getKey();
+            Text text = entry.getValue();
+
+            ServerBossBar bar = this.localizedBar.get(locale);
+            if (bar != null) {
+                bar.setName(text);
+                bar.setPercent(percent);
+            }
+        }
+
         if (this.currentValue < 1) {
             randomSelect();
         }

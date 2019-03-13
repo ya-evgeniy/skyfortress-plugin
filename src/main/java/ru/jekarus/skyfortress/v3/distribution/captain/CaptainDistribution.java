@@ -465,7 +465,7 @@ public class CaptainDistribution {
         CaptainTarget target = this.state.targetByPlayerUniqueId.get(sfPlayer.getUniqueId());
         if (target != null) {
             target.onConnect(player);
-            this.captainRandomizer.showBarTo(player);
+            this.captainRandomizer.showBarTo(player, sfPlayer);
             SfTeam team = target.player.getTeam();
             if (team == null || team.getType() != SfTeam.Type.GAME) {
                 player.offer(Keys.GLOWING, true);
@@ -478,7 +478,7 @@ public class CaptainDistribution {
         for (Captain captain : this.state.captainByTeam.values()) {
             if (captain.player == sfPlayer) {
                 captain.onConnect(player);
-                this.captainRandomizer.showBarTo(player);
+                this.captainRandomizer.showBarTo(player, sfPlayer);
                 return;
             }
         }

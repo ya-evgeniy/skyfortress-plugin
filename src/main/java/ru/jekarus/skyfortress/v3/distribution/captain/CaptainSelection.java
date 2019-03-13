@@ -11,14 +11,15 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
+import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboard;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CaptainSelection implements CaptainSelectedHandler {
 
@@ -88,12 +89,24 @@ public class CaptainSelection implements CaptainSelectedHandler {
     @Override
     public void selected(ChoosingCaptain captain, CaptainTarget target, boolean isRandom) {
         distribution.colorizeBlocks(target.changedBlocks, captain.team);
+        SfMessages messages = plugin.getMessages();
+        SfDistributionMessages distribution = messages.getDistribution();
+
+        Map<Locale, Text> localizedText;
         if (isRandom) {
-            Sponge.getServer().getBroadcastChannel().send(Text.of("Рандом выбрал " + target.player.getName()));
+            localizedText = distribution.randomSelected(captain.captain.player, target.player, captain.team);
         }
         else {
-            Sponge.getServer().getBroadcastChannel().send(Text.of(captain.captain.player.getName() + " выбрал " + target.player.getName()));
+            localizedText = distribution.captainSelected(captain.captain.player, target.player, captain.team);
         }
+
+        CaptainsState state = this.distribution.getState();
+        List<SfPlayer> captainTargets = state.captainByTeam.values().stream().map(cap -> cap.player).collect(Collectors.toList());
+        List<SfPlayer> playerTargets = state.targetByPlayerUniqueId.values().stream().map(cTarget -> cTarget.player).collect(Collectors.toList());
+
+        messages.send(captainTargets, localizedText);
+        messages.send(playerTargets, localizedText);
+
         if (target != this.choosingCaptain.target && this.choosingCaptain.target != null) {
             this.unmarkTarget(this.choosingCaptain, this.choosingCaptain.target);
         }
