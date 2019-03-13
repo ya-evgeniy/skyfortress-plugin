@@ -14,7 +14,6 @@ import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.castle.SfCastleContainer;
 import ru.jekarus.skyfortress.v3.command.SfCommandManager;
 import ru.jekarus.skyfortress.v3.distribution.DistributionController;
-import ru.jekarus.skyfortress.v3.engine.PlayersEngine;
 import ru.jekarus.skyfortress.v3.engine.SfEngineManager;
 import ru.jekarus.skyfortress.v3.game.SfGame;
 import ru.jekarus.skyfortress.v3.lang.SfLanguages;
@@ -107,8 +106,6 @@ public class SkyFortressPlugin {
 
         this.lobby.init();
         this.game.init();
-
-        new PlayersEngine(this).start(); //FIXME
     }
 
     @Listener
