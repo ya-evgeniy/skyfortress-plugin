@@ -1,5 +1,6 @@
 package ru.jekarus.skyfortress.v3.engine;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.effect.potion.PotionEffect;
@@ -10,6 +11,7 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -17,6 +19,7 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.castle.SfCastlePositions;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
+import ru.jekarus.skyfortress.v3.lang.messages.SfTitleMessagesLanguage;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
@@ -66,7 +69,8 @@ public class CaptureEngine {
     public void addCapture(SfCastle castle, SfPlayer sfPlayer)
     {
         Collection<SfPlayer> players = this.castleCaptures.computeIfAbsent(castle, k -> new HashSet<>());
-        if (players.add(sfPlayer) && sfPlayer.captureMessageTimeout < 1)
+        long now = System.currentTimeMillis() - sfPlayer.captureMessageTime;
+        if (players.add(sfPlayer) && now > 3_000)
         {
             SfMessages messages = this.plugin.getMessages();
             messages.broadcast(
@@ -120,30 +124,40 @@ public class CaptureEngine {
             }
             if (!capturePlayers.isEmpty())
             {
-                capturePlayers.forEach(sfPlayer -> sfPlayer.captureMessageTimeout = 60);
+                long currentTimeMillis = System.currentTimeMillis();
+                capturePlayers.forEach(sfPlayer -> {
+                    sfPlayer.captureMessageTime = currentTimeMillis;
+                });
+
+                SfMessages messages = plugin.getMessages();
+                messages.send(
+                        castle.getTeam().getPlayers(),
+                        messages.getGame().castleForTeamYouCapturing(),
+                        ChatTypes.ACTION_BAR
+                );
+
                 for (SfPlayer player : castle.getTeam().getPlayers()) {
                     player.getPlayer().ifPresent(spongePlayer -> {
-                        spongePlayer.sendMessage(
-                                ChatTypes.ACTION_BAR, Text.of(TextColors.RED, "ТЕБЯ ЗАХВАТЫВАЮТ, БЕГИ НА БАЗУ!")
-                        );
                         if (castle.getHealth() % 5 == 0) {
                             spongePlayer.playSound(SoundTypes.BLOCK_WOOD_BUTTON_CLICK_ON, spongePlayer.getPosition(), 0.1, 2.0);
                         }
                     });
                 }
+
                 if (castle.capture(this.scoreboards, -capturePlayers.size()))
                 {
                     CastleDeathEngine.checkCapturedCastle(this.plugin, castle);
-
-                    SfMessages messages = this.plugin.getMessages();
                     messages.broadcast(
-                            messages.getGame().castleCaptured(castle.getTeam()), true
+                            messages.getGame().castleCaptured(castle.getTeam())
                     );
-                    for (SfPlayer sfPlayer : castle.getTeam().getPlayers())
-                    {
+                    Map<Locale, SfTitleMessagesLanguage> captured = messages.getGame().castleForTeamYouCaptured();
+                    for (SfPlayer sfPlayer : castle.getTeam().getPlayers()) {
                         sfPlayer.getPlayer().ifPresent(player -> {
-                            if (player.isOnline())
-                            {
+                            SfTitleMessagesLanguage title = captured.get(sfPlayer.getLocale());
+                            if (title != null) {
+                                player.sendTitle(Title.of(title.top.toText(), title.bottom.toText()));
+                            }
+                            if (player.isOnline()) {
                                 player.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
                                     effects.addElement(
                                             PotionEffect.builder().potionType(PotionEffectTypes.STRENGTH).duration(1_000_000).amplifier(0).particles(false).build()

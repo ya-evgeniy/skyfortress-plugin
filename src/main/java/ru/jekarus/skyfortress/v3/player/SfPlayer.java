@@ -20,7 +20,7 @@ public class SfPlayer {
     private PlayerZone zone = PlayerZone.LOBBY;
     private long lastPlayed = -1;
 
-    public int captureMessageTimeout = 0;
+    public long captureMessageTime = 0;
 
     public SfPlayer(Player player) {
         this(player.getUniqueId(), player.getName());
