@@ -1,19 +1,26 @@
 package ru.jekarus.skyfortress.v3.listener;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
+import ru.jekarus.skyfortress.v3.lobby.SfLobbySettings;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
+import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
 public class LobbyListener {
 
@@ -94,6 +101,29 @@ public class LobbyListener {
         if (playerZone == PlayerZone.LOBBY || playerZone == PlayerZone.TEAM_ROOM) {
             event.setCancelled(true);
         }
+    }
+
+    @Listener
+    public void onRespawn(RespawnPlayerEvent event, @Getter("getTargetEntity") Player player) {
+        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
+
+        SfTeam playerTeam = sfPlayer.getTeam();
+        PlayerZone playerZone = sfPlayer.getZone();
+
+        if (playerTeam.getType() == SfTeam.Type.NONE) {
+            SfLobbySettings settings = this.plugin.getLobby().getSettings();
+            event.setToTransform(new Transform<>(
+                    settings.center.getLocation().getExtent(),
+                    settings.center.getLocation().getPosition(),
+                    settings.center.getRotation()
+            ));
+            sfPlayer.setZone(PlayerZone.LOBBY);
+        }
+
+        if (playerTeam.getType() == SfTeam.Type.SPECTATOR) {
+
+        }
+
     }
 
 }

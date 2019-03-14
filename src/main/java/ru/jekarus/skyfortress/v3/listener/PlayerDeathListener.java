@@ -6,6 +6,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
@@ -23,6 +24,7 @@ import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.engine.CastleDeathEngine;
+import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
@@ -80,8 +82,8 @@ public class PlayerDeathListener {
             }
         }
 
-        Task.builder().delayTicks(1).execute(player::respawnPlayer).submit(this.plugin);
         this.checkPlayerLost(player);
+        Task.builder().delayTicks(1).execute(player::respawnPlayer).submit(this.plugin);
     }
 
     private void checkPlayerLost(Player player)
@@ -103,7 +105,12 @@ public class PlayerDeathListener {
         {
             return;
         }
-        SfUtils.setPlayerSpectator(player);
+        sfPlayer.setZone(PlayerZone.LOBBY);
+
+        plugin.getTeamContainer().getNoneTeam().addPlayer(plugin, sfPlayer);
+        player.offer(Keys.GAME_MODE, GameModes.ADVENTURE);
+
+//        SfUtils.setPlayerSpectator(player);
         CastleDeathEngine.checkCapturedCastle(this.plugin, castle);
     }
 
