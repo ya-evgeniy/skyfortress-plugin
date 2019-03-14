@@ -4,6 +4,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.command.distribution.captain.CaptainDistributionCommand;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainController;
+import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
@@ -50,14 +51,14 @@ public class DistributionController {
         }
     }
 
-    public void runCaptain(Map<SfGameTeam, CaptainDistributionCommand.Target> captains, boolean useExistingTeams) {
+    public void runCaptain(CaptainSettings settings) {
         if (current != null) {
-            System.out.println("ALREADY RUNNED");
+            return;
         }
         this.plugin.getLobby().clearWaitingPlayers();
 
         current = new CaptainController(this.plugin, this);
-        ((CaptainController) current).start(captains, useExistingTeams);
+        ((CaptainController) current).start(settings);
     }
 
     public void cancelCaptain(boolean saveTeams) {

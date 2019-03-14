@@ -16,6 +16,7 @@ import ru.jekarus.skyfortress.v3.distribution.DistributionController;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigCaptain;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.serializer.SfSerializers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -24,9 +25,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CaptainController implements Distribution {
 
@@ -36,7 +36,7 @@ public class CaptainController implements Distribution {
     private CaptainDistribution distribution;
     private Distribution.State currentState = State.STARTUP;
 
-    private Map<SfGameTeam, CaptainDistributionCommand.Target> captains;
+    private CaptainSettings settings;
     private boolean useExistingTeams = false;
 
     public CaptainController(SkyFortressPlugin plugin, DistributionController distributionController) {
@@ -56,12 +56,11 @@ public class CaptainController implements Distribution {
         }
     }
 
-    public void start(Map<SfGameTeam, CaptainDistributionCommand.Target> captains, boolean useExistingTeams) {
+    public void start(CaptainSettings settings) {
         if (currentState != State.STARTUP) {
             return;
         }
-        this.captains = captains;
-        this.useExistingTeams = useExistingTeams;
+        this.settings = settings;
         changeState(State.LOAD_CONFIG);
     }
 
@@ -74,16 +73,16 @@ public class CaptainController implements Distribution {
             case ERROR_CONFIG:
                 break;
             case DISTRIBUTION:
-//                for (SfPlayer captain : this.captains) {
-//                    this.distribution.addCaptain(captain);
-//                }
-//                SfPlayers sfPlayers = SfPlayers.getInstance();
-//                List<SfPlayer> players = Sponge.getServer().getOnlinePlayers().stream().map(sfPlayers::getOrCreatePlayer).collect(Collectors.toList());
-//                this.distribution.start(players);
-
-//                List<Player> captainPlayers = captains.stream().map(SfPlayer::getPlayer).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
-                this.distribution.startC(captains, new ArrayList<>(Sponge.getServer().getOnlinePlayers()), useExistingTeams);
-
+                SfPlayers players = SfPlayers.getInstance();
+                Collection<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers();
+                List<SfPlayer> sfPlayers = onlinePlayers.stream().map(players::getOrCreatePlayer).collect(Collectors.toList());
+                for (int i = 0; i < 10; i++) {
+                    sfPlayers.add(new SfPlayer(
+                            UUID.randomUUID(),
+                            "ENTITY_" + i
+                    ));
+                }
+                this.distribution.start(this.settings, sfPlayers);
                 break;
         }
     }

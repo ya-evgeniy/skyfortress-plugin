@@ -10,39 +10,26 @@ import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.command.SfCommand;
 import ru.jekarus.skyfortress.v3.distribution.DistributionController;
+import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
-import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
 
 import java.util.*;
 
 public class CaptainDistributionCommand extends SfCommand {
 
-    private static final Target RANDOM = new Target(Target.Type.RANDOM);
-    private static final Target DISABLED = new Target(Target.Type.DISABLED);
-
     private final SkyFortressPlugin plugin;
 
-    private Map<SfGameTeam, Target> targetsByTeam = new HashMap<>();
+    private CaptainSettings settings;
 
     public CaptainDistributionCommand(SkyFortressPlugin plugin) {
         this.plugin = plugin;
-        this.reset();
-    }
-
-    public void reset() {
-        SfTeamContainer teamContainer = this.plugin.getTeamContainer();
-        for (SfGameTeam gameTeam : teamContainer.getGameCollection()) {
-            this.targetsByTeam.put(gameTeam, RANDOM);
-        }
-    }
-
-    private void setFor(SfGameTeam gameTeam, Target target) {
-        this.targetsByTeam.put(gameTeam, target);
+        this.settings = new CaptainSettings(plugin);
+        this.settings.reset();
     }
 
     @Override
@@ -80,9 +67,9 @@ public class CaptainDistributionCommand extends SfCommand {
         @Override
         public CommandSpec create(SkyFortressPlugin plugin) {
 
-            Map<String, Target> replacedOfflineTargets = new HashMap<>();
-            replacedOfflineTargets.put(DISABLED.type.name(), DISABLED);
-            replacedOfflineTargets.put(RANDOM.type.name(), RANDOM);
+            Map<String, CaptainSettings.Selector> replacedOfflineTargets = new HashMap<>();
+            replacedOfflineTargets.put(CaptainSettings.DISABLED_SELECTOR.getType().name(), CaptainSettings.DISABLED_SELECTOR);
+            replacedOfflineTargets.put(CaptainSettings.RANDOM_SELECTOR.getType().name(), CaptainSettings.RANDOM_SELECTOR);
 
             return CommandSpec.builder()
                     .arguments(
@@ -99,25 +86,14 @@ public class CaptainDistributionCommand extends SfCommand {
                             ));
                         }
 
-                        List<SfGameTeam> offlineTeamCaptains = new ArrayList<>();
-                        for (Map.Entry<SfGameTeam, Target> entry : this.command.targetsByTeam.entrySet()) {
-                            SfGameTeam team = entry.getKey();
-                            Target target = entry.getValue();
-                            if (target.getType() == Target.Type.PLAYER) {
-                                SfPlayer sfPlayer = ((PlayerTarget) target).get();
-                                Optional<Player> optionalPlayer = sfPlayer.getPlayer();
-                                if (!optionalPlayer.isPresent()) {
-                                    offlineTeamCaptains.add(team);
-                                }
-                            }
-                        }
+                        List<SfGameTeam> offlineTeamCaptains = this.command.settings.getOfflineTeamCaptains();
 
-                        if (offlineTeamCaptains.size() > 0) {
-                            Optional<Target> optionalReplaceTarget = args.getOne("offline");
+                        if (!offlineTeamCaptains.isEmpty()) {
+                            Optional<CaptainSettings.Selector> optionalReplaceTarget = args.getOne("offline");
                             if (optionalReplaceTarget.isPresent()) {
-                                Target target = optionalReplaceTarget.get();
-                                for (SfGameTeam offlineTeamCaptain : offlineTeamCaptains) {
-                                    this.command.targetsByTeam.put(offlineTeamCaptain, target);
+                                CaptainSettings.Selector selector = optionalReplaceTarget.get();
+                                for (SfGameTeam offlineTeam : offlineTeamCaptains) {
+                                    this.command.settings.updateSelector(offlineTeam, selector);
                                 }
                             }
                             else {
@@ -127,9 +103,10 @@ public class CaptainDistributionCommand extends SfCommand {
                             }
                         }
 
+                        this.command.settings.setUseExistingTeams(args.hasAny("use_existing_teams"));
+
                         plugin.getDistributionController().runCaptain(
-                                this.command.targetsByTeam,
-                                args.hasAny("use_existing_teams")
+                                this.command.settings
                         );
 
                         return CommandResult.success();
@@ -184,6 +161,7 @@ public class CaptainDistributionCommand extends SfCommand {
                                     .flag("-disabled")
                                     .flag("-random")
                                     .valueFlag(GenericArguments.player(Text.of("player")), "-player")
+                                    .valueFlag(GenericArguments.string(Text.of("offline")), "-debug")
                                     .buildWith(GenericArguments.none())
                     )
                     .executor((src, args) -> {
@@ -196,22 +174,36 @@ public class CaptainDistributionCommand extends SfCommand {
 
                         Optional<Player> optionalPlayer = args.getOne("player");
                         if (optionalPlayer.isPresent()) {
-                            this.command.setFor(gameTeam, new PlayerTarget(
-                                    SfPlayers.getInstance().getOrCreatePlayer(optionalPlayer.get())
-                            ));
+                            this.command.settings.updateSelector(
+                                    gameTeam,
+                                    new CaptainSettings.PlayerSelector(
+                                            SfPlayers.getInstance().getOrCreatePlayer(optionalPlayer.get())
+                                    )
+                            );
+
+                            return CommandResult.success();
+                        }
+
+                        Optional<String> optionalOffline = args.getOne("offline");
+                        if (optionalOffline.isPresent()) {
+                            String name = optionalOffline.get();
+                            this.command.settings.updateSelector(
+                                    gameTeam,
+                                    new CaptainSettings.DebugSelector(name)
+                            );
+                            return CommandResult.success();
+                        }
+
+                        if (args.hasAny("random")) {
+                            this.command.settings.updateSelector(gameTeam, CaptainSettings.RANDOM_SELECTOR);
+                        }
+                        else if (args.hasAny("disabled")) {
+                            this.command.settings.updateSelector(gameTeam, CaptainSettings.DISABLED_SELECTOR);
                         }
                         else {
-                            if (args.hasAny("random")) {
-                                this.command.setFor(gameTeam, RANDOM);
-                            }
-                            else if (args.hasAny("disabled")) {
-                                this.command.setFor(gameTeam, DISABLED);
-                            }
-                            else {
-                                throw new CommandException(Text.of(
-                                        "Not enough arguments"
-                                ));
-                            }
+                            throw new CommandException(Text.of(
+                                    "Not enough arguments"
+                            ));
                         }
 
                         return CommandResult.success();
@@ -232,36 +224,34 @@ public class CaptainDistributionCommand extends SfCommand {
         @Override
         public CommandSpec create(SkyFortressPlugin plugin) {
 
-            Map<String, Target> defaultTargetValues = new HashMap<>();
-            defaultTargetValues.put(DISABLED.type.name(), DISABLED);
-            defaultTargetValues.put(RANDOM.type.name(), RANDOM);
-
-            System.out.println(DISABLED);
-            System.out.println(RANDOM);
-            System.out.println(defaultTargetValues);
+//            Map<String, CaptainSettings.Selector> defaultTargetValues = new HashMap<>();
+//            defaultTargetValues.put(CaptainSettings.DISABLED_SELECTOR.getType().name(), CaptainSettings.DISABLED_SELECTOR);
+//            defaultTargetValues.put(CaptainSettings.RANDOM_SELECTOR.getType().name(), CaptainSettings.RANDOM_SELECTOR);
 
             return CommandSpec.builder()
                     .arguments(
-                            GenericArguments.optional(GenericArguments.choices(Text.of("empty_team"), defaultTargetValues), RANDOM)
+                            GenericArguments.flags()
+                            .flag("-random")
+                            .flag("-disabled")
+                            .buildWith(GenericArguments.none())
                     )
                     .executor((src, args) -> {
-                        Optional<Target> defaultTarget = args.getOne("empty_team");
-                        if (defaultTarget.isPresent()) {
-                            Target target = defaultTarget.get();
 
-                            for (SfGameTeam team : command.targetsByTeam.keySet()) {
-                                command.targetsByTeam.put(team, target);
-                            }
+                        boolean randomFlag = args.hasAny("random");
+                        boolean disabledFlag = args.hasAny("disabled");
 
-//                            List<SfGameTeam> notPlayerTeams = new ArrayList<>();
-//                            for (Map.Entry<SfGameTeam, Target> entry : this.command.targetsByTeam.entrySet()) {
-//                                if (entry.getValue().getType() != Target.Type.PLAYER) {
-//                                    notPlayerTeams.add(entry.getKey());
-//                                }
-//                            }
-//                            for (SfGameTeam team : notPlayerTeams) {
-//                                this.command.targetsByTeam.put(team, target);
-//                            }
+                        if (!randomFlag && !disabledFlag) {
+
+                            return CommandResult.empty();
+                        }
+
+                        if (randomFlag) {
+                            this.command.settings.reset(CaptainSettings.RANDOM_SELECTOR);
+                            this.command.settings.setDefaultSelector(CaptainSettings.RANDOM_SELECTOR);
+                        }
+                        else {
+                            this.command.settings.reset(CaptainSettings.DISABLED_SELECTOR);
+                            this.command.settings.setDefaultSelector(CaptainSettings.DISABLED_SELECTOR);
                         }
 
                         Random random = new Random();
@@ -274,13 +264,19 @@ public class CaptainDistributionCommand extends SfCommand {
                             if (captain == null) {
                                 ArrayList<SfPlayer> teamPlayers = new ArrayList<>(gameTeam.getPlayers());
                                 int captainIndex = random.nextInt(teamPlayers.size());
-                                this.command.targetsByTeam.put(
-                                        gameTeam, new PlayerTarget(teamPlayers.get(captainIndex))
+                                this.command.settings.updateSelector(
+                                        gameTeam,
+                                        new CaptainSettings.PlayerSelector(
+                                                teamPlayers.get(captainIndex)
+                                        )
                                 );
                             }
                             else {
-                                this.command.targetsByTeam.put(
-                                        gameTeam, new PlayerTarget(captain)
+                                this.command.settings.updateSelector(
+                                        gameTeam,
+                                        new CaptainSettings.PlayerSelector(
+                                                captain
+                                        )
                                 );
                             }
                         }
@@ -304,7 +300,7 @@ public class CaptainDistributionCommand extends SfCommand {
         public CommandSpec create(SkyFortressPlugin plugin) {
             return CommandSpec.builder()
                     .executor((src, args) -> {
-                        this.command.reset();
+                        this.command.settings.reset();
                         return CommandResult.success();
                     })
                     .build();
@@ -325,8 +321,10 @@ public class CaptainDistributionCommand extends SfCommand {
             return CommandSpec.builder()
                     .executor((src, args) -> {
 
+                        Map<SfGameTeam, CaptainSettings.Selector> selectorByTeam = this.command.settings.getSelectorByTeam();
+
                         if (!(src instanceof Player)) {
-                            for (Map.Entry<SfGameTeam, Target> entry : this.command.targetsByTeam.entrySet()) {
+                            for (Map.Entry<SfGameTeam, CaptainSettings.Selector> entry : selectorByTeam.entrySet()) {
                                 src.sendMessage(Text.of(TextColors.GRAY,
                                         entry.getKey().getUniqueId() + " - " + entry.getValue()
                                 ));
@@ -339,17 +337,17 @@ public class CaptainDistributionCommand extends SfCommand {
 
 
                         List<SfTeam> disabledTeams = new ArrayList<>();
-                        HashMap<SfGameTeam, Target> enabledTeams = new HashMap<>();
+                        HashMap<SfGameTeam, CaptainSettings.Selector> enabledTeams = new HashMap<>();
 
-                        for (Map.Entry<SfGameTeam, Target> entry : this.command.targetsByTeam.entrySet()) {
+                        for (Map.Entry<SfGameTeam, CaptainSettings.Selector> entry : selectorByTeam.entrySet()) {
                             SfGameTeam team = entry.getKey();
-                            Target target = entry.getValue();
+                            CaptainSettings.Selector selector = entry.getValue();
 
-                            if (target.getType() == Target.Type.DISABLED) {
+                            if (selector.getType() == CaptainSettings.SelectorType.DISABLED) {
                                 disabledTeams.add(team);
                             }
                             else {
-                                enabledTeams.put(team, target);
+                                enabledTeams.put(team, selector);
                             }
                         }
 
@@ -357,17 +355,17 @@ public class CaptainDistributionCommand extends SfCommand {
 
                         List<Text> settings = new ArrayList<>();
 
-                        for (Map.Entry<SfGameTeam, Target> entry : enabledTeams.entrySet()) {
+                        for (Map.Entry<SfGameTeam, CaptainSettings.Selector> entry : enabledTeams.entrySet()) {
                             SfGameTeam team = entry.getKey();
-                            Target target = entry.getValue();
+                            CaptainSettings.Selector selector = entry.getValue();
 
-                            if (target.getType() == Target.Type.RANDOM) {
+                            if (selector.getType() == CaptainSettings.SelectorType.RANDOM) {
                                 Text randomText = distribution.commandInfoRandom(sfPlayer, team);
                                 settings.add(randomText);
                             }
                             else {
-                                PlayerTarget playerTarget = (PlayerTarget) target;
-                                Text playerText = distribution.commandInfoPlayer(sfPlayer, playerTarget.player, team);
+                                CaptainSettings.PlayerSelector playerSelector = (CaptainSettings.PlayerSelector) selector;
+                                Text playerText = distribution.commandInfoPlayer(sfPlayer, playerSelector.getPlayer(), team);
                                 settings.add(playerText);
                             }
                         }
@@ -391,50 +389,6 @@ public class CaptainDistributionCommand extends SfCommand {
                     .build();
         }
 
-    }
-
-    public static class Target {
-
-        private final Type type;
-
-        public Target(Type type) {
-            this.type = type;
-        }
-
-        public Type getType() {
-            return this.type;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Target{type=%s}", type);
-        }
-
-        public enum Type {
-            PLAYER,
-            RANDOM,
-            DISABLED
-        }
-
-    }
-
-    public static class PlayerTarget extends Target {
-
-        private final SfPlayer player;
-
-        public PlayerTarget(SfPlayer player) {
-            super(Type.PLAYER);
-            this.player = player;
-        }
-
-        public SfPlayer get() {
-            return this.player;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("PlayerTarget{type=%s, player=%s}", getType(), player.getName());
-        }
     }
 
 }
