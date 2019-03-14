@@ -6,6 +6,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lobby.SfLobby;
+import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 
@@ -33,6 +34,7 @@ public class EndGameStage extends SfGameStage {
             player.offer(Keys.GAME_MODE, GameModes.ADVENTURE);
             SfPlayer sfPlayer = players.getOrCreatePlayer(player);
             this.plugin.getTeamContainer().getNoneTeam().addPlayer(this.plugin, sfPlayer);
+            sfPlayer.setZone(PlayerZone.LOBBY);
             player.getInventory().clear();
         }
     }
