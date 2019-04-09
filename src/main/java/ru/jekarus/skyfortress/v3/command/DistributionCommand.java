@@ -9,6 +9,7 @@ public class DistributionCommand extends SfCommand {
     @Override
     public CommandSpec create(SkyFortressPlugin plugin) {
         return CommandSpec.builder()
+                .permission("skyfortress.distribution")
                 .child(
                     new CaptainDistributionCommand(plugin).create(plugin), "captain"
                 )

@@ -27,10 +27,8 @@ public class SfLanguageCommand extends SfCommand {
 
 
         return CommandSpec.builder()
-                .permission("sky_fortress_v3.team")
                 .arguments(
-                        GenericArguments.choices(Text.of("locale"), langs),
-                        GenericArguments.optional(GenericArguments.player(Text.of("player_name")))
+                        GenericArguments.choices(Text.of("locale"), langs)
                 )
                 .executor((src, args) ->
                 {

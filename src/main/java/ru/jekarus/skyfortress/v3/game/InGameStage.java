@@ -10,6 +10,8 @@ import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
+import org.spongepowered.api.scoreboard.Team;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
@@ -20,6 +22,7 @@ import ru.jekarus.skyfortress.v3.engine.SfEngineManager;
 import ru.jekarus.skyfortress.v3.listener.*;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboard;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -27,6 +30,7 @@ import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class InGameStage extends SfGameStage {
@@ -108,8 +112,16 @@ public class InGameStage extends SfGameStage {
         SfTeamContainer teamContainer = this.plugin.getTeamContainer();
         for (SfGameTeam gameTeam : teamContainer.getGameCollection())
         {
+            List<SfScoreboard> scoreboards = this.plugin.getScoreboards().asList();
+            List<Team> scoreboardTeams = new ArrayList<>();
+
+            for (SfScoreboard scoreboard : scoreboards) {
+                scoreboard.getTeams().getTeam(gameTeam).ifPresent(scoreboardTeams::add);
+            }
+
             for (SfPlayer sfPlayer : gameTeam.getPlayers())
             {
+                scoreboardTeams.forEach(team -> team.addMember(Text.of(sfPlayer.getName())));
                 Optional<Player> optionalPlayer = sfPlayer.getPlayer();
                 if (optionalPlayer.isPresent())
                 {
@@ -165,7 +177,7 @@ public class InGameStage extends SfGameStage {
         entity.offer(Keys.AI_ENABLED, false);
         entity.offer(Keys.INVULNERABLE, true);
         entity.offer(Keys.HAS_GRAVITY, false);
-        entity.offer(Keys.IS_SILENT, false);
+        entity.offer(Keys.IS_SILENT, true);
 
         position.getExtent().loadChunk(position.getChunkPosition(), false);
         position.spawnEntity(entity);

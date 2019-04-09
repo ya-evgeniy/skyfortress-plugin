@@ -94,7 +94,6 @@ public class SfLobbyTeam {
         SfTeam gameTeam = sfPlayer.getTeam();
         if (gameTeam != this.settings.team)
         {
-            System.out.println(gameTeam.getUniqueId() + " != " + this.settings.teamId);
             return;
         }
 

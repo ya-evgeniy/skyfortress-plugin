@@ -1,6 +1,8 @@
 package ru.jekarus.skyfortress.v3.listener;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.Property;
+import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.effect.potion.PotionEffect;
@@ -8,8 +10,11 @@ import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeClientSettingsEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.profile.property.ProfileProperty;
+import org.spongepowered.api.scheduler.Task;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.engine.CastleDeathEngine;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
@@ -27,6 +32,8 @@ import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ConnectionListener {
 
@@ -42,20 +49,25 @@ public class ConnectionListener {
     }
 
     @Listener
+    public void onChangeClientSettings(PlayerChangeClientSettingsEvent event, @Getter("getTargetEntity") Player player) {
+        SfPlayer sfPlayer = players.getOrCreatePlayer(player);
+        SfLanguages languages = plugin.getLanguages();
+
+        Locale locale = event.getLocale();
+        if (languages.has(locale)) {
+            sfPlayer.setLocale(locale);
+        }
+        plugin.getScoreboards().setFor(sfPlayer, player);
+    }
+
+    @Listener
     public void onConnect(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player player) {
         SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
         sfPlayer.setLastPlayed(-1);
 
         if (sfPlayer.getLocale() == null) {
             SfLanguages languages = this.plugin.getLanguages();
-            Locale locale = player.getLocale();
-
-            if (languages.has(locale)) {
-                sfPlayer.setLocale(locale);
-            }
-            else {
-                sfPlayer.setLocale(languages.getDef());
-            }
+            sfPlayer.setLocale(languages.getDef());
         }
 
         this.plugin.getScoreboards().setFor(sfPlayer, player);
@@ -160,20 +172,18 @@ public class ConnectionListener {
 
         PlayerZone playerZone = sfPlayer.getZone();
         if (playerZone == PlayerZone.LOBBY) {
-            if (playerTeam.getType() == SfTeam.Type.GAME)
-            {
-                if (stage == SfGameStageType.IN_GAME)
-                {
-                    SfGameTeam gameTeam = (SfGameTeam) playerTeam;
-                    CastleDeathEngine.checkCapturedCastle(this.plugin, gameTeam.getCastle());
-                }
-            }
+
         }
         else if (playerZone == PlayerZone.TEAM_ROOM) {
 
         }
         else if (playerZone == PlayerZone.GAME) {
-
+            if (playerTeam.getType() == SfTeam.Type.GAME) {
+                if (stage == SfGameStageType.IN_GAME) {
+                    SfGameTeam gameTeam = (SfGameTeam) playerTeam;
+                    CastleDeathEngine.checkCapturedCastle(this.plugin, gameTeam.getCastle());
+                }
+            }
         }
         else if (playerZone == PlayerZone.OTHER) {
 

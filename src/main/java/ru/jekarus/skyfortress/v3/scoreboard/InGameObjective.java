@@ -47,7 +47,7 @@ public class InGameObjective extends SfObjective {
             score.createScore(this.objective, gameTeam.getOrigin(), gameTeam.getCastle().getHealth());
             score.setPrefix(Text.builder().append(Text.of()).color(TextColors.DARK_RED).build());
             score.setSuffix(
-                    new LanguageVariables(language).teamKey().color(gameTeam).name(gameTeam).apply(language.scoreboard.inGame.alive) // FIXME: 11.03.2019
+                    new LanguageVariables(language).teamKey().name(gameTeam).apply(language.scoreboard.inGame.alive) // FIXME: 11.03.2019
             );
             this.teamScores.put(
                     gameTeam, score
@@ -91,7 +91,7 @@ public class InGameObjective extends SfObjective {
         {
             score.setPrefix(Text.builder().append(Text.of()).color(TextColors.DARK_RED).build());
             score.setSuffix(
-                    new LanguageVariables(language).teamKey().name(gameTeam).apply(language.scoreboard.inGame.death) // FIXME: 11.03.2019
+                    new LanguageVariables(language).teamKey().name(gameTeam, false).apply(language.scoreboard.inGame.death) // FIXME: 11.03.2019
             );
         }
     }

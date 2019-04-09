@@ -116,7 +116,19 @@ public class SfTeamCommand extends SfCommand {
                         }
 
                         team.addPlayer(plugin, sfTarget);
-                        if (needTp) teleport(plugin, target, sfTarget);
+                        boolean finded = false;
+                        for (SfLobbyTeam lobbyTeam : plugin.getLobby().getTeams()) {
+                            if (lobbyTeam.getSettings().team != team) continue;
+                            if (needTp) {
+                                teleport(plugin, target, sfTarget, lobbyTeam);
+                                finded = true;
+                            }
+                            if (lobbyTeam.getSettings().captain != null) break;
+                            lobbyTeam.getSettings().captain = sfTarget;
+                        }
+                        if (needTp && !finded) {
+                            teleport(plugin, target, sfTarget, null);
+                        }
                     }
 
                     return CommandResult.success();
@@ -124,7 +136,17 @@ public class SfTeamCommand extends SfCommand {
                 .build();
     }
 
-    private static void teleport(SkyFortressPlugin plugin, Player player, SfPlayer sfPlayer) {
+    private static void teleport(SkyFortressPlugin plugin, Player player, SfPlayer sfPlayer, SfLobbyTeam lobbyTeam) {
+        if (lobbyTeam != null) {
+            SfLobbyTeamSettings settings = lobbyTeam.getSettings();
+            player.setLocationAndRotation(
+                    settings.accepted.getLocation(),
+                    settings.accepted.getRotation()
+            );
+            sfPlayer.setZone(PlayerZone.TEAM_ROOM);
+            return;
+        }
+
         SfTeam team = sfPlayer.getTeam();
         if (team.getType() == SfTeam.Type.NONE) {
             player.setLocationAndRotation(
@@ -132,23 +154,11 @@ public class SfTeamCommand extends SfCommand {
                     plugin.getLobby().getSettings().center.getRotation()
             );
             sfPlayer.setZone(PlayerZone.LOBBY);
+            return;
         }
-        else if (team.getType() == SfTeam.Type.SPECTATOR) {
 
-        }
-        else {
-            SfGameTeam gameTeam = (SfGameTeam) team;
-            for (SfLobbyTeam lobbyTeam : plugin.getLobby().getTeams()) {
-                SfLobbyTeamSettings settings = lobbyTeam.getSettings();
-                if (settings.team == gameTeam) {
-                    player.setLocationAndRotation(
-                            settings.accepted.getLocation(),
-                            settings.accepted.getRotation()
-                    );
-                    sfPlayer.setZone(PlayerZone.TEAM_ROOM);
-                    return;
-                }
-            }
+        if (team.getType() == SfTeam.Type.SPECTATOR) {
+
         }
     }
 

@@ -69,8 +69,8 @@ public class SfScore {
         }
         catch (IllegalArgumentException e)
         {
-            System.out.println(text);
-            System.out.println(text.toPlain());
+            System.out.println("Long text" + text);
+            System.out.println("Long text: " + text.toPlain());
         }
     }
 

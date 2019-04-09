@@ -131,13 +131,11 @@ public class SfScoreboards {
         }
         else
         {
-            System.out.println("scoreboard == null with locale " + locale);
             StringBuilder builder = new StringBuilder("Available locales: ");
             for (Locale l : this.scoreboardsByLocale.keySet())
             {
                 builder.append(l).append(" ");
             }
-            System.out.println(builder.toString());
         }
     }
 

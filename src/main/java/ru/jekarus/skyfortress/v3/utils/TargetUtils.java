@@ -39,7 +39,6 @@ public class TargetUtils {
                 targetEntity = entitySupplier;
             }
         }
-        System.out.println("Targets skipped " + count + "/" + entities.size());
         return Optional.ofNullable(targetEntity);
     }
 

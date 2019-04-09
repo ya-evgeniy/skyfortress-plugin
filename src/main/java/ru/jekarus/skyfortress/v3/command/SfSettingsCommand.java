@@ -9,6 +9,7 @@ public class SfSettingsCommand extends SfCommand {
     @Override
     public CommandSpec create(SkyFortressPlugin plugin) {
         return CommandSpec.builder()
+                .permission("skyfortress.settings")
                 .child(new SfLobbySettingsCommand().create(plugin), "lobby")
                 .build();
     }
