@@ -1,8 +1,6 @@
 package ru.jekarus.skyfortress.v3.listener;
 
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Property;
-import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.effect.potion.PotionEffect;
@@ -13,13 +11,10 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeClientSettingsEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.profile.property.ProfileProperty;
-import org.spongepowered.api.scheduler.Task;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.engine.CastleDeathEngine;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
 import ru.jekarus.skyfortress.v3.lang.SfLanguages;
-import ru.jekarus.skyfortress.v3.lobby.SfLobby;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
@@ -32,16 +27,13 @@ import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 import java.util.Collection;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class ConnectionListener {
 
     private final SkyFortressPlugin plugin;
     private SfPlayers players;
 
-    public ConnectionListener()
-    {
+    public ConnectionListener() {
         this.plugin = SkyFortressPlugin.getInstance();
         this.players = SfPlayers.getInstance();
 
@@ -83,7 +75,7 @@ public class ConnectionListener {
                 playerTeam.addPlayer(this.plugin, sfPlayer);
             }
 
-            if (playerTeam.getType() == SfTeam.Type.NONE) {
+            if (playerTeam.getType() == SfTeam.Type.NONE || gameStage == SfGameStageType.END_GAME) {
                 player.offer(Keys.GAME_MODE, GameModes.ADVENTURE);
                 player.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
                     effects.addElement(
@@ -92,7 +84,10 @@ public class ConnectionListener {
                     player.offer(effects);
                 });
 
-                SfLocation center = this.plugin.getLobby().getSettings().center;
+                SfLocation center = this.plugin.getSettings().getLobby().getCenter();
+
+                System.out.println(center.getLocation().getPosition());
+
                 player.setLocationAndRotation(
                         center.getLocation(),
                         center.getRotation()
@@ -146,8 +141,7 @@ public class ConnectionListener {
                     }
                 }
                 else {
-                    SfLobby lobby = plugin.getLobby();
-                    SfLocation center = lobby.getSettings().center;
+                    final SfLocation center = plugin.getSettings().getLobby().getCenter();
 
                     plugin.getTeamContainer().getNoneTeam().addPlayer(plugin, sfPlayer);
                     sfPlayer.setZone(PlayerZone.LOBBY);
@@ -162,8 +156,7 @@ public class ConnectionListener {
     }
 
     @Listener
-    public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player)
-    {
+    public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
         SfPlayer sfPlayer = players.getOrCreatePlayer(player);
         sfPlayer.setLastPlayed(System.currentTimeMillis());
 
