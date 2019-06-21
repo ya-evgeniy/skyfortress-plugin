@@ -9,8 +9,8 @@ import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoomSettings;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
@@ -116,14 +116,14 @@ public class SfTeamCommand extends SfCommand {
 
                         team.addPlayer(plugin, sfTarget);
                         boolean finded = false;
-                        for (SfLobbyTeam lobbyTeam : plugin.getLobby().getTeams()) {
-                            if (lobbyTeam.getSettings().team != team) continue;
+                        for (LobbyRoom room : plugin.getLobbyRoomsContainer().getRooms()) {
+                            if (room.getState().getTeam() != team) continue;
                             if (needTp) {
-                                teleport(plugin, target, sfTarget, lobbyTeam);
+                                teleport(plugin, target, sfTarget, room);
                                 finded = true;
                             }
-                            if (lobbyTeam.getSettings().captain != null) break;
-                            lobbyTeam.getSettings().captain = sfTarget;
+                            if (room.getState().getCaptain() != null) break;
+                            room.getState().setCaptain(sfTarget);
                         }
                         if (needTp && !finded) {
                             teleport(plugin, target, sfTarget, null);
@@ -135,12 +135,12 @@ public class SfTeamCommand extends SfCommand {
                 .build();
     }
 
-    private static void teleport(SkyFortressPlugin plugin, Player player, SfPlayer sfPlayer, SfLobbyTeam lobbyTeam) {
-        if (lobbyTeam != null) {
-            SfLobbyTeamSettings settings = lobbyTeam.getSettings();
+    private static void teleport(SkyFortressPlugin plugin, Player player, SfPlayer sfPlayer, LobbyRoom room) {
+        if (room != null) {
+            LobbyRoomSettings settings = room.getSettings();
             player.setLocationAndRotation(
-                    settings.accepted.getLocation(),
-                    settings.accepted.getRotation()
+                    settings.getAccepted().getLocation(),
+                    settings.getAccepted().getRotation()
             );
             sfPlayer.setZone(PlayerZone.TEAM_ROOM);
             return;

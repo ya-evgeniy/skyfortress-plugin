@@ -11,6 +11,7 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 
@@ -46,13 +47,25 @@ public class LobbyButtonsListener {
             if (type.equals(BlockTypes.HEAVY_WEIGHTED_PRESSURE_PLATE))
             {
                 if (plugin.getGame().getStage() == SfGameStageType.PRE_GAME) {
-                    this.plugin.getLobby().standOnPlate(player, sfPlayer, original);
+                    for (LobbyRoom room : this.plugin.getLobbyRoomsContainer().getRooms()) {
+                        final boolean result = room.getInteractions().standOnPlate(player, sfPlayer, original);
+                        if (result) {
+                            break;
+                        }
+                    }
+//                    this.plugin.getLobby().standOnPlate(player, sfPlayer, original);
                 }
             }
             else if (type.equals(BlockTypes.WOODEN_BUTTON))
             {
                 if (plugin.getGame().getStage() == SfGameStageType.PRE_GAME) {
-                    this.plugin.getLobby().pressButton(player, sfPlayer, original);
+                    for (LobbyRoom room : this.plugin.getLobbyRoomsContainer().getRooms()) {
+                        final boolean result = room.getInteractions().pressButton(player, sfPlayer, original);
+                        if (result) {
+                            break;
+                        }
+                    }
+//                    this.plugin.getLobby().pressButton(player, sfPlayer, original);
                 }
             }
         }

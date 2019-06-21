@@ -22,7 +22,7 @@ import ru.jekarus.skyfortress.v3.gui.Shops;
 import ru.jekarus.skyfortress.v3.lang.SfLanguages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.listener.ConnectionListener;
-import ru.jekarus.skyfortress.v3.lobby.SfLobby;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoomsContainer;
 import ru.jekarus.skyfortress.v3.resource.ResourceContainer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.serializer.ShopSerializer;
@@ -53,7 +53,7 @@ public class SkyFortressPlugin {
     @Getter private World world;
 
 
-    @Getter private SfLobby lobby = new SfLobby(this);
+    @Getter private LobbyRoomsContainer lobbyRoomsContainer = new LobbyRoomsContainer(this);
 
     @Getter private SfGame game = new SfGame(this);
     @Getter private SettingsContainer settings = new SettingsContainer();
@@ -108,7 +108,7 @@ public class SkyFortressPlugin {
 
         new ConnectionListener();
 
-        this.lobby.init();
+        this.getLobbyRoomsContainer().init();
         this.game.init();
     }
 

@@ -45,7 +45,7 @@ public class LobbyListener {
         PlayerZone playerZone = sfPlayer.getZone();
 
         if (playerZone == PlayerZone.TEAM_ROOM && stage == SfGameStageType.PRE_GAME) {
-            this.plugin.getLobby().playerDisconnect(sfPlayer, player);
+            this.plugin.getLobbyRoomsContainer().playerDisconnect(player, sfPlayer);
         }
     }
 

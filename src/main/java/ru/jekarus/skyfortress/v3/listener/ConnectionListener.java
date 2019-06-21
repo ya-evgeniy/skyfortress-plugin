@@ -15,8 +15,9 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.engine.CastleDeathEngine;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
 import ru.jekarus.skyfortress.v3.lang.SfLanguages;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoomSettings;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoomState;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
@@ -26,6 +27,7 @@ import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 public class ConnectionListener {
@@ -127,14 +129,15 @@ public class ConnectionListener {
             }
             if (!plugin.getDistributionController().isEnabled()) {
                 if (playerTeam.getType() == SfTeam.Type.GAME) {
-                    Collection<SfLobbyTeam> teams = plugin.getLobby().getTeams();
-                    for (SfLobbyTeam team : teams) {
-                        SfLobbyTeamSettings settings = team.getSettings();
-                        if (playerTeam == settings.team) {
+                    List<LobbyRoom> rooms = plugin.getLobbyRoomsContainer().getRooms();
+                    for (LobbyRoom room : rooms) {
+                        final LobbyRoomSettings settings = room.getSettings();
+                        final LobbyRoomState state = room.getState();
+                        if (playerTeam == state.getTeam()) {
                             sfPlayer.setZone(PlayerZone.TEAM_ROOM);
                             player.setLocationAndRotation(
-                                    settings.accepted.getLocation(),
-                                    settings.accepted.getRotation()
+                                    settings.getAccepted().getLocation(),
+                                    settings.getAccepted().getRotation()
                             );
                             break;
                         }

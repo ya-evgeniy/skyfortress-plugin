@@ -14,7 +14,7 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigCaptain;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigPlayer;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
@@ -304,12 +304,12 @@ public class CaptainDistribution {
 
     public void stop() {
         selection.stop();
-        Map<SfGameTeam, SfLobbyTeam> lobbyTeamByPlayerTeam = new HashMap<>();
-        for (SfLobbyTeam team : plugin.getLobby().getTeams()) {
-            lobbyTeamByPlayerTeam.put(team.getSettings().team, team);
+        Map<SfGameTeam, LobbyRoom> roomByTeam = new HashMap<>();
+        for (LobbyRoom room : plugin.getLobbyRoomsContainer().getRooms()) {
+            roomByTeam.put(room.getState().getTeam(), room);
         }
-        moveToAccepted(this.state.targetByPlayerUniqueId.values(), lobbyTeamByPlayerTeam, false);
-        moveToAccepted(this.state.captainByTeam.values(), lobbyTeamByPlayerTeam, true);
+        moveToAccepted(this.state.targetByPlayerUniqueId.values(), roomByTeam, false);
+        moveToAccepted(this.state.captainByTeam.values(), roomByTeam, true);
 
         this.captainRandomizer.stop();
         this.selection.onEnd();
@@ -334,7 +334,7 @@ public class CaptainDistribution {
         this.controller.onEnd();
     }
 
-    private void moveToAccepted(Collection<? extends CaptainTarget> targets, Map<SfGameTeam, SfLobbyTeam> lobbyTeamByPlayerTeam, boolean isCaptain) {
+    private void moveToAccepted(Collection<? extends CaptainTarget> targets, Map<SfGameTeam, LobbyRoom> roomByTeam, boolean isCaptain) {
         for (CaptainTarget target : targets) {
             Optional<? extends Entity> optionalEntity = target.getEntity();
             if (optionalEntity.isPresent()) {
@@ -343,7 +343,7 @@ public class CaptainDistribution {
                     target.player.setZone(PlayerZone.TEAM_ROOM);
                     Player player = (Player) entity;
 
-                    SfLobbyTeam lobbyTeam = lobbyTeamByPlayerTeam.get(target.player.getTeam());
+                    LobbyRoom lobbyTeam = roomByTeam.get(target.player.getTeam());
                     if (lobbyTeam == null) {
                         SfTeam noneTeam = plugin.getTeamContainer().getNoneTeam();
                         noneTeam.addPlayer(plugin, target.player);
@@ -357,12 +357,12 @@ public class CaptainDistribution {
                     }
 
                     if (isCaptain) {
-                        lobbyTeam.getSettings().captain = target.player;
+                        lobbyTeam.getState().setCaptain(target.player);
                     }
 
                     player.setLocationAndRotation(
-                            lobbyTeam.getSettings().accepted.getLocation(),
-                            lobbyTeam.getSettings().accepted.getRotation()
+                            lobbyTeam.getSettings().getAccepted().getLocation(),
+                            lobbyTeam.getSettings().getAccepted().getRotation()
                     );
                     target.player.setZone(PlayerZone.TEAM_ROOM);
                 }

@@ -15,7 +15,7 @@ import ru.jekarus.skyfortress.v3.distribution.DistributionController;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainController;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
@@ -282,12 +282,12 @@ public class CaptainDistributionCommand extends SfCommand {
                         }
 
                         Random random = new Random();
-                        for (SfLobbyTeam team : plugin.getLobby().getTeams()) {
-                            SfGameTeam gameTeam = team.getSettings().team;
+                        for (LobbyRoom room : plugin.getLobbyRoomsContainer().getRooms()) {
+                            SfGameTeam gameTeam = room.getState().getTeam();
                             if (gameTeam.getPlayers().isEmpty()) {
                                 continue;
                             }
-                            SfPlayer captain = team.getSettings().captain;
+                            SfPlayer captain = room.getState().getCaptain();
                             if (captain == null) {
                                 ArrayList<SfPlayer> teamPlayers = new ArrayList<>(gameTeam.getPlayers());
                                 int captainIndex = random.nextInt(teamPlayers.size());

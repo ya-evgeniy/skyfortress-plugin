@@ -54,7 +54,7 @@ public class DistributionController {
         if (current != null) {
             return;
         }
-        this.plugin.getLobby().clearWaitingPlayers();
+        this.plugin.getLobbyRoomsContainer().clearWaitingPlayers();
 
         current = new CaptainController(this.plugin, this, consumer);
         ((CaptainController) current).start(settings);

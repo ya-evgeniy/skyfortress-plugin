@@ -4,6 +4,8 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.listener.LobbyListener;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoomsContainer;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -40,6 +42,17 @@ public class SfGame {
         this.currentStage.disable();
         this.currentStage = this.stageByType.get(type);
         this.currentStage.enable();
+    }
+
+    public void checkStart() {
+        final LobbyRoomsContainer lobbyRoomsContainer = plugin.getLobbyRoomsContainer();
+        for (LobbyRoom room : lobbyRoomsContainer.getRooms()) {
+            if (!room.getState().isReady()) {
+                return;
+            }
+        }
+
+        start();
     }
 
     public void start() {

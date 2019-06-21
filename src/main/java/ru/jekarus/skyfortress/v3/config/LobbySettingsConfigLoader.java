@@ -3,10 +3,12 @@ package ru.jekarus.skyfortress.v3.config;
 import jekarus.hocon.config.serializer.ConfigSerializer;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.serializer.view.LobbyTeamsView;
+import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
+import ru.jekarus.skyfortress.v3.serializer.view.LobbyRoomsContainerView;
 import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 public class LobbySettingsConfigLoader extends ConfigLoader {
 
@@ -20,7 +22,12 @@ public class LobbySettingsConfigLoader extends ConfigLoader {
                 serializer.deserialize(node, LobbySettings.class)
         );
 
-        serializer.deserialize(node, LobbyTeamsView.class).setTo(plugin.getLobby());
+        final List<LobbyRoom> rooms = plugin.getLobbyRoomsContainer().getRooms();
+        final LobbyRoomsContainerView roomsContainerView = serializer.deserialize(node, LobbyRoomsContainerView.class);
+        for (LobbyRoomsContainerView.RoomSettingsView roomView : roomsContainerView.getRooms()) {
+            rooms.add(roomView.create(plugin));
+        }
+//        serializer.deserialize(node, LobbyTeamsView.class).setTo(plugin.getLobby());
     }
 
     @Override
