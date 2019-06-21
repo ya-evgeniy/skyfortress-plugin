@@ -19,7 +19,13 @@ import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.castle.SfCastleContainer;
 import ru.jekarus.skyfortress.v3.castle.SfCastlePositions;
 import ru.jekarus.skyfortress.v3.engine.SfEngineManager;
-import ru.jekarus.skyfortress.v3.listener.*;
+import ru.jekarus.skyfortress.v3.listener.ArrowMechanicsListener;
+import ru.jekarus.skyfortress.v3.listener.ChangeBlockListener;
+import ru.jekarus.skyfortress.v3.listener.DropItemListener;
+import ru.jekarus.skyfortress.v3.listener.PlayerDeathListener;
+import ru.jekarus.skyfortress.v3.listener.PlayerInteractListener;
+import ru.jekarus.skyfortress.v3.listener.PlayerRespawnListener;
+import ru.jekarus.skyfortress.v3.listener.ResourceListener;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboard;
@@ -42,6 +48,8 @@ public class InGameStage extends SfGameStage {
     private final PlayerInteractListener playerInteractListener;
     private final PlayerDeathListener playerDeathListener;
     private final PlayerRespawnListener playerRespawnListener;
+    private final ResourceListener resourceListener;
+    private final ArrowMechanicsListener arrowMechanicsListener;
 
     public InGameStage(SkyFortressPlugin plugin)
     {
@@ -52,6 +60,8 @@ public class InGameStage extends SfGameStage {
         this.playerInteractListener = new PlayerInteractListener(this.plugin);
         this.playerDeathListener = new PlayerDeathListener(this.plugin);
         this.playerRespawnListener = new PlayerRespawnListener(this.plugin);
+        this.resourceListener = new ResourceListener(this.plugin);
+        this.arrowMechanicsListener = new ArrowMechanicsListener(this.plugin);
     }
 
     @Override
@@ -63,6 +73,7 @@ public class InGameStage extends SfGameStage {
 
         SfEngineManager engineManager = this.plugin.getEngineManager();
         engineManager.getCheckCaptureEngine().start();
+//        engineManager.getResourcesEngine().start();
         engineManager.getResourcesEngine().start();
 
         this.spawnEntityShops();
@@ -72,6 +83,8 @@ public class InGameStage extends SfGameStage {
         this.playerInteractListener.register();
         this.playerDeathListener.register();
         this.playerRespawnListener.register();
+        this.resourceListener.register();
+        this.arrowMechanicsListener.register();
 
         castle_for: for (SfCastle castle : this.plugin.getCastleContainer().getCollection())
         {
@@ -92,6 +105,7 @@ public class InGameStage extends SfGameStage {
     {
         SfEngineManager engineManager = this.plugin.getEngineManager();
         engineManager.getCheckCaptureEngine().stop();
+//        engineManager.getResourcesEngine().stop();
         engineManager.getResourcesEngine().stop();
 
         this.changeBlockListener.unregister();
@@ -99,6 +113,8 @@ public class InGameStage extends SfGameStage {
         this.playerInteractListener.unregister();
         this.playerDeathListener.unregister();
         this.playerRespawnListener.unregister();
+        this.resourceListener.unregister();
+        this.arrowMechanicsListener.unregister();
     }
 
     @Override
@@ -141,8 +157,8 @@ public class InGameStage extends SfGameStage {
 
         SfCastlePositions positions = team.getCastle().getPositions();
         player.setLocationAndRotation(
-                positions.getRespawn().getLocation(),
-                positions.getRespawn().getRotation()
+                positions.getRespawn().get(0).getLocation(), // fixme get(0)
+                positions.getRespawn().get(0).getRotation() // fixme get(0)
         );
 
         player.offer(Keys.GAME_MODE, GameModes.SURVIVAL);
