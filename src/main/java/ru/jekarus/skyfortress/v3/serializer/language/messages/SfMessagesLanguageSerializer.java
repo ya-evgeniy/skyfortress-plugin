@@ -15,7 +15,7 @@ public class SfMessagesLanguageSerializer implements TypeSerializer<SfMessagesLa
     {
         SfMessagesLanguage language = new SfMessagesLanguage();
 
-        language.lobby = node.getNode("lobby").getValue(TypeToken.of(SfLobbyMessagesLanguage.class));
+        language.lobby = node.getNode("globalLobby").getValue(TypeToken.of(SfLobbyMessagesLanguage.class));
         language.game = node.getNode("game").getValue(TypeToken.of(SfGameMessagesLanguage.class));
 
         return language;

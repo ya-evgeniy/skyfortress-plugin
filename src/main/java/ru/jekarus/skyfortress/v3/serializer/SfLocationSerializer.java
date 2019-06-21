@@ -15,7 +15,7 @@ public class SfLocationSerializer implements TypeSerializer<SfLocation> {
     @Override
     public SfLocation deserialize(TypeToken<?> typeToken, ConfigurationNode node) throws ObjectMappingException
     {
-        Vector3d position = node.getNode("position").getValue(TypeToken.of(Vector3d.class));
+        Vector3d position = node.getNode("location").getValue(TypeToken.of(Vector3d.class));
         Vector3d rotation = node.getNode("rotation").getValue(TypeToken.of(Vector3d.class), Vector3d.ZERO);
 
         Location<World> location = new Location<>(SkyFortressPlugin.getInstance().getWorld(), position);

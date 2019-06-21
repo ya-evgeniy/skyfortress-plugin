@@ -25,6 +25,7 @@ public class CaptainConfigSerializer implements TypeSerializer<CaptainConfig> {
         ConfigurationNode mainCaptainNode = node.getNode("captain");
         config.mainCaptainCell = mainCaptainNode.getNode("location").getValue(TypeToken.of(SfLocation.class));
 
+        config.mainCaptainCellChangedBlocks = new ArrayList<>();
         for (ConfigurationNode changedBlock : mainCaptainNode.getNode("changed_blocks").getChildrenList()) {
             SfLocation location = changedBlock.getValue(TypeToken.of(SfLocation.class));
             if (location != null) {
@@ -38,6 +39,7 @@ public class CaptainConfigSerializer implements TypeSerializer<CaptainConfig> {
             CaptainConfigCaptain captainConfigCaptain = new CaptainConfigCaptain();
             captainConfigCaptain.teamId = captainNode.getNode("team_id").getString();
             captainConfigCaptain.cell = captainNode.getNode("location").getValue(TypeToken.of(SfLocation.class));
+            captainConfigCaptain.changedBlocks = new ArrayList<>();
             for (ConfigurationNode changedBlock : captainNode.getNode("changed_blocks").getChildrenList()) {
                 SfLocation location = changedBlock.getValue(TypeToken.of(SfLocation.class));
                 if (location != null) {
@@ -52,6 +54,7 @@ public class CaptainConfigSerializer implements TypeSerializer<CaptainConfig> {
         for (ConfigurationNode playerNode : playersNode.getChildrenList()) {
             CaptainConfigPlayer captainConfigPlayer = new CaptainConfigPlayer();
             captainConfigPlayer.cell = playerNode.getNode("location").getValue(TypeToken.of(SfLocation.class));
+            captainConfigPlayer.changedBlocks = new ArrayList<>();
             for (ConfigurationNode changedBlock : playerNode.getNode("changed_blocks").getChildrenList()) {
                 SfLocation location = changedBlock.getValue(TypeToken.of(SfLocation.class));
                 if (location != null) {

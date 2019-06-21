@@ -1,14 +1,17 @@
-package ru.jekarus.skyfortress.v3.serializer.shop;
+package ru.jekarus.skyfortress.v3.serializer;
 
-import com.google.common.reflect.TypeToken;
+import jekarus.hocon.config.serializer.ConfigSerializer;
+import lombok.val;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.item.inventory.ItemStack;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.gui.ShopGui;
-import ru.jekarus.skyfortress.v3.serializer.SfSerializers;
+import ru.jekarus.skyfortress.v3.lang.SfLanguage;
+import ru.jekarus.skyfortress.v3.serializer.base.ItemStackConfigSerializer;
+import ru.jekarus.skyfortress.v3.serializer.view.shop.ShopView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,12 +45,15 @@ public class ShopSerializer {
         }
         HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
                 .setPath(this.shop)
-                .setDefaultOptions(ConfigurationOptions.defaults().setSerializers(SfSerializers.SERIALIZERS))
+//                .setDefaultOptions(ConfigurationOptions.defaults().setSerializers(SfSerializers.SERIALIZERS))
                 .build();
+
+        final val serializer = new ConfigSerializer(loader);
+        serializer.getRegistry().registerSerializer(ItemStack.class, new ItemStackConfigSerializer());
         try
         {
             CommentedConfigurationNode node = loader.load();
-            this.construct(node);
+            this.construct(serializer, node);
         }
         catch (IOException | ObjectMappingException e)
         {
@@ -55,10 +61,16 @@ public class ShopSerializer {
         }
     }
 
-    private void construct(CommentedConfigurationNode node) throws ObjectMappingException
-    {
-        CommentedConfigurationNode gui = node.getNode("shop");
-        ShopGui.INSTANCE = gui.getValue(TypeToken.of(ShopGui.class));
+    private void construct(ConfigSerializer serializer, CommentedConfigurationNode node) throws ObjectMappingException {
+        for (SfLanguage language : this.plugin.getLanguages().getLanguageByLocale().values()) {
+            plugin.getShops().add(
+                    language.locale,
+                    serializer.deserialize(node, ShopView.class).createShop(plugin.getMessages().getShop(), language)
+            );
+        }
+//
+//        CommentedConfigurationNode gui = node.getNode("shop");
+//        ShopGui.INSTANCE = gui.getValue(TypeToken.of(ShopGui.class));
     }
 
     private void createDefault()

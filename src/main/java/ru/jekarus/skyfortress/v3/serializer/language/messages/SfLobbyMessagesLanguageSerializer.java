@@ -37,7 +37,7 @@ public class SfLobbyMessagesLanguageSerializer implements TypeSerializer<SfLobby
         lang.playerDeniedBy = parseText(playerNode, "denied_by");
 
         ConfigurationNode teammateNode = node.getNode("teammate");
-        lang.teammateWaitAccepted = parseText(teammateNode, "wait_accepted");
+        lang.teammateCaptainYouAreNew = parseText(teammateNode, "wait_accepted");
         lang.teammateJoined = parseText(teammateNode, "joined");
         lang.teammateLeaved = parseText(teammateNode, "leaved");
         lang.teammateYouAccepted = parseText(teammateNode, "you_accepted");
@@ -46,21 +46,21 @@ public class SfLobbyMessagesLanguageSerializer implements TypeSerializer<SfLobby
         lang.teammateDeniedBy = parseText(teammateNode, "denied_by");
 
         ConfigurationNode teammatesCaptainNode = teammateNode.getNode("captain");
-        lang.teammates_captain_wait_accepted = parseText(teammatesCaptainNode, "wait_accepted");
-        lang.teammates_captain_accepted_by = parseText(teammatesCaptainNode, "accepted_by");
-        lang.teammates_captain_denied_by = parseText(teammatesCaptainNode, "denied_by");
-        lang.teammatesCaptainYouAreNew = parseText(teammatesCaptainNode, "you_are_new");
-        lang.teammatesCaptainNew = parseText(teammatesCaptainNode, "are_new");
-        lang.teammates_captain_you_replaced = parseText(teammatesCaptainNode, "you_replaced");
-        lang.teammatesCaptainReplaced = parseText(teammatesCaptainNode, "replaced");
-        lang.teammatesCaptainLeaved = parseText(teammatesCaptainNode, "leaved");
+        lang.teammateCaptainYouAreNew = parseText(teammatesCaptainNode, "wait_accepted");
+//        lang.teammates_captain_accepted_by = parseText(teammatesCaptainNode, "accepted_by");
+//        lang.teammates_captain_denied_by = parseText(teammatesCaptainNode, "denied_by");
+        lang.teammateCaptainYouAreNew = parseText(teammatesCaptainNode, "you_are_new");
+        lang.teammateCaptainNew = parseText(teammatesCaptainNode, "are_new");
+        lang.teammateCaptainYouReplaced = parseText(teammatesCaptainNode, "you_replaced");
+        lang.teammateCaptainReplaced = parseText(teammatesCaptainNode, "replaced");
+        lang.teammateCaptainLeaved = parseText(teammatesCaptainNode, "leaved");
         lang.teammatesCaptainLeavedYouNew = parseText(teammatesCaptainNode, "leaved_you_new");
 
         ConfigurationNode teammatesCaptainCantNode = teammatesCaptainNode.getNode("cant");
-        lang.teammatesCaptainCantReady = parseText(teammatesCaptainCantNode, "ready");
-        lang.teammatesCaptainCantUnready = parseText(teammatesCaptainCantNode, "unready");
-        lang.teammatesCaptainCantAccept = parseText(teammatesCaptainCantNode, "accept");
-        lang.teammatesCaptainCantDeny = parseText(teammatesCaptainCantNode, "deny");
+        lang.teammateCaptainCantReady = parseText(teammatesCaptainCantNode, "ready");
+        lang.teammateCaptainCantUnready = parseText(teammatesCaptainCantNode, "unready");
+        lang.teammateCaptainCantAccept = parseText(teammatesCaptainCantNode, "accept");
+        lang.teammateCaptainCantDeny = parseText(teammatesCaptainCantNode, "deny");
 
         ConfigurationNode commandNode = node.getNode("command");
         ConfigurationNode commandPlayerNode = commandNode.getNode("player");
