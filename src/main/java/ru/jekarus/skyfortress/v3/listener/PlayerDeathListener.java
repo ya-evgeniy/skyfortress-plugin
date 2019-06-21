@@ -3,11 +3,15 @@ package ru.jekarus.skyfortress.v3.listener;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.item.ItemTypes;
@@ -29,7 +33,6 @@ import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
-import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 import java.util.Optional;
 
@@ -109,6 +112,12 @@ public class PlayerDeathListener {
 
         plugin.getTeamContainer().getNoneTeam().addPlayer(plugin, sfPlayer);
         player.offer(Keys.GAME_MODE, GameModes.ADVENTURE);
+        player.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
+            effects.addElement(
+                    PotionEffect.builder().potionType(PotionEffectTypes.SATURATION).duration(1_000_000).amplifier(255).particles(false).build()
+            );
+            player.offer(effects);
+        });
 
 //        SfUtils.setPlayerSpectator(player);
         CastleDeathEngine.checkCapturedCastle(this.plugin, castle);
