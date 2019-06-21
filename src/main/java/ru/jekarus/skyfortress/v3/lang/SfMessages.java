@@ -12,7 +12,11 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,6 +33,7 @@ public class SfMessages {
     @Getter SfLobbyMessages lobby;
     @Getter SfGameMessages game;
     @Getter SfDistributionMessages distribution;
+    @Getter ShopMessages shop;
 
     public SfMessages(SkyFortressPlugin plugin) {
         this.plugin = plugin;
@@ -40,6 +45,7 @@ public class SfMessages {
         this.lobby = new SfLobbyMessages(plugin, this);
         this.game = new SfGameMessages(plugin, this);
         this.distribution = new SfDistributionMessages(plugin, this);
+        this.shop = new ShopMessages(plugin, this);
     }
 
     public void broadcast(Text text) {

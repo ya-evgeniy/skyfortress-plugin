@@ -55,6 +55,10 @@ public class SfLobbyMessages {
         return getLang(player).messages.lobby.cantDeny.toText();
     }
 
+    public Text cantJoinWhenDistribution(SfPlayer player) {
+        return getLang(player).messages.lobby.cantJoinWhenDistribution.toText();
+    }
+
     public Text playerWaitAccepted(SfPlayer player) {
         return getLang(player).messages.lobby.playerWaitAccepted.toText();
     }
@@ -101,7 +105,7 @@ public class SfLobbyMessages {
 
     public Map<Locale, Text> teammateWaitAccepted(SfPlayer player) {
         return messages.construct(
-                lang -> lang.messages.lobby.teammateWaitAccepted,
+                lang -> lang.messages.lobby.teammateCaptainYouAreNew,
                 vars -> vars.playerKey().name(player)
         );
     }
@@ -157,14 +161,14 @@ public class SfLobbyMessages {
     public Text teammateCaptainYouAreNew(SfPlayer player, SfTeam team) {
         return messages.construct(
                 player,
-                lang -> lang.messages.lobby.teammatesCaptainYouAreNew,
+                lang -> lang.messages.lobby.teammateCaptainYouAreNew,
                 vars -> vars.teamKey().name(team)
         );
     }
 
     public Map<Locale, Text> teammateNewCaptain(SfPlayer player, SfTeam team) {
         return messages.construct(
-                lang -> lang.messages.lobby.teammatesCaptainNew,
+                lang -> lang.messages.lobby.teammateCaptainNew,
                 vars -> vars.playerKey().color(team).name(player)
         );
     }
@@ -172,14 +176,14 @@ public class SfLobbyMessages {
     public Text teammateCaptainYouReplaced(SfPlayer player, SfPlayer captain, SfTeam team) {
         return messages.construct(
                 player,
-                lang -> lang.messages.lobby.teammatesCaptainYouAreNew,
+                lang -> lang.messages.lobby.teammateCaptainYouAreNew,
                 vars -> vars.playerKey().color(team).name(captain)
         );
     }
 
     public Map<Locale, Text> teammateCaptainReplaced(SfPlayer player, SfPlayer captain, SfTeam team) {
         return messages.construct(
-                lang -> lang.messages.lobby.teammatesCaptainReplaced,
+                lang -> lang.messages.lobby.teammateCaptainReplaced,
                 vars -> vars
                         .playerKey().color(team).name(player)
                         .playerKey("captain").color(team).name(captain)
@@ -196,7 +200,7 @@ public class SfLobbyMessages {
 
     public Map<Locale, Text> teammateCaptainLeaved(SfPlayer player, SfPlayer captain, SfTeam team) {
         return messages.construct(
-                lang -> lang.messages.lobby.teammatesCaptainLeaved,
+                lang -> lang.messages.lobby.teammateCaptainLeaved,
                 vars -> vars
                         .playerKey().color(team).name(player)
                         .playerKey("captain").color(team).name(captain)
@@ -204,19 +208,19 @@ public class SfLobbyMessages {
     }
 
     public Text teammateCaptainCantReady(SfPlayer player) {
-        return getLang(player).messages.lobby.teammatesCaptainCantReady.toText();
+        return getLang(player).messages.lobby.teammateCaptainCantReady.toText();
     }
 
     public Text teammateCaptainCantUnready(SfPlayer player) {
-        return getLang(player).messages.lobby.teammatesCaptainCantUnready.toText();
+        return getLang(player).messages.lobby.teammateCaptainCantUnready.toText();
     }
 
     public Text teammateCaptainCantAccept(SfPlayer player) {
-        return getLang(player).messages.lobby.teammatesCaptainCantAccept.toText();
+        return getLang(player).messages.lobby.teammateCaptainCantAccept.toText();
     }
 
     public Text teammateCaptainCantDeny(SfPlayer player) {
-        return getLang(player).messages.lobby.teammatesCaptainCantDeny.toText();
+        return getLang(player).messages.lobby.teammateCaptainCantDeny.toText();
     }
 
     public Text commandPlayerChangeSelfTeam(SfPlayer player, SfTeam team) {
