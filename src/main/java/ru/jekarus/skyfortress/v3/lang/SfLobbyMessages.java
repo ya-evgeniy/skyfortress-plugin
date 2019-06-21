@@ -67,7 +67,7 @@ public class SfLobbyMessages {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.playerWaitAcceptedByCaptain,
-                vars -> vars.playerKey().color(team).name(player)
+                vars -> vars.playerKey().color(team).name(captain)
         );
     }
 
