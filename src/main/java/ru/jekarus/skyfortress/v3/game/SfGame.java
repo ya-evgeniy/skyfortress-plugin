@@ -16,8 +16,7 @@ public class SfGame {
     private Map<SfGameStageType, SfGameStage> stageByType = new EnumMap<>(SfGameStageType.class);
     private SfGameStage currentStage;
 
-    public SfGame(SkyFortressPlugin plugin)
-    {
+    public SfGame(SkyFortressPlugin plugin) {
         this.plugin = plugin;
 
         this.stageByType.put(SfGameStageType.PRE_GAME, new PreGameStage(plugin));
@@ -28,61 +27,51 @@ public class SfGame {
         this.lobbyListener = new LobbyListener(this.plugin);
     }
 
-    public void init()
-    {
+    public void init() {
         this.currentStage.enable();
         this.lobbyListener.register();
     }
 
-    public SfGameStageType getStage()
-    {
+    public SfGameStageType getStage() {
         return this.currentStage.getType();
     }
 
-    public void setStage(SfGameStageType type)
-    {
+    public void setStage(SfGameStageType type) {
         this.currentStage.disable();
         this.currentStage = this.stageByType.get(type);
         this.currentStage.enable();
     }
 
-    public void start()
-    {
+    public void start() {
         this.setStage(SfGameStageType.IN_GAME);
     }
 
-    public void stop()
-    {
+    public void stop() {
         this.setStage(SfGameStageType.END_GAME);
     }
 
-    public void checkWin()
-    {
+    public void checkWin() {
         SfCastle winCastle = null;
-        for (SfCastle castle : this.plugin.getCastleContainer().getCollection())
-        {
-            if (castle.isAlive())
-            {
-                if (winCastle == null)
-                {
+        for (SfCastle castle : this.plugin.getCastleContainer().getCollection()) {
+            if (castle.isAlive()) {
+                if (winCastle == null) {
                     winCastle = castle;
                 }
-                else
-                {
+                else {
                     return;
                 }
             }
         }
 
-        if (winCastle == null)
-        {
-            return;
+        if (winCastle == null) {
+            throw new NullPointerException("Win castle are null");
         }
 
         SfMessages messages = this.plugin.getMessages();
         messages.broadcast(
                 messages.getGame().teamWin(winCastle.getTeam()), true
         );
+        winCastle.setPlace(1);
         this.stop();
     }
 
