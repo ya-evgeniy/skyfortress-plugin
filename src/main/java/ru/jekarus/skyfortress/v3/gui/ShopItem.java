@@ -1,12 +1,17 @@
 package ru.jekarus.skyfortress.v3.gui;
 
 import com.flowpowered.math.vector.Vector3d;
+import lombok.Getter;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.inventory.*;
+import org.spongepowered.api.item.inventory.Carrier;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
@@ -18,6 +23,8 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.jgui.gui.slot.item.GuiItem;
+import ru.jekarus.skyfortress.v3.lang.SfLanguage;
+import ru.jekarus.skyfortress.v3.lang.ShopMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,38 +32,32 @@ import java.util.Optional;
 
 public class ShopItem extends GuiItem {
 
-    private ItemStack buy;
-    private ItemStack[] price;
+    @Getter private TranslatedShopItem buy;
+    @Getter private TranslatedShopItem[] price;
 
     private boolean placeInMainHand = false;
 
-    public ShopItem()
-    {
+    public ShopItem() {
 
     }
 
-    public ShopItem(ItemStack buy, ItemStack price)
-    {
-        this(buy, new ItemStack[] {price});
+    public ShopItem(TranslatedShopItem buy, TranslatedShopItem price) {
+        this(buy, new TranslatedShopItem[]{ price });
     }
 
-    public ShopItem(ItemStack buy, ItemStack[] price)
-    {
+    public ShopItem(TranslatedShopItem buy, TranslatedShopItem[] price) {
         this.buy = buy;
         this.price = price;
 
-        this.initDisplay();
-
-        this.buy.remove(Keys.DISPLAY_NAME);
+        this.buy.getStack().remove(Keys.DISPLAY_NAME);
     }
 
-    public void initDisplay()
-    {
+    public void init(ShopMessages messages, SfLanguage language) {
         ItemStack display = ItemStack.builder()
-                .from(this.buy)
+                .from(this.buy.getStack())
 
-                .add(Keys.DISPLAY_NAME, this.constructDisplay(this.buy))
-                .add(Keys.ITEM_LORE, this.constructLore())
+                .add(Keys.DISPLAY_NAME, this.constructTitle(messages, language, this.buy))
+                .add(Keys.ITEM_LORE, this.constructLore(messages, language, this.price))
 
                 .add(Keys.HIDE_UNBREAKABLE, true)
                 .add(Keys.HIDE_MISCELLANEOUS, true)
@@ -70,25 +71,33 @@ public class ShopItem extends GuiItem {
         this.setItemStack(display);
     }
 
-    private List<Text> constructLore()
-    {
+    private Text constructTitle(ShopMessages messages, SfLanguage language, TranslatedShopItem translated) {
+        return Text.builder()
+                .append(
+                        Text.of(TextColors.GOLD, messages.translatedKey(language, translated.getKey()))
+                )
+                .append(
+                        Text.of(TextColors.GRAY, " x " + translated.getStack().getQuantity())
+                ).build();
+    }
+
+    private List<Text> constructLore(ShopMessages messages, SfLanguage language, TranslatedShopItem[] price) {
         List<Text> result = new ArrayList<>();
 
         result.add(
-                TranslatableText.builder().append(Text.of("Стоимость:")).color(TextColors.WHITE).build()
+                messages.cost(language)
         );
 
         boolean needFootnote = false;
-        for (ItemStack stack : this.price)
-        {
-            needFootnote = needFootnote || stack.getMaxStackQuantity() == 1;
+        for (TranslatedShopItem translated : price) {
+            needFootnote = needFootnote || translated.getStack().getMaxStackQuantity() == 1;
             result.add(
                     TranslatableText.builder()
                             .append(
                                     Text.of("- ").toBuilder().color(TextColors.GRAY).build()
                             )
                             .append(
-                                    this.constructLoreDisplay(stack)
+                                    this.constructLoreDisplay(messages, language, translated)
                             )
                             .build()
             );
@@ -104,60 +113,34 @@ public class ShopItem extends GuiItem {
                                     Text.of("*").toBuilder().color(TextColors.RED).build()
                             )
                             .append(
-                                    Text.of(" - Данный предмет должен").toBuilder().color(TextColors.GRAY).build()
+                                    messages.additionFirst(language)
                             )
                             .build()
             );
-            result.add(Text.of("находиться в руке").toBuilder().color(TextColors.GRAY).build());
+            result.add(messages.additionSecond(language));
         }
 
         return result;
     }
 
-    private Text constructDisplay(ItemStack stack)
-    {
-        return TranslatableText.builder()
-                .append(
-                        stack.get(Keys.DISPLAY_NAME).orElse(Text.of(stack.getType().getName())).toBuilder().color(TextColors.GOLD).build()
-                )
-                .append(
-                        Text.of(" x " + stack.getQuantity()).toBuilder().color(TextColors.GRAY).build()
-                )
-                .build();
-    }
-
-    private Text constructLoreDisplay(ItemStack stack)
-    {
-        if (stack.getMaxStackQuantity() == 1)
-        {
-            return TranslatableText.builder()
+    private Text constructLoreDisplay(ShopMessages messages, SfLanguage language, TranslatedShopItem translated) {
+        if (translated.getStack().getMaxStackQuantity() == 1) {
+            return Text.builder()
                     .append(
-                            stack.get(Keys.DISPLAY_NAME).orElse(Text.of(stack.getType().getName())).toBuilder().color(TextColors.GOLD).build()
+                            Text.of(TextColors.GOLD, messages.translatedKey(language, translated.getKey()))
                     )
                     .append(
-                            Text.of(" *").toBuilder().color(TextColors.RED).build()
-                    )
-                    .build();
+                            Text.of(TextColors.RED, " *")
+                    ).build();
         }
-        else
-        {
-            return TranslatableText.builder()
-                    .append(
-                            stack.get(Keys.DISPLAY_NAME).orElse(Text.of(stack.getType().getName())).toBuilder().color(TextColors.GOLD).build()
-                    )
-                    .append(
-                            Text.of(" x " + stack.getQuantity()).toBuilder().color(TextColors.GRAY).build()
-                    )
-                    .build();
+        else {
+            return constructTitle(messages, language, translated);
         }
     }
 
-    public void checkPrice(Player player)
-    {
-        for (ItemStack stack : this.price)
-        {
-            if (!this.checkPrice(player, stack))
-            {
+    public void checkPrice(Player player) {
+        for (TranslatedShopItem translated : this.price) {
+            if (!this.checkPrice(player, translated.getStack())) {
                 return;
             }
         }
@@ -165,8 +148,7 @@ public class ShopItem extends GuiItem {
         this.buy(player);
     }
 
-    private boolean checkPrice(Player player, ItemStack price)
-    {
+    private boolean checkPrice(Player player, ItemStack price) {
         CarriedInventory<? extends Carrier> inventory = player.getInventory();
         Iterable<Slot> slots = inventory.slots();
 
@@ -174,20 +156,16 @@ public class ShopItem extends GuiItem {
         int need = price.getQuantity();
         int have = 0;
 
-        if (needMainHand)
-        {
+        if (needMainHand) {
             Optional<ItemStack> optionalItem = player.getItemInHand(HandTypes.MAIN_HAND);
             return optionalItem.map(itemStack -> itemStack.getType().equals(price.getType())).orElse(false);
         }
 
-        for (Slot slot : slots)
-        {
+        for (Slot slot : slots) {
             Optional<ItemStack> optionalItemStack = slot.peek();
-            if (optionalItemStack.isPresent())
-            {
+            if (optionalItemStack.isPresent()) {
                 ItemStack stack = optionalItemStack.get();
-                if (!stack.getType().equals(price.getType()))
-                {
+                if (!stack.getType().equals(price.getType())) {
                     continue;
                 }
                 have += stack.getQuantity();
@@ -197,31 +175,24 @@ public class ShopItem extends GuiItem {
         return need <= have;
     }
 
-    public void buy(Player player)
-    {
-        for (ItemStack stack : this.price)
-        {
-            this.buy(player, stack);
+    public void buy(Player player) {
+        for (TranslatedShopItem translated : this.price) {
+            this.buy(player, translated.getStack());
         }
 
-        if (this.placeInMainHand)
-        {
-            player.setItemInHand(HandTypes.MAIN_HAND, this.buy.copy());
+        if (this.placeInMainHand) {
+            player.setItemInHand(HandTypes.MAIN_HAND, this.buy.getStack().copy());
         }
-        else
-        {
+        else {
             Location<World> location = player.getLocation();
             Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class));
-            InventoryTransactionResult result = hotbar.offer(this.buy.copy());
+            InventoryTransactionResult result = hotbar.offer(this.buy.getStack().copy());
 //            InventoryTransactionResult result = player.getInventory().offer(this.buy.copy());
-            if (!result.getRejectedItems().isEmpty())
-            {
+            if (!result.getRejectedItems().isEmpty()) {
                 Inventory playerInventory = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
-                for (ItemStackSnapshot stackSnapshot : result.getRejectedItems())
-                {
+                for (ItemStackSnapshot stackSnapshot : result.getRejectedItems()) {
                     InventoryTransactionResult resultOffer = playerInventory.offer(stackSnapshot.createStack());
-                    for (ItemStackSnapshot itemStackSnapshot : resultOffer.getRejectedItems())
-                    {
+                    for (ItemStackSnapshot itemStackSnapshot : resultOffer.getRejectedItems()) {
                         Item item = (Item) location.createEntity(EntityTypes.ITEM);
                         item.offer(Keys.REPRESENTED_ITEM, itemStackSnapshot);
                         item.offer(Keys.VELOCITY, Vector3d.from(0));
@@ -239,10 +210,8 @@ public class ShopItem extends GuiItem {
         }
     }
 
-    private void buy(Player player, ItemStack price)
-    {
-        if (price.getMaxStackQuantity() == 1)
-        {
+    private void buy(Player player, ItemStack price) {
+        if (price.getMaxStackQuantity() == 1) {
             return;
         }
         int needRemove = price.getQuantity();
@@ -251,14 +220,11 @@ public class ShopItem extends GuiItem {
         CarriedInventory<? extends Carrier> inventory = player.getInventory();
         Iterable<Slot> slots = inventory.slots();
 
-        for (Slot slot : slots)
-        {
+        for (Slot slot : slots) {
             Optional<ItemStack> optionalItemStack = slot.peek();
-            if (optionalItemStack.isPresent())
-            {
+            if (optionalItemStack.isPresent()) {
                 ItemStack stack = optionalItemStack.get();
-                if (!stack.getType().equals(price.getType()))
-                {
+                if (!stack.getType().equals(price.getType())) {
                     continue;
                 }
                 left = stack.getQuantity() - needRemove;
@@ -267,21 +233,10 @@ public class ShopItem extends GuiItem {
                 stack.setQuantity(left < 0 ? 0 : left);
                 slot.set(stack);
 
-                if (needRemove < 1)
-                {
+                if (needRemove < 1) {
                     return;
                 }
             }
         }
-    }
-
-    public ItemStack getBuy()
-    {
-        return this.buy;
-    }
-
-    public ItemStack[] getPrice()
-    {
-        return this.price;
     }
 }
