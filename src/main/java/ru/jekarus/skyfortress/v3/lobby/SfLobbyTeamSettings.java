@@ -33,17 +33,9 @@ public class SfLobbyTeamSettings {
 
     public boolean ready = false;
 
-    public void init(SkyFortressPlugin plugin)
-    {
-        Optional<SfTeam> optionalTeam = plugin.getTeamContainer().fromUniqueId(this.teamId);
-        if (optionalTeam.isPresent())
-        {
-            SfTeam team = optionalTeam.get();
-            if (team.getType() == SfTeam.Type.GAME)
-            {
-                this.team = (SfGameTeam) team;
-            }
-        }
+    public void init(SkyFortressPlugin plugin) {
+        Optional<SfGameTeam> optionalTeam = plugin.getTeamContainer().fromUniqueId(this.teamId);
+        optionalTeam.ifPresent(gameTeam -> this.team = gameTeam);
     }
 
 }
