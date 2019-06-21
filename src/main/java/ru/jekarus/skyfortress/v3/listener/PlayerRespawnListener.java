@@ -11,8 +11,6 @@ import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEv
 import org.spongepowered.api.event.filter.Getter;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbySettings;
-import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
@@ -24,19 +22,16 @@ public class PlayerRespawnListener {
     private final SkyFortressPlugin plugin;
     private SfPlayers players;
 
-    public PlayerRespawnListener(SkyFortressPlugin plugin)
-    {
+    public PlayerRespawnListener(SkyFortressPlugin plugin) {
         this.plugin = plugin;
         this.players = SfPlayers.getInstance();
     }
 
-    public void register()
-    {
+    public void register() {
         Sponge.getEventManager().registerListeners(this.plugin, this);
     }
 
-    public void unregister()
-    {
+    public void unregister() {
         Sponge.getEventManager().unregisterListeners(this);
     }
 
@@ -47,7 +42,7 @@ public class PlayerRespawnListener {
         SfGameStageType gameStage = plugin.getGame().getStage();
         if (playerTeam.getType() == SfTeam.Type.GAME && gameStage == SfGameStageType.IN_GAME) {
             SfGameTeam gameTeam = (SfGameTeam) playerTeam;
-            SfLocation respawn = gameTeam.getCastle().getPositions().getRespawn();
+            SfLocation respawn = gameTeam.getCastle().getPositions().getRespawn().get(0); // fixme get(0)
             event.setToTransform(new Transform<>(
                     respawn.getLocation().getExtent(),
                     respawn.getLocation().getPosition(),
