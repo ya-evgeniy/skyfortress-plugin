@@ -105,7 +105,7 @@ public class SfLobbyMessages {
 
     public Map<Locale, Text> teammateWaitAccepted(SfPlayer player) {
         return messages.construct(
-                lang -> lang.messages.lobby.teammateCaptainYouAreNew,
+                lang -> lang.messages.lobby.teammateWaitAccepted,
                 vars -> vars.playerKey().name(player)
         );
     }
