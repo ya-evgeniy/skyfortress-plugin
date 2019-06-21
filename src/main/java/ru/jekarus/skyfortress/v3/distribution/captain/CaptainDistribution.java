@@ -19,7 +19,7 @@ import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -156,7 +156,7 @@ public class CaptainDistribution {
         }
     }
 
-    private boolean moveToZone(Entity entity, SfLocation cell) {
+    private boolean moveToZone(Entity entity, LocationAndRotation cell) {
         if (entity == null) {
             return true;
         }
@@ -177,12 +177,12 @@ public class CaptainDistribution {
         return false;
     }
 
-    public void colorizeBlocks(List<SfLocation> blocks, SfGameTeam team) {
+    public void colorizeBlocks(List<LocationAndRotation> blocks, SfGameTeam team) {
         colorizeBlocks(blocks, team.getBlockColor());
     }
 
-    public void colorizeBlocks(List<SfLocation> blocks, DyeColor color) {
-        for (SfLocation block : blocks) {
+    public void colorizeBlocks(List<LocationAndRotation> blocks, DyeColor color) {
+        for (LocationAndRotation block : blocks) {
             block.getLocation().offer(Keys.DYE_COLOR, color);
         }
     }
@@ -324,7 +324,7 @@ public class CaptainDistribution {
         selection.stop();
 
         SfTeam noneTeam = plugin.getTeamContainer().getNoneTeam();
-        SfLocation center = plugin.getSettings().getLobby().getCenter();
+        LocationAndRotation center = plugin.getSettings().getLobby().getCenter();
 
         moveToSpawn(this.state.targetByPlayerUniqueId.values(), noneTeam, center);
         moveToSpawn(this.state.captainByTeam.values(), noneTeam, center);
@@ -348,7 +348,7 @@ public class CaptainDistribution {
                         SfTeam noneTeam = plugin.getTeamContainer().getNoneTeam();
                         noneTeam.addPlayer(plugin, target.player);
                         target.player.setZone(PlayerZone.LOBBY);
-                        SfLocation center = plugin.getSettings().getLobby().getCenter();
+                        LocationAndRotation center = plugin.getSettings().getLobby().getCenter();
                         player.setLocationAndRotation(
                                 center.getLocation(),
                                 center.getRotation()
@@ -373,7 +373,7 @@ public class CaptainDistribution {
         }
     }
 
-    private void moveToSpawn(Collection<? extends CaptainTarget> targets, SfTeam spawnTeam, SfLocation center) {
+    private void moveToSpawn(Collection<? extends CaptainTarget> targets, SfTeam spawnTeam, LocationAndRotation center) {
         for (CaptainTarget target : targets) {
             spawnTeam.addPlayer(plugin, target.player);
             target.player.setZone(PlayerZone.LOBBY);

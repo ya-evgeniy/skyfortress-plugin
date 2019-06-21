@@ -11,7 +11,7 @@ import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,10 @@ public class CaptainTarget implements Supplier<Optional<Entity>> {
     public SfPlayer player;
     public UUID entityUniqueId = null;
 
-    public SfLocation cell;
-    public List<SfLocation> changedBlocks = new ArrayList<>();
+    public LocationAndRotation cell;
+    public List<LocationAndRotation> changedBlocks = new ArrayList<>();
 
-    public CaptainTarget(SfPlayer player, SfLocation cell, List<SfLocation> changedBlocks) {
+    public CaptainTarget(SfPlayer player, LocationAndRotation cell, List<LocationAndRotation> changedBlocks) {
         this.player = player;
         this.cell = cell;
         this.changedBlocks = changedBlocks;

@@ -33,7 +33,7 @@ import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,14 +176,14 @@ public class InGameStage extends SfGameStage {
         SfCastleContainer castleContainer = this.plugin.getCastleContainer();
         for (SfCastle castle : castleContainer.getCollection())
         {
-            for (SfLocation location : castle.getPositions().getShops())
+            for (LocationAndRotation location : castle.getPositions().getShops())
             {
                 this.spawnEntityShop(location);
             }
         }
     }
 
-    private void spawnEntityShop(SfLocation location)
+    private void spawnEntityShop(LocationAndRotation location)
     {
         Location<World> position = location.getLocation();
         Living entity = (Living) position.createEntity(EntityTypes.ILLUSION_ILLAGER);

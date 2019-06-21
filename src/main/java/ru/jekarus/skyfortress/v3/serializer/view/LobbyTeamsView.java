@@ -9,7 +9,7 @@ import jekarus.hocon.config.serializer.converter.SpongeConverters;
 import ru.jekarus.skyfortress.v3.lobby.SfLobby;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import java.util.List;
 
@@ -30,10 +30,10 @@ public class LobbyTeamsView {
         @ConfigPath("team_id")
         public String teamId;
 
-        public SfLocation accepted;
+        public LocationAndRotation accepted;
 
         @ConfigPath("waiting.location")
-        public SfLocation waitingLocation;
+        public LocationAndRotation waitingLocation;
 
         @ConfigPath("waiting.leave_button") @MethodConverter(inClass = SpongeConverters.class, method = "vector3d")
         public Vector3d waitingLeaveButton;

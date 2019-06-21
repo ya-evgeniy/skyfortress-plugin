@@ -9,18 +9,18 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 
-public class SfLocation {
+public class LocationAndRotation {
 
-    @MethodConverter(inClass = SfLocation.class, method = "createLocation") @ConfigPath("position")
+    @MethodConverter(inClass = LocationAndRotation.class, method = "createLocation") @ConfigPath("position")
     @Getter private Location<World> location;
 
-    @OptionalValue @MethodConverter(inClass = SfLocation.class, method = "vector3d")
+    @OptionalValue @MethodConverter(inClass = LocationAndRotation.class, method = "vector3d")
     @Getter private Vector3d rotation = Vector3d.ZERO;
 
-    public SfLocation() {
+    public LocationAndRotation() {
     }
 
-    public SfLocation(Location<World> location, Vector3d rotation) {
+    public LocationAndRotation(Location<World> location, Vector3d rotation) {
         this.location = location;
         this.rotation = rotation;
     }

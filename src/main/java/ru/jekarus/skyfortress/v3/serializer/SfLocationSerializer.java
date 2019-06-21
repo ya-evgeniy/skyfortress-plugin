@@ -8,23 +8,23 @@ import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
-public class SfLocationSerializer implements TypeSerializer<SfLocation> {
+public class SfLocationSerializer implements TypeSerializer<LocationAndRotation> {
 
     @Override
-    public SfLocation deserialize(TypeToken<?> typeToken, ConfigurationNode node) throws ObjectMappingException
+    public LocationAndRotation deserialize(TypeToken<?> typeToken, ConfigurationNode node) throws ObjectMappingException
     {
         Vector3d position = node.getNode("location").getValue(TypeToken.of(Vector3d.class));
         Vector3d rotation = node.getNode("rotation").getValue(TypeToken.of(Vector3d.class), Vector3d.ZERO);
 
         Location<World> location = new Location<>(SkyFortressPlugin.getInstance().getWorld(), position);
 
-        return new SfLocation(location, rotation);
+        return new LocationAndRotation(location, rotation);
     }
 
     @Override
-    public void serialize(TypeToken<?> type, SfLocation obj, ConfigurationNode value) throws ObjectMappingException
+    public void serialize(TypeToken<?> type, LocationAndRotation obj, ConfigurationNode value) throws ObjectMappingException
     {
 
     }

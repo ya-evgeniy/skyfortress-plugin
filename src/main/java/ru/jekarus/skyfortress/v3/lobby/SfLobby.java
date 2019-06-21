@@ -5,7 +5,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ public class SfLobby {
     public void moveToLobby(SfPlayer sfPlayer) {
         sfPlayer.setZone(PlayerZone.LOBBY);
         sfPlayer.getPlayer().ifPresent(player -> {
-            SfLocation center = this.plugin.getSettings().getLobby().getCenter();
+            LocationAndRotation center = this.plugin.getSettings().getLobby().getCenter();
             player.setLocationAndRotation(
                     center.getLocation(),
                     center.getRotation()

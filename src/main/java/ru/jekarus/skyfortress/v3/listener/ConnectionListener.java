@@ -22,7 +22,7 @@ import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 import java.util.Collection;
@@ -84,7 +84,7 @@ public class ConnectionListener {
                     player.offer(effects);
                 });
 
-                SfLocation center = this.plugin.getSettings().getLobby().getCenter();
+                LocationAndRotation center = this.plugin.getSettings().getLobby().getCenter();
 
                 System.out.println(center.getLocation().getPosition());
 
@@ -141,7 +141,7 @@ public class ConnectionListener {
                     }
                 }
                 else {
-                    final SfLocation center = plugin.getSettings().getLobby().getCenter();
+                    final LocationAndRotation center = plugin.getSettings().getLobby().getCenter();
 
                     plugin.getTeamContainer().getNoneTeam().addPlayer(plugin, sfPlayer);
                     sfPlayer.setZone(PlayerZone.LOBBY);

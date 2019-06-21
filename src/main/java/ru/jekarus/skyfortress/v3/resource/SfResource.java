@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 public class SfResource {
 
@@ -22,7 +22,7 @@ public class SfResource {
     @ConfigPath("spawn_delay")
     @Getter @Setter private int spawnDelay = 400;
 
-    @MethodConverter(inClass = SfLocation.class, method = "createLocation") @ConfigPath("position")
+    @MethodConverter(inClass = LocationAndRotation.class, method = "createLocation") @ConfigPath("position")
     @Getter @Setter Location<World> location;
 
     @Ignore

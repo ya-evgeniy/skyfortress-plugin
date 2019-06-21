@@ -2,7 +2,7 @@ package ru.jekarus.skyfortress.v3.distribution.captain.config;
 
 import jekarus.hocon.config.serializer.annotation.ConfigPath;
 import jekarus.hocon.config.serializer.annotation.Generics;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ public class CaptainConfig {
     public int maxSelectTime;
 
     @ConfigPath("captain.location")
-    public SfLocation mainCaptainCell;
+    public LocationAndRotation mainCaptainCell;
 
-    @ConfigPath("captain.changed_blocks") @Generics(SfLocation.class)
-    public List<SfLocation> mainCaptainCellChangedBlocks;
+    @ConfigPath("captain.changed_blocks") @Generics(LocationAndRotation.class)
+    public List<LocationAndRotation> mainCaptainCellChangedBlocks;
 
     @Generics(CaptainConfigCaptain.class)
     public List<CaptainConfigCaptain> captains;

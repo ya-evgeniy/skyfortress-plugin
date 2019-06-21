@@ -15,7 +15,7 @@ import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 public class PlayerRespawnListener {
 
@@ -42,7 +42,7 @@ public class PlayerRespawnListener {
         SfGameStageType gameStage = plugin.getGame().getStage();
         if (playerTeam.getType() == SfTeam.Type.GAME && gameStage == SfGameStageType.IN_GAME) {
             SfGameTeam gameTeam = (SfGameTeam) playerTeam;
-            SfLocation respawn = gameTeam.getCastle().getPositions().getRespawn().get(0); // fixme get(0)
+            LocationAndRotation respawn = gameTeam.getCastle().getPositions().getRespawn().get(0); // fixme get(0)
             event.setToTransform(new Transform<>(
                     respawn.getLocation().getExtent(),
                     respawn.getLocation().getPosition(),

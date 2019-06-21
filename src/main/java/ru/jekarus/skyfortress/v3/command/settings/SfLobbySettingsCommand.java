@@ -12,7 +12,7 @@ import ru.jekarus.skyfortress.v3.command.SfCommand;
 import ru.jekarus.skyfortress.v3.settings.GlobalLobbySettings;
 import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 import ru.jekarus.skyfortress.v3.settings.SettingsContainer;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import static org.spongepowered.api.command.args.GenericArguments.bool;
 import static org.spongepowered.api.command.args.GenericArguments.doubleNum;
@@ -69,7 +69,7 @@ public class SfLobbySettingsCommand extends SfCommand {
                     });
                     args.getOne("center_value").ifPresent(value -> {
                         lobbySettings.setCenter(
-                                new SfLocation((Location<World>) value, lobbySettings.getCenter().getRotation())
+                                new LocationAndRotation((Location<World>) value, lobbySettings.getCenter().getRotation())
                         );
                     });
                     args.getOne("min_y_value").ifPresent(value -> {
@@ -120,7 +120,7 @@ public class SfLobbySettingsCommand extends SfCommand {
 //                    if (args.hasAny("center")) {
 //                        System.out.println("has center");
 //                        Optional<Location<World>> value = args.getOne("center_value");
-//                        if (value.isPresent()) settings.center = new SfLocation(value.get(), settings.center.getRotation());
+//                        if (value.isPresent()) settings.center = new LocationAndRotation(value.get(), settings.center.getRotation());
 //                        else src.sendMessage(Text.of("center = " + settings.center));
 //                    }
 //                    if (args.hasAny("minY")) {

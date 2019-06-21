@@ -4,7 +4,7 @@ import com.flowpowered.math.vector.Vector3d;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -12,9 +12,9 @@ import java.util.Optional;
 public class SfLobbyTeamSettings {
 
     public String teamId;
-    public SfLocation accepted;
+    public LocationAndRotation accepted;
 
-    public SfLocation waitingLocation;
+    public LocationAndRotation waitingLocation;
     public Vector3d waitingLeaveButton;
 
     public Vector3d joinPlate;

@@ -7,7 +7,7 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
-import ru.jekarus.skyfortress.v3.utils.SfLocation;
+import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
 import java.util.ArrayList;
 
@@ -19,10 +19,10 @@ public class SfLobbyTeamSerializer implements TypeSerializer<SfLobbyTeam> {
         SfLobbyTeamSettings settings = new SfLobbyTeamSettings();
 
         settings.teamId = node.getNode("team_id").getString();
-        settings.accepted = node.getNode("accepted").getValue(TypeToken.of(SfLocation.class));
+        settings.accepted = node.getNode("accepted").getValue(TypeToken.of(LocationAndRotation.class));
 
         ConfigurationNode waiting = node.getNode("waiting");
-        settings.waitingLocation = waiting.getNode("location").getValue(TypeToken.of(SfLocation.class));
+        settings.waitingLocation = waiting.getNode("location").getValue(TypeToken.of(LocationAndRotation.class));
         settings.waitingLeaveButton = waiting.getNode("leave_button").getValue(TypeToken.of(Vector3d.class));
 
         settings.joinPlate = node.getNode("join_plate").getValue(TypeToken.of(Vector3d.class));
