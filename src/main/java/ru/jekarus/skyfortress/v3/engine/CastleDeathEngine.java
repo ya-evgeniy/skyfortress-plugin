@@ -1,14 +1,19 @@
 package ru.jekarus.skyfortress.v3.engine;
 
 import org.spongepowered.api.scheduler.Task;
-import ru.jekarus.skyfortress.v3.SfSettings;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
+import ru.jekarus.skyfortress.v3.settings.SettingsContainer;
+import ru.jekarus.skyfortress.v3.settings.WorldMapSettings;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class CastleDeathEngine {
@@ -64,11 +69,13 @@ public class CastleDeathEngine {
             }
             if (checkOnlinePlayers(this.plugin, castle))
             {
+                castle.setShowDeathSeconds(false);
                 castle.resetDeathSeconds(this.scoreboards);
                 iterator.remove();
             }
             else
             {
+                castle.setShowDeathSeconds(true);
                 castle.setDeathSeconds(this.scoreboards,castle.getDeathSeconds() - 1);
                 if (castle.getDeathSeconds() < 1)
                 {
@@ -94,7 +101,8 @@ public class CastleDeathEngine {
         Collection<SfPlayer> offlineDeathPlayers = new ArrayList<>();
 
         SfGameTeam gameTeam = castle.getTeam();
-        SfSettings settings = SkyFortressPlugin.getInstance().getSettings();
+        final SettingsContainer settings = SkyFortressPlugin.getInstance().getSettings();
+        final WorldMapSettings worldMapSettings = settings.getWorldMap();
         for (SfPlayer sfPlayer : gameTeam.getPlayers())
         {
             if (sfPlayer.getLastPlayed() == -1)
@@ -103,7 +111,7 @@ public class CastleDeathEngine {
             }
             else
             {
-                long playerOfflineDeath = TimeUnit.SECONDS.toMillis(settings.player_offline_death);
+                long playerOfflineDeath = TimeUnit.SECONDS.toMillis(worldMapSettings.getPlayerOfflineDeath());
                 if (sfPlayer.getLastPlayed() + playerOfflineDeath < System.currentTimeMillis())
                 {
                     offlineDeathPlayers.add(sfPlayer);
@@ -134,6 +142,16 @@ public class CastleDeathEngine {
         }
 
         castle.setDeath(true);
+    }
+
+    public static int getCastlePlace(SkyFortressPlugin plugin) {
+        int aliveCastles = 1;
+        for (SfCastle castle : plugin.getCastleContainer().getCollection()) {
+            if (castle.isAlive()) {
+                aliveCastles++;
+            }
+        }
+        return aliveCastles;
     }
 
 }

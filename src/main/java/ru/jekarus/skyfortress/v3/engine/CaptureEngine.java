@@ -1,6 +1,5 @@
 package ru.jekarus.skyfortress.v3.engine;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.effect.potion.PotionEffect;
@@ -8,9 +7,7 @@ import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.chat.ChatTypes;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
@@ -24,7 +21,14 @@ import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class CaptureEngine {
 
@@ -70,7 +74,7 @@ public class CaptureEngine {
     {
         Collection<SfPlayer> players = this.castleCaptures.computeIfAbsent(castle, k -> new HashSet<>());
         long now = System.currentTimeMillis() - sfPlayer.captureMessageTime;
-        if (players.add(sfPlayer) && now > 3_000)
+        if (players.add(sfPlayer) && now > 5_000)
         {
             SfMessages messages = this.plugin.getMessages();
             messages.broadcast(
@@ -138,7 +142,7 @@ public class CaptureEngine {
 
                 for (SfPlayer player : castle.getTeam().getPlayers()) {
                     player.getPlayer().ifPresent(spongePlayer -> {
-                        if (castle.getHealth() % 5 == 0) {
+                        if (castle.getHealth() % 20 == 0) {
                             spongePlayer.playSound(SoundTypes.BLOCK_WOOD_BUTTON_CLICK_ON, spongePlayer.getPosition(), 0.1, 2.0);
                         }
                     });

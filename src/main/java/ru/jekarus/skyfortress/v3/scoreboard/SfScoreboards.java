@@ -7,7 +7,11 @@ import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class SfScoreboards {
 
@@ -41,11 +45,11 @@ public class SfScoreboards {
         }
     }
 
-    public void updateHealth(SfGameTeam team)
+    public void updateLeftSeconds(SfGameTeam team)
     {
         for (SfScoreboard scoreboard : this.scoreboardsByLocale.values())
         {
-            scoreboard.getInGameObjective().updateHealth(team);
+            scoreboard.getInGameObjective().updateLeftSeconds(team);
         }
     }
 
@@ -70,22 +74,6 @@ public class SfScoreboards {
         for (SfScoreboard scoreboard : this.scoreboardsByLocale.values())
         {
             scoreboard.getTeams().setTeam(sfTeam, player.getName());
-        }
-    }
-
-    public void updateDeathSeconds(SfGameTeam team)
-    {
-        for (SfScoreboard scoreboard : this.scoreboardsByLocale.values())
-        {
-            scoreboard.getInGameObjective().updateDeathSeconds(team);
-        }
-    }
-
-    public void resetDeathSeconds(SfGameTeam team)
-    {
-        for (SfScoreboard scoreboard : this.scoreboardsByLocale.values())
-        {
-            scoreboard.getInGameObjective().resetDeathSeconds(team);
         }
     }
 
@@ -144,6 +132,13 @@ public class SfScoreboards {
         for (SfScoreboard scoreboard : this.scoreboardsByLocale.values())
         {
             scoreboard.getInGameObjective().resetTeam(team);
+        }
+    }
+
+    public void updatePlaces() {
+        for (SfScoreboard scoreboard : this.scoreboardsByLocale.values())
+        {
+            scoreboard.getPostGameObjective().updatePlaces();
         }
     }
 

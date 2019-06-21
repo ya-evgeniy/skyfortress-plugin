@@ -31,7 +31,7 @@ public class PreGameObjective extends SfObjective {
         this.language = language;
 
         this.objective = Objective.builder()
-                .name("pgo")
+                .name("pogo")
                 .displayName(language.map.name)
                 .criterion(Criteria.DUMMY)
                 .build();
