@@ -8,7 +8,6 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class SfTeam {

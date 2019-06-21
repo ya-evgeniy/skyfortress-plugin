@@ -2,7 +2,6 @@ package ru.jekarus.skyfortress.v3.distribution.captain;
 
 import jekarus.hocon.config.serializer.ConfigSerializer;
 import lombok.Getter;
-import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.api.Sponge;
@@ -17,7 +16,6 @@ import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigCaptai
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
-import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.io.IOException;
 import java.nio.file.Files;

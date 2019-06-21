@@ -14,7 +14,6 @@ import ru.jekarus.skyfortress.v3.distribution.Distribution;
 import ru.jekarus.skyfortress.v3.distribution.DistributionController;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainController;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
-import ru.jekarus.skyfortress.v3.distribution.random.RandomDistribution;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;

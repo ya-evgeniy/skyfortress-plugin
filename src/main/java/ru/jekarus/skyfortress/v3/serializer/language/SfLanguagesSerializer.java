@@ -6,7 +6,6 @@ import jekarus.hocon.config.serializer.annotation.ConfigPath;
 import jekarus.hocon.config.serializer.annotation.handler.AnnotationHandler;
 import jekarus.hocon.config.serializer.state.ConfigDeserializeState;
 import lombok.val;
-import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;

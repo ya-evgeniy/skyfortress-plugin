@@ -2,27 +2,17 @@ package ru.jekarus.skyfortress.v3.listener;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.block.trait.BlockTrait;
-import org.spongepowered.api.data.Property;
-import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.PickupRule;
 import org.spongepowered.api.data.type.PickupRules;
-import org.spongepowered.api.data.value.immutable.ImmutableValue;
 import org.spongepowered.api.entity.projectile.arrow.TippedArrow;
-import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.CollideBlockEvent;
-import org.spongepowered.api.event.cause.EventContext;
-import org.spongepowered.api.event.cause.EventContextKey;
-import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 
-import java.util.Map;
 import java.util.Optional;
 
 public class ArrowMechanicsListener {

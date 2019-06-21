@@ -3,9 +3,8 @@ package ru.jekarus.skyfortress.v3.config;
 import jekarus.hocon.config.serializer.ConfigSerializer;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.lobby.SfLobby;
-import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 import ru.jekarus.skyfortress.v3.serializer.view.LobbyTeamsView;
+import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 
 import java.nio.file.Paths;
 

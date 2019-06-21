@@ -5,7 +5,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.text.format.TextColor;
-import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 

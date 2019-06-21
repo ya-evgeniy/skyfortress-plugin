@@ -2,7 +2,6 @@ package ru.jekarus.skyfortress.v3;
 
 import com.google.inject.Inject;
 import lombok.Getter;
-import lombok.Setter;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
@@ -28,7 +27,6 @@ import ru.jekarus.skyfortress.v3.resource.ResourceContainer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.serializer.ShopSerializer;
 import ru.jekarus.skyfortress.v3.serializer.language.SfLanguagesSerializer;
-import ru.jekarus.skyfortress.v3.config.ResourcesConfigLoader;
 import ru.jekarus.skyfortress.v3.settings.SettingsContainer;
 import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
 

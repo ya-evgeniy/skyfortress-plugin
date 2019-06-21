@@ -4,7 +4,6 @@ import com.flowpowered.math.vector.Vector3d;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
-import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
 import java.util.Collection;

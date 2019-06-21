@@ -8,7 +8,6 @@ import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 public class DistributionController {
 

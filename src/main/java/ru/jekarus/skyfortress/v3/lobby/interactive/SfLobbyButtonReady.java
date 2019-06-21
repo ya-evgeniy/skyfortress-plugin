@@ -12,11 +12,11 @@ import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
-import ru.jekarus.skyfortress.v3.settings.GlobalLobbySettings;
-import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.settings.GlobalLobbySettings;
+import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 public class SfLobbyButtonReady extends SfLobbyButton {
