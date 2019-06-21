@@ -4,7 +4,12 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.lobby.interactive.*;
+import ru.jekarus.skyfortress.v3.lobby.interactive.SfLobbyButtonAccept;
+import ru.jekarus.skyfortress.v3.lobby.interactive.SfLobbyButtonDeny;
+import ru.jekarus.skyfortress.v3.lobby.interactive.SfLobbyButtonLeave;
+import ru.jekarus.skyfortress.v3.lobby.interactive.SfLobbyButtonReady;
+import ru.jekarus.skyfortress.v3.lobby.interactive.SfLobbyPlateJoin;
+import ru.jekarus.skyfortress.v3.lobby.interactive.SfLobbyPlateLeave;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
@@ -29,13 +34,11 @@ public class SfLobbyTeam {
 
     private SfLobbyButtonReady buttonReady;
 
-    public SfLobbyTeam(SfLobbyTeamSettings settings)
-    {
+    public SfLobbyTeam(SfLobbyTeamSettings settings) {
         this.settings = settings;
     }
 
-    public void init(SkyFortressPlugin plugin)
-    {
+    public void init(SkyFortressPlugin plugin) {
         this.plugin = plugin;
         this.settings.init(plugin);
 
@@ -50,18 +53,15 @@ public class SfLobbyTeam {
         this.buttonReady = new SfLobbyButtonReady(plugin, this, this.settings);
     }
 
-    public SfLobbyTeamSettings getSettings()
-    {
+    public SfLobbyTeamSettings getSettings() {
         return this.settings;
     }
 
-    public void setSettings(SfLobbyTeamSettings settings)
-    {
+    public void setSettings(SfLobbyTeamSettings settings) {
         this.settings = settings;
     }
 
-    public boolean standOnPlate(Player player, SfPlayer sfPlayer, BlockSnapshot snapshot)
-    {
+    public boolean standOnPlate(Player player, SfPlayer sfPlayer, BlockSnapshot snapshot) {
         if (this.joinPlate.activate(player, sfPlayer, snapshot)) {
             return true;
         }
@@ -72,17 +72,15 @@ public class SfLobbyTeam {
         return false;
     }
 
-    public boolean pressButton(Player player, SfPlayer sfPlayer, BlockSnapshot snapshot)
-    {
+    public boolean pressButton(Player player, SfPlayer sfPlayer, BlockSnapshot snapshot) {
         return
                 this.leaveButton.pressButton(player, sfPlayer, snapshot)
-                || this.acceptButton.pressButton(player, sfPlayer, snapshot)
-                || this.denyButton.pressButton(player, sfPlayer, snapshot)
-                || this.buttonReady.pressButton(player, sfPlayer, snapshot);
+                        || this.acceptButton.pressButton(player, sfPlayer, snapshot)
+                        || this.denyButton.pressButton(player, sfPlayer, snapshot)
+                        || this.buttonReady.pressButton(player, sfPlayer, snapshot);
     }
 
-    public void playerDisconnect(SfPlayer sfPlayer, Player player)
-    {
+    public void playerDisconnect(SfPlayer sfPlayer, Player player) {
         if (this.settings.waitingPlayer == sfPlayer) {
             this.settings.waitingPlayer = null;
             this.setWaitingPlayer(
@@ -92,11 +90,14 @@ public class SfLobbyTeam {
         }
 
         SfTeam gameTeam = sfPlayer.getTeam();
-        if (gameTeam != this.settings.team)
-        {
+        if (gameTeam != this.settings.team) {
             return;
         }
 
+        checkOnlinePlayers();
+    }
+
+    public void checkOnlinePlayers() {
         Collection<SfPlayer> players = this.settings.team.getPlayers();
         int countOnlinePlayers = (int) players.stream().filter(pla -> pla.getPlayer().isPresent()).count();
 
