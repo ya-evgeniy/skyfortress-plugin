@@ -13,7 +13,11 @@ import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class CaptainTarget implements Supplier<Optional<Entity>> {

@@ -1,19 +1,19 @@
 package ru.jekarus.skyfortress.v3.distribution;
 
+import lombok.Getter;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.command.distribution.captain.CaptainDistributionCommand;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainController;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
-import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
-import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public class DistributionController {
 
     private final SkyFortressPlugin plugin;
-    private Distribution current = null;
+    @Getter private Distribution current = null;
 
     public DistributionController(SkyFortressPlugin plugin) {
         this.plugin = plugin;
@@ -51,13 +51,13 @@ public class DistributionController {
         }
     }
 
-    public void runCaptain(CaptainSettings settings) {
+    public void runCaptain(CaptainSettings settings, BiConsumer<CaptainController, CaptainController.ResultMessage> consumer) {
         if (current != null) {
             return;
         }
         this.plugin.getLobby().clearWaitingPlayers();
 
-        current = new CaptainController(this.plugin, this);
+        current = new CaptainController(this.plugin, this, consumer);
         ((CaptainController) current).start(settings);
     }
 

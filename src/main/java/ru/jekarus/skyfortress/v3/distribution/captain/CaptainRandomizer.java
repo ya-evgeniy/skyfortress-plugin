@@ -12,7 +12,12 @@ import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class CaptainRandomizer {
@@ -123,7 +128,7 @@ public class CaptainRandomizer {
         }
     }
 
-    private void randomSelect() {
+    public void randomSelect() {
         CaptainsState state = this.distribution.getState();
         List<CaptainTarget> unselectedTargets = state.unselectedTargets;
 

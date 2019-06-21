@@ -18,7 +18,11 @@ import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboard;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CaptainSelection implements CaptainSelectedHandler {

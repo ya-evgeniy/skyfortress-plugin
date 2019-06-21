@@ -11,19 +11,24 @@ import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.command.distribution.captain.CaptainDistributionCommand;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigCaptain;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigPlayer;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class CaptainDistribution {
 
@@ -206,7 +211,7 @@ public class CaptainDistribution {
 //                addCaptain(((CaptainDistributionCommand.PlayerTarget) target).get(), team);
 //            }
 //            else if (target.getType() == CaptainDistributionCommand.Target.Type.RANDOM) {
-//                needRandomCaptain.add(team);
+//                needRandomCaptain.register(team);
 //            }
 //        }
 //
@@ -214,7 +219,7 @@ public class CaptainDistribution {
 //        SfPlayers playersData = SfPlayers.getInstance();
 //        for (Player player : players) {
 //            SfPlayer sfPlayer = playersData.getOrCreatePlayer(player);
-//            sfPlayers.add(sfPlayer);
+//            sfPlayers.register(sfPlayer);
 //            if (!useExistingTeams) {
 //                SfTeam playerTeam = sfPlayer.getTeam();
 //                if (playerTeam != null && playerTeam.getType() == SfTeam.Type.GAME) {
@@ -237,7 +242,7 @@ public class CaptainDistribution {
 //                    int nextCaptainIndex = random.nextInt(teamPlayers.size());
 //                    SfPlayer captain = teamPlayers.get(nextCaptainIndex);
 //
-//                    sfPlayers.remove(captain);
+//                    sfPlayers.unregister(captain);
 //                    addCaptain(captain, team);
 //
 //                    continue;
@@ -248,12 +253,12 @@ public class CaptainDistribution {
 //                throw new UnsupportedOperationException("Developer is so stupid. (Not enough players)");
 //            }
 //            int nextCaptain = random.nextInt(sfPlayers.size());
-//            SfPlayer captain = sfPlayers.remove(nextCaptain);
+//            SfPlayer captain = sfPlayers.unregister(nextCaptain);
 //            addCaptain(captain, team);
 //        }
 //
 ////        for (int i = 0; i < config.players.size() - sfPlayers.size(); i++) {
-////            sfPlayers.add(new SfPlayer(UUID.randomUUID(), "ENTITY_" + i));
+////            sfPlayers.register(new SfPlayer(UUID.randomUUID(), "ENTITY_" + i));
 ////        }
 //
 //        start(sfPlayers, useExistingTeams);
@@ -319,7 +324,7 @@ public class CaptainDistribution {
         selection.stop();
 
         SfTeam noneTeam = plugin.getTeamContainer().getNoneTeam();
-        SfLocation center = plugin.getLobby().getSettings().center;
+        SfLocation center = plugin.getSettings().getLobby().getCenter();
 
         moveToSpawn(this.state.targetByPlayerUniqueId.values(), noneTeam, center);
         moveToSpawn(this.state.captainByTeam.values(), noneTeam, center);
@@ -343,7 +348,7 @@ public class CaptainDistribution {
                         SfTeam noneTeam = plugin.getTeamContainer().getNoneTeam();
                         noneTeam.addPlayer(plugin, target.player);
                         target.player.setZone(PlayerZone.LOBBY);
-                        SfLocation center = plugin.getLobby().getSettings().center;
+                        SfLocation center = plugin.getSettings().getLobby().getCenter();
                         player.setLocationAndRotation(
                                 center.getLocation(),
                                 center.getRotation()

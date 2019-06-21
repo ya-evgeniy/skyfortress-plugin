@@ -1,23 +1,21 @@
 package ru.jekarus.skyfortress.v3.distribution.captain;
 
-import com.google.common.reflect.TypeToken;
+import jekarus.hocon.config.serializer.ConfigSerializer;
+import lombok.Getter;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.command.distribution.captain.CaptainDistributionCommand;
 import ru.jekarus.skyfortress.v3.distribution.Distribution;
 import ru.jekarus.skyfortress.v3.distribution.DistributionController;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigCaptain;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
-import ru.jekarus.skyfortress.v3.serializer.SfSerializers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -25,23 +23,28 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class CaptainController implements Distribution {
 
     private final SkyFortressPlugin plugin;
     private final DistributionController distributionController;
+    private final BiConsumer<CaptainController, ResultMessage> consumer;
 
-    private CaptainDistribution distribution;
+    @Getter private CaptainDistribution distribution;
     private Distribution.State currentState = State.STARTUP;
 
     private CaptainSettings settings;
     private boolean useExistingTeams = false;
 
-    public CaptainController(SkyFortressPlugin plugin, DistributionController distributionController) {
+    public CaptainController(SkyFortressPlugin plugin, DistributionController distributionController, BiConsumer<CaptainController, CaptainController.ResultMessage> consumer) {
         this.plugin = plugin;
         this.distributionController = distributionController;
+        this.consumer = consumer;
     }
 
     public void onDisconnect(SfPlayer sfPlayer, Player player) {
@@ -58,6 +61,7 @@ public class CaptainController implements Distribution {
 
     public void start(CaptainSettings settings) {
         if (currentState != State.STARTUP) {
+            consumer.accept(this, ResultMessage.ALREADY_STARTED);
             return;
         }
         this.settings = settings;
@@ -68,20 +72,24 @@ public class CaptainController implements Distribution {
         this.currentState = state;
         switch (state) {
             case LOAD_CONFIG:
+                this.consumer.accept(this, ResultMessage.LOAD_CONFIG);
                 loadConfig();
                 break;
             case ERROR_CONFIG:
+                this.consumer.accept(this, ResultMessage.ERROR_CONFIG);
+                this.distributionController.disposeDistribution();
                 break;
             case DISTRIBUTION:
+                this.consumer.accept(this, ResultMessage.START_DISTRIBUTION);
                 SfPlayers players = SfPlayers.getInstance();
                 Collection<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers();
                 List<SfPlayer> sfPlayers = onlinePlayers.stream().map(players::getOrCreatePlayer).collect(Collectors.toList());
-                for (int i = 0; i < 10; i++) {
-                    sfPlayers.add(new SfPlayer(
-                            UUID.randomUUID(),
-                            "ENTITY_" + i
-                    ));
-                }
+//                for (int i = 0; i < 10; i++) {
+//                    sfPlayers.register(new SfPlayer(
+//                            UUID.randomUUID(),
+//                            "ENTITY_" + i
+//                    ));
+//                }
                 this.distribution.start(this.settings, sfPlayers);
                 break;
         }
@@ -98,13 +106,15 @@ public class CaptainController implements Distribution {
 
         HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
                 .setPath(captainsFilePath)
-                .setDefaultOptions(ConfigurationOptions.defaults().setSerializers(SfSerializers.SERIALIZERS))
+//                .setDefaultOptions(ConfigurationOptions.defaults().setSerializers(SfSerializers.SERIALIZERS))
                 .build();
+
+        final ConfigSerializer serializer = new ConfigSerializer(loader);
 
         try
         {
             CommentedConfigurationNode node = loader.load();
-            CaptainConfig config = node.getNode("captain_system").getValue(TypeToken.of(CaptainConfig.class));
+            CaptainConfig config = serializer.deserialize(node, CaptainConfig.class);
 
             if (config == null) {
                 changeState(State.ERROR_CONFIG);
@@ -112,9 +122,9 @@ public class CaptainController implements Distribution {
             }
 
             for (CaptainConfigCaptain captain : config.captains) {
-                Optional<SfTeam> optionalTeam = plugin.getTeamContainer().fromUniqueId(captain.teamId);
+                Optional<SfGameTeam> optionalTeam = plugin.getTeamContainer().fromUniqueId(captain.teamId);
                 if (optionalTeam.isPresent()) {
-                    captain.team = (SfGameTeam) optionalTeam.get();
+                    captain.team = optionalTeam.get();
                 }
                 else {
                     changeState(State.ERROR_CONFIG);
@@ -125,7 +135,7 @@ public class CaptainController implements Distribution {
             distribution = new CaptainDistribution(this, this.plugin, config);
             changeState(State.DISTRIBUTION);
         }
-        catch (IOException | ObjectMappingException e)
+        catch (IOException | UnsupportedOperationException e)
         {
             changeState(State.ERROR_CONFIG);
             e.printStackTrace();
@@ -164,6 +174,15 @@ public class CaptainController implements Distribution {
                 }
             });
         }
+    }
+
+    public enum ResultMessage {
+
+        ALREADY_STARTED,
+        LOAD_CONFIG,
+        ERROR_CONFIG,
+        START_DISTRIBUTION
+
     }
 
 }

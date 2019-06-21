@@ -2,7 +2,13 @@ package ru.jekarus.skyfortress.v3.distribution.captain;
 
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class CaptainsState {
 
