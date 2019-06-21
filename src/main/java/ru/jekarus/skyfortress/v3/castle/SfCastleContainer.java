@@ -1,47 +1,45 @@
 package ru.jekarus.skyfortress.v3.castle;
 
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
+import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class SfCastleContainer {
 
-    private Map<String, SfCastle> castleById = new HashMap<>();
+    private Map<String, SfCastle> castlesById = new HashMap<>();
 
-    public SfCastleContainer()
-    {
-
-    }
-
-    public void init(SkyFortressPlugin plugin)
-    {
-        for (SfCastle castle : this.castleById.values())
-        {
-            castle.init(plugin);
+    public void init(SkyFortressPlugin plugin) {
+        for (SfCastle castle : this.castlesById.values()) {
+            final String teamId = castle.getTeamId();
+            Optional<SfGameTeam> optionalTeam = plugin.getTeamContainer().fromUniqueId(teamId);
+            castle.setTeam(
+                    optionalTeam.orElseThrow(() -> new UnsupportedOperationException(String.format("Team with id '%s' is not registered", teamId)))
+            );
+            castle.getTeam().setCastle(castle);
         }
     }
 
-    public void add(SfCastle castle)
-    {
-        this.castleById.put(castle.getUniqueId(), castle);
+    public void register(SfCastle castle) {
+        this.castlesById.put(castle.getUniqueId(), castle);
     }
 
-    public void remove(SfCastle castle)
-    {
-        this.castleById.remove(castle.getUniqueId());
+    public void unregister(SfCastle castle) {
+        this.castlesById.remove(castle.getUniqueId());
     }
 
-    public Optional<SfCastle> fromUniqueId(String uniqueId)
-    {
-        return Optional.ofNullable(this.castleById.get(uniqueId));
+    public Optional<SfCastle> fromUniqueId(String uniqueId) {
+        return Optional.ofNullable(this.castlesById.get(uniqueId));
     }
 
-    public Collection<SfCastle> getCollection()
-    {
-        return this.castleById.values();
+    public List<SfCastle> getCollection() {
+        return Collections.unmodifiableList(new ArrayList<>(this.castlesById.values()));
     }
 
 }
