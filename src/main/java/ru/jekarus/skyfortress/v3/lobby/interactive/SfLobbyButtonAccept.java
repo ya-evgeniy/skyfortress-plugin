@@ -36,14 +36,14 @@ public class SfLobbyButtonAccept extends SfLobbyButton {
         SfMessages messages = this.plugin.getMessages();
         SfLobbyMessages lobby = messages.getLobby();
 
-        if (this.settings.captain != sfPlayer && plugin.getLobby().getSettings().useLobbyCaptainSystem) {
+        if (this.settings.captain != sfPlayer && plugin.getSettings().getGlobalLobby().isUseLobbyCaptainSystem()) {
             player.sendMessage(
                     lobby.teammateCaptainCantAccept(sfPlayer)
             );
             return true;
         }
 
-        if (!plugin.getLobby().getSettings().canAccept) {
+        if (!plugin.getSettings().getGlobalLobby().isCanUseAcceptButton()) {
             player.sendMessage(
                     lobby.cantAccept(sfPlayer)
             );

@@ -36,14 +36,14 @@ public class SfLobbyButtonDeny extends SfLobbyButton {
         SfMessages messages = this.plugin.getMessages();
         SfLobbyMessages lobby = messages.getLobby();
 
-        if (this.settings.captain != sfPlayer && plugin.getLobby().getSettings().useLobbyCaptainSystem) {
+        if (this.settings.captain != sfPlayer && plugin.getSettings().getGlobalLobby().isUseLobbyCaptainSystem()) {
             player.sendMessage(
                     lobby.teammateCaptainCantDeny(sfPlayer)
             );
             return true;
         }
 
-        if (!plugin.getLobby().getSettings().canCancel) {
+        if (!plugin.getSettings().getGlobalLobby().isCanUseDenyButton()) {
             player.sendMessage(
                     lobby.cantDeny(sfPlayer)
             );

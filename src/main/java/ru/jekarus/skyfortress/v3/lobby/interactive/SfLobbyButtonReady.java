@@ -12,7 +12,8 @@ import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbySettings;
+import ru.jekarus.skyfortress.v3.settings.GlobalLobbySettings;
+import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
@@ -49,7 +50,8 @@ public class SfLobbyButtonReady extends SfLobbyButton {
         SfMessages messages = plugin.getMessages();
         SfLobbyMessages lobby = messages.getLobby();
 
-        if (this.settings.captain != sfPlayer && plugin.getLobby().getSettings().useLobbyCaptainSystem) {
+        final GlobalLobbySettings lobbySettings = plugin.getSettings().getGlobalLobby();
+        if (this.settings.captain != sfPlayer && lobbySettings.isUseLobbyCaptainSystem()) {
             if (settings.ready) {
                 player.sendMessage(
                         lobby.teammateCaptainCantUnready(sfPlayer)
@@ -63,7 +65,7 @@ public class SfLobbyButtonReady extends SfLobbyButton {
             return true;
         }
 
-        SfLobbySettings settings = this.plugin.getLobby().getSettings();
+        LobbySettings settings = this.plugin.getSettings().getLobby();
 //        if (!settings.canReady && !settings.canUnready) {
 //            player.sendMessage(Text.of("(all) Готовность выключена"));
 //            return true;
@@ -71,7 +73,7 @@ public class SfLobbyButtonReady extends SfLobbyButton {
 
         boolean newValue = !this.settings.ready;
         if (newValue) {
-            if (!settings.canReady) {
+            if (!lobbySettings.isCanSetReady()) {
                 player.sendMessage(
                         lobby.cantReady(sfPlayer)
                 );
@@ -79,7 +81,7 @@ public class SfLobbyButtonReady extends SfLobbyButton {
             }
         }
         else {
-            if (!settings.canUnready) {
+            if (!lobbySettings.isCanSetUnready()) {
                 player.sendMessage(
                         lobby.cantUnready(sfPlayer)
                 );

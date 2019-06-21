@@ -37,7 +37,7 @@ public class SfLobbyPlateLeave extends SfLobbyPlate {
 
         SfMessages messages = this.plugin.getMessages();
         SfLobbyMessages lobby = messages.getLobby();
-        if (!plugin.getLobby().getSettings().canLeave) {
+        if (!plugin.getSettings().getGlobalLobby().isCanLeaveTeam()) {
             player.sendMessage(
                     lobby.cantLeave(sfPlayer)
             );
@@ -52,6 +52,8 @@ public class SfLobbyPlateLeave extends SfLobbyPlate {
                 settings.team.getPlayers(),
                 lobby.teammateLeaved(sfPlayer)
         );
+
+        this.lobbyTeam.checkOnlinePlayers();
 
         if (settings.captain == sfPlayer) {
             settings.captain = null;
