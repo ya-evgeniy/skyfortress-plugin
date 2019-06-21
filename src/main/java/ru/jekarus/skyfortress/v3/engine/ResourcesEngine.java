@@ -2,27 +2,23 @@ package ru.jekarus.skyfortress.v3.engine;
 
 import org.spongepowered.api.scheduler.Task;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.resource.SfResource;
-import ru.jekarus.skyfortress.v3.resource.SfResourceContainer;
+import ru.jekarus.skyfortress.v3.resource.ResourceContainer;
 
 public class ResourcesEngine {
 
     private final SkyFortressPlugin plugin;
-    private final SfResourceContainer container;
+    private final ResourceContainer resourceContainer;
 
     private Task task;
     private boolean enabled = false;
 
-    public ResourcesEngine(SkyFortressPlugin plugin)
-    {
+    public ResourcesEngine(SkyFortressPlugin plugin, ResourceContainer resourceContainer) {
         this.plugin = plugin;
-        this.container = this.plugin.getResourceContainer();
+        this.resourceContainer = resourceContainer;
     }
 
-    public void start()
-    {
-        if (this.enabled)
-        {
+    public void start() {
+        if (this.enabled) {
             return;
         }
         this.enabled = true;
@@ -33,22 +29,15 @@ public class ResourcesEngine {
                 .submit(this.plugin);
     }
 
-    public void stop()
-    {
-        if (!this.enabled)
-        {
+    public void stop() {
+        if (!this.enabled) {
             return;
         }
         this.enabled = false;
         this.task.cancel();
     }
 
-    private void run()
-    {
-        for (SfResource resource : this.container.getCollection())
-        {
-            resource.tick();
-        }
+    private void run() {
+        this.resourceContainer.tick();
     }
-
 }
