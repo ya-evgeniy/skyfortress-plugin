@@ -1,9 +1,13 @@
 package ru.jekarus.skyfortress.v3.player;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
+import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,88 +15,50 @@ import java.util.UUID;
 
 public class SfPlayer {
 
-    private final UUID uniqueId;
-    private final String name;
+    @NonNull @Getter private final UUID uniqueId;
+    @NonNull @Getter private final String name;
 
-    private SfTeam team = null;
-    private Locale locale = null;
+    private WeakReference<Player> playerReference = new WeakReference<>(null);
 
-    private PlayerZone zone = PlayerZone.LOBBY;
-    private long lastPlayed = -1;
+    @Getter @Setter private SfTeam team = null;
+    @NonNull @Getter @Setter private Locale locale = null;
+
+    @NonNull @Getter @Setter private PlayerZone zone = PlayerZone.LOBBY;
+    @Getter @Setter private long lastPlayed = -1;
 
     public long captureMessageTime = 0;
 
-    public SfPlayer(Player player) {
+    public SfPlayer(@NonNull Player player) {
         this(player.getUniqueId(), player.getName());
+        this.playerReference = new WeakReference<>(player);
     }
 
-    public SfPlayer(UUID uniqueId, String name) {
+    public SfPlayer(@NonNull UUID uniqueId, @NonNull String name) {
         this.uniqueId = uniqueId;
         this.name = name;
     }
 
-    public UUID getUniqueId()
-    {
-        return this.uniqueId;
-    }
-
-    public String getName()
-    {
-        return this.name;
-    }
-
-    public SfTeam getTeam()
-    {
-        return this.team;
-    }
-
-    public void setTeam(SfTeam team)
-    {
-        this.team = team;
-    }
-
-    public long getLastPlayed()
-    {
-        return this.lastPlayed;
-    }
-
-    public void setLastPlayed(long lastPlayed)
-    {
-        this.lastPlayed = lastPlayed;
-    }
-
-    public Optional<Player> getPlayer()
-    {
-        return Sponge.getServer().getPlayer(this.uniqueId);
-    }
-
-    public PlayerZone getZone() {
-        return this.zone;
-    }
-
-    public void setZone(PlayerZone zone) {
-        this.zone = zone;
-    }
-
-    public void setLocale(Locale locale)
-    {
-        this.locale = locale;
-    }
-
-    public Locale getLocale()
-    {
-        return this.locale;
+    public Optional<Player> getPlayer() {
+        final Player player = this.playerReference.get();
+        if (player != null && !player.isRemoved()) {
+            return Optional.of(player);
+        }
+        final Optional<Player> optionalPlayer = Sponge.getServer().getPlayer(this.uniqueId);
+        if (optionalPlayer.isPresent()) {
+            this.playerReference = new WeakReference<>(optionalPlayer.get());
+        }
+        else {
+            this.playerReference.clear();
+        }
+        return optionalPlayer;
     }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         SfPlayer sfPlayer = (SfPlayer) o;
@@ -100,8 +66,7 @@ public class SfPlayer {
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(uniqueId);
     }
 

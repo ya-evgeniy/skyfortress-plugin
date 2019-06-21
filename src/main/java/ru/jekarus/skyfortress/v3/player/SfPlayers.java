@@ -2,7 +2,12 @@ package ru.jekarus.skyfortress.v3.player;
 
 import org.spongepowered.api.entity.living.player.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class SfPlayers {
 
@@ -10,43 +15,35 @@ public class SfPlayers {
 
     private Map<UUID, SfPlayer> players = new HashMap<>();
 
-    public SfPlayer getOrCreatePlayer(Player player)
-    {
+    public SfPlayer getOrCreatePlayer(Player player) {
         SfPlayer sfPlayer = this.players.get(player.getUniqueId());
-        if (sfPlayer == null)
-        {
+        if (sfPlayer == null) {
             sfPlayer = new SfPlayer(player);
             this.players.put(player.getUniqueId(), sfPlayer);
             return sfPlayer;
         }
-        else
-        {
+        else {
             return sfPlayer;
         }
     }
 
-    public Optional<SfPlayer> getPlayer(UUID uniqueId)
-    {
+    public Optional<SfPlayer> getPlayer(UUID uniqueId) {
         return Optional.ofNullable(this.players.get(uniqueId));
     }
 
-    public Optional<SfPlayer> getPlayer(Player player)
-    {
+    public Optional<SfPlayer> getPlayer(Player player) {
         return this.getPlayer(player.getUniqueId());
     }
 
-    public static SfPlayers getInstance()
-    {
+    public static SfPlayers getInstance() {
         return instance;
     }
 
-    public void remove(UUID uniqueId)
-    {
+    public void remove(UUID uniqueId) {
         this.players.remove(uniqueId);
     }
 
-    public void remove(Player player)
-    {
+    public void remove(Player player) {
         this.remove(player.getUniqueId());
     }
 
