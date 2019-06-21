@@ -14,7 +14,6 @@ import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeamSettings;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
-import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class SfTeamCommand extends SfCommand {
 
 //                    if (team == null)
 //                    {
-//                        lobby.commandPlayerTeamNotFound(sfPlayer, )
+//                        globalLobby.commandPlayerTeamNotFound(sfPlayer, )
 //                        src.sendMessage(Text.of("Команда не найдена"));
 //                        return CommandResult.empty();
 //                    }
@@ -150,8 +149,8 @@ public class SfTeamCommand extends SfCommand {
         SfTeam team = sfPlayer.getTeam();
         if (team.getType() == SfTeam.Type.NONE) {
             player.setLocationAndRotation(
-                    plugin.getLobby().getSettings().center.getLocation(),
-                    plugin.getLobby().getSettings().center.getRotation()
+                    plugin.getSettings().getLobby().getCenter().getLocation(),
+                    plugin.getSettings().getLobby().getCenter().getRotation()
             );
             sfPlayer.setZone(PlayerZone.LOBBY);
             return;

@@ -9,19 +9,27 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.command.SfCommand;
-import ru.jekarus.skyfortress.v3.lobby.SfLobbySettings;
+import ru.jekarus.skyfortress.v3.settings.GlobalLobbySettings;
+import ru.jekarus.skyfortress.v3.settings.LobbySettings;
+import ru.jekarus.skyfortress.v3.settings.SettingsContainer;
 import ru.jekarus.skyfortress.v3.utils.SfLocation;
 
-import static org.spongepowered.api.command.args.GenericArguments.*;
+import static org.spongepowered.api.command.args.GenericArguments.bool;
+import static org.spongepowered.api.command.args.GenericArguments.doubleNum;
+import static org.spongepowered.api.command.args.GenericArguments.location;
+import static org.spongepowered.api.command.args.GenericArguments.none;
+import static org.spongepowered.api.command.args.GenericArguments.optional;
 
 public class SfLobbySettingsCommand extends SfCommand {
 
     @Override
     public CommandSpec create(SkyFortressPlugin plugin) {
-        SfLobbySettings settings = plugin.getLobby().getSettings();
+        final SettingsContainer settings = plugin.getSettings();
+        final GlobalLobbySettings globalLobbySettings = settings.getGlobalLobby();
+        final LobbySettings lobbySettings = settings.getLobby();
 
         CommandFlags.Builder builder = GenericArguments.flags();
-        builder.valueFlag(optional(bool(Text.of("can_spectate_value"))), "-can_spectate");
+//        builder.valueFlag(optional(bool(Text.of("can_spectate_value"))), "-can_spectate");
         builder.valueFlag(optional(bool(Text.of("can_join_value"))), "-can_join");
         builder.valueFlag(optional(bool(Text.of("can_leave_value"))), "-can_leave");
         builder.valueFlag(optional(bool(Text.of("can_ready_value"))), "-can_ready");
@@ -30,40 +38,42 @@ public class SfLobbySettingsCommand extends SfCommand {
         builder.valueFlag(optional(bool(Text.of("can_cancel_value"))), "-can_cancel");
         builder.valueFlag(optional(bool(Text.of("use_lobby_captain_system_value"))), "-use_lobby_captain_system");
         builder.valueFlag(optional(location(Text.of("center_value"))), "-center");
-        builder.valueFlag(optional(doubleNum(Text.of("min_y_value"))),"-min_y");
+        builder.valueFlag(optional(doubleNum(Text.of("min_y_value"))),"-minY");
 
         return CommandSpec.builder()
                 .arguments(builder.buildWith(none()))
                 .executor((src, args) -> {
-                    args.getOne("can_spectate_value").ifPresent(value -> {
-                        settings.canSpectate = (Boolean) value;
-                    });
+//                    args.getOne("can_spectate_value").ifPresent(value -> {
+//                        settings.set;
+//                    });
                     args.getOne("can_join_value").ifPresent(value -> {
-                        settings.canJoin = (Boolean) value;
+                        globalLobbySettings.setCanJoinTeam((Boolean) value);
                     });
                     args.getOne("can_leave_value").ifPresent(value -> {
-                        settings.canLeave = (Boolean) value;
+                        globalLobbySettings.setCanLeaveTeam((Boolean) value);
                     });
                     args.getOne("can_ready_value").ifPresent(value -> {
-                        settings.canReady = (Boolean) value;
+                        globalLobbySettings.setCanSetReady((Boolean) value);
                     });
                     args.getOne("can_unready_value").ifPresent(value -> {
-                        settings.canUnready = (Boolean) value;
+                        globalLobbySettings.setCanSetUnready((Boolean) value);
                     });
                     args.getOne("can_accept_value").ifPresent(value -> {
-                        settings.canAccept = (Boolean) value;
+                        globalLobbySettings.setCanUseAcceptButton((Boolean) value);
                     });
                     args.getOne("can_cancel_value").ifPresent(value -> {
-                        settings.canCancel = (Boolean) value;
+                        globalLobbySettings.setCanUseDenyButton((Boolean) value);
                     });
                     args.getOne("use_lobby_captain_system_value").ifPresent(value -> {
-                        settings.useLobbyCaptainSystem = (Boolean) value;
+                        globalLobbySettings.setUseLobbyCaptainSystem((Boolean) value);
                     });
                     args.getOne("center_value").ifPresent(value -> {
-                        settings.center = new SfLocation((Location<World>) value, settings.center.getRotation());
+                        lobbySettings.setCenter(
+                                new SfLocation((Location<World>) value, lobbySettings.getCenter().getRotation())
+                        );
                     });
                     args.getOne("min_y_value").ifPresent(value -> {
-                        settings.min_y = (Double) value;
+                        lobbySettings.setMinY((Double) value);
                     });
 //                    if (args.hasAny("can_spectate")) {
 //                        System.out.println("has can_spectate");
@@ -98,8 +108,8 @@ public class SfLobbySettingsCommand extends SfCommand {
 //                    if (args.hasAny("can_cancel")) {
 //                        System.out.println("has can_cancel");
 //                        Optional<Boolean> value = args.getOne("can_cancel_value");
-//                        if (value.isPresent()) settings.canCancel = value.get();
-//                        else src.sendMessage(Text.of("can_cancel = " + settings.canCancel));
+//                        if (value.isPresent()) settings.canDeny = value.get();
+//                        else src.sendMessage(Text.of("can_cancel = " + settings.canDeny));
 //                    }
 //                    if (args.hasAny("use_lobby_captain_system")) {
 //                        System.out.println("has use_lobby_captain_system");
@@ -113,11 +123,11 @@ public class SfLobbySettingsCommand extends SfCommand {
 //                        if (value.isPresent()) settings.center = new SfLocation(value.get(), settings.center.getRotation());
 //                        else src.sendMessage(Text.of("center = " + settings.center));
 //                    }
-//                    if (args.hasAny("min_y")) {
-//                        System.out.println("has min_y");
+//                    if (args.hasAny("minY")) {
+//                        System.out.println("has minY");
 //                        Optional<Double> value = args.getOne("min_y_value");
-//                        if (value.isPresent()) settings.min_y = value.get();
-//                        else src.sendMessage(Text.of("min_y = " + settings.min_y));
+//                        if (value.isPresent()) settings.minY = value.get();
+//                        else src.sendMessage(Text.of("minY = " + settings.minY));
 //                    }
                     return CommandResult.success();
                 })

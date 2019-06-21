@@ -1,5 +1,6 @@
 package ru.jekarus.skyfortress.v3.command.distribution.captain;
 
+import lombok.val;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -9,8 +10,11 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.command.SfCommand;
+import ru.jekarus.skyfortress.v3.distribution.Distribution;
 import ru.jekarus.skyfortress.v3.distribution.DistributionController;
+import ru.jekarus.skyfortress.v3.distribution.captain.CaptainController;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
+import ru.jekarus.skyfortress.v3.distribution.random.RandomDistribution;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lobby.SfLobbyTeam;
 import ru.jekarus.skyfortress.v3.player.SfPlayer;
@@ -18,7 +22,12 @@ import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 public class CaptainDistributionCommand extends SfCommand {
 
@@ -52,6 +61,9 @@ public class CaptainDistributionCommand extends SfCommand {
                 )
                 .child(
                         new Info(this).create(plugin), "info"
+                )
+                .child(
+                        new SelectNext(this).create(plugin), "select_next"
                 )
                 .build();
     }
@@ -106,7 +118,23 @@ public class CaptainDistributionCommand extends SfCommand {
                         this.command.settings.setUseExistingTeams(args.hasAny("use_existing_teams"));
 
                         plugin.getDistributionController().runCaptain(
-                                this.command.settings
+                                this.command.settings,
+                                (captainController, resultMessage) -> {
+                                    switch (resultMessage) {
+                                        case ALREADY_STARTED:
+                                            src.sendMessage(Text.of("Already started"));
+                                            break;
+                                        case LOAD_CONFIG:
+                                            src.sendMessage(Text.of("Load config..."));
+                                            break;
+                                        case ERROR_CONFIG:
+                                            src.sendMessage(Text.of("Config parse error"));
+                                            break;
+                                        case START_DISTRIBUTION:
+                                            src.sendMessage(Text.of("Starting..."));
+                                            break;
+                                    }
+                                }
                         );
 
                         return CommandResult.success();
@@ -383,6 +411,48 @@ public class CaptainDistributionCommand extends SfCommand {
                         if (disabled != null) {
                             player.sendMessage(disabled);
                         }
+
+                        return CommandResult.success();
+                    })
+                    .build();
+        }
+
+    }
+
+    public static class SelectNext extends SfCommand {
+
+        private final CaptainDistributionCommand command;
+
+        public SelectNext(CaptainDistributionCommand command) {
+            this.command = command;
+        }
+
+        @Override
+        public CommandSpec create(SkyFortressPlugin plugin) {
+            return CommandSpec.builder()
+                    .executor((src, args) -> {
+
+                        final val distributionController = plugin.getDistributionController();
+                        final val current = distributionController.getCurrent();
+                        if (current == null) {
+                            System.out.println("current");
+                            return CommandResult.success();
+                        }
+
+                        if (current.getType() != Distribution.Type.CAPTAIN) {
+                            System.out.println("not captain");
+                            return CommandResult.success();
+                        }
+
+                        final val captainController = (CaptainController) current;
+                        final val distribution = captainController.getDistribution();
+
+                        if (distribution == null) {
+                            System.out.println("dist");
+                            return CommandResult.success();
+                        }
+
+                        distribution.getCaptainRandomizer().randomSelect();
 
                         return CommandResult.success();
                     })
