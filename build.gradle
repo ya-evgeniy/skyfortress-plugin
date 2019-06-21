@@ -5,18 +5,39 @@ apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'sponge'
-        url = 'https://repo.spongepowered.org/maven'
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
+        maven {
+            name "jitpack"
+            url "https://jitpack.io"
+        }
     }
+}
+
+configurations {
+    // configuration that holds jars to include in the jar
+    extraLibs
 }
 
 dependencies {
     compile 'org.spongepowered:spongeapi:7.2.0-SNAPSHOT'
     
     compileOnly 'org.projectlombok:lombok:1.18.6'
+    extraLibs 'com.github.JekaRUS:config-serializer:build-7'
+    configurations.compile.extendsFrom(configurations.extraLibs)
+}
+
+jar {
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 compileJava.options.encoding = 'UTF-8'
