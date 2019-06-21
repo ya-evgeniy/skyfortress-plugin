@@ -40,9 +40,16 @@ public class SfLobbyPlateJoin extends SfLobbyPlate {
         }
 
         SfMessages messages = this.plugin.getMessages();
-        if (!plugin.getLobby().getSettings().canJoin) {
+        if (!plugin.getSettings().getGlobalLobby().isCanJoinTeam()) {
             player.sendMessage(
                     messages.getLobby().cantJoin(sfPlayer)
+            );
+            return true;
+        }
+
+        if (plugin.getDistributionController().isEnabled()) {
+            player.sendMessage(
+                    messages.getLobby().cantJoinWhenDistribution(sfPlayer)
             );
             return true;
         }
