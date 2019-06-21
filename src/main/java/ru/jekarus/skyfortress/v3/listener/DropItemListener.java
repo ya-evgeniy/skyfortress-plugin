@@ -15,55 +15,31 @@ public class DropItemListener {
 
     private final SkyFortressPlugin plugin;
 
-    public DropItemListener(SkyFortressPlugin plugin)
-    {
+    public DropItemListener(SkyFortressPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public void register()
-    {
+    public void register() {
         Sponge.getEventManager().registerListeners(this.plugin, this);
     }
 
-    public void unregister()
-    {
+    public void unregister() {
         Sponge.getEventManager().unregisterListeners(this);
     }
 
     @Listener
-    public void onDrop(DropItemEvent.Destruct event)
-    {
-        for (Entity entity : event.getEntities())
-        {
-            if (!entity.getType().equals(EntityTypes.ITEM))
-            {
+    public void onDrop(DropItemEvent.Destruct event) {
+        for (Entity entity : event.getEntities()) {
+            if (!entity.getType().equals(EntityTypes.ITEM)) {
                 continue;
             }
             Item item = (Item) entity;
-//            if (item.getItemType().equals(ItemTypes.LAPIS_BLOCK))
-//            {
-//                item.offer(
-//                        Keys.REPRESENTED_ITEM,
-//                        ItemStack.builder()
-//                                .itemType(ItemTypes.DYE)
-//                                .add(Keys.DYE_COLOR, DyeColors.BLUE)
-//                                .quantity(1)
-//                                .build()
-//                                .createSnapshot()
-//                );
-//            }
-            if (item.getItemType().equals(ItemTypes.GOLD_ORE))
-            {
+            if (item.getItemType().equals(ItemTypes.GOLD_ORE)) {
                 item.offer(Keys.REPRESENTED_ITEM, ItemStack.of(ItemTypes.GOLD_INGOT, 1).createSnapshot());
             }
-            else if (item.getItemType().equals(ItemTypes.IRON_ORE))
-            {
+            else if (item.getItemType().equals(ItemTypes.IRON_ORE)) {
                 item.offer(Keys.REPRESENTED_ITEM, ItemStack.of(ItemTypes.IRON_INGOT, 1).createSnapshot());
             }
-//            else if (item.getItemType().equals(ItemTypes.GOLD_BLOCK))
-//            {
-//                item.offer(Keys.REPRESENTED_ITEM, ItemStack.of(ItemTypes.GOLD_INGOT, 1).createSnapshot());
-//            }
         }
     }
 
