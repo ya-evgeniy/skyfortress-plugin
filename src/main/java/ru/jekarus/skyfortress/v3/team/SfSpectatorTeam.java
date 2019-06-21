@@ -1,22 +1,12 @@
 package ru.jekarus.skyfortress.v3.team;
 
+import lombok.NonNull;
 import org.spongepowered.api.text.format.TextColor;
 
 public class SfSpectatorTeam extends SfTeam {
 
-    public SfSpectatorTeam()
-    {
-
+    public SfSpectatorTeam(@NonNull String uniqueId, @NonNull TextColor color) {
+        super(Type.SPECTATOR, uniqueId, color);
     }
 
-    public SfSpectatorTeam(String uniqueId, TextColor color)
-    {
-        super(uniqueId, color);
-    }
-
-    @Override
-    public Type getType()
-    {
-        return Type.SPECTATOR;
-    }
 }

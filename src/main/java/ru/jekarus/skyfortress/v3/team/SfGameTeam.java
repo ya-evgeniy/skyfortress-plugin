@@ -1,5 +1,8 @@
 package ru.jekarus.skyfortress.v3.team;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.text.format.TextColor;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
@@ -8,51 +11,12 @@ import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 public class SfGameTeam extends SfTeam {
 
-    private String castleId;
-    private SfCastle castle;
-    private DyeColor blockColor;
+    @Getter @Setter private SfCastle castle;
+    @Getter @Setter private DyeColor blockColor;
 
-    public SfGameTeam()
-    {
-
-    }
-
-    public SfGameTeam(String uniqueId, String castleId, TextColor color)
-    {
-        super(uniqueId, color);
-        this.castleId = castleId;
+    public SfGameTeam(@NonNull String uniqueId, @NonNull TextColor color) {
+        super(Type.GAME, uniqueId, color);
         this.blockColor = SfUtils.getDyeColorFromTextColor(color);
     }
 
-    @Override
-    public void init(SkyFortressPlugin plugin)
-    {
-        super.init(plugin);
-        this.castle = plugin.getCastleContainer().fromUniqueId(this.castleId).orElse(null);
-    }
-
-    public String getCastleId()
-    {
-        return this.castleId;
-    }
-
-    public void setCastleId(String castleId)
-    {
-        this.castleId = castleId;
-    }
-
-    public SfCastle getCastle()
-    {
-        return this.castle;
-    }
-
-    public DyeColor getBlockColor() {
-        return this.blockColor;
-    }
-
-    @Override
-    public Type getType()
-    {
-        return Type.GAME;
-    }
 }
