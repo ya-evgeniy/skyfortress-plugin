@@ -38,12 +38,12 @@ import java.util.Optional;
 public class PlayerDeathListener {
 
     private final SkyFortressPlugin plugin;
-    private final PlayersDataContainer players;
+    private final PlayersDataContainer playersData;
 
     public PlayerDeathListener(SkyFortressPlugin plugin)
     {
         this.plugin = plugin;
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
     }
 
     public void register()
@@ -90,7 +90,7 @@ public class PlayerDeathListener {
 
     private void checkPlayerLost(Player player)
     {
-        Optional<PlayerData> optionalSfPlayer = this.players.get(player);
+        Optional<PlayerData> optionalSfPlayer = this.playersData.get(player);
         if (!optionalSfPlayer.isPresent())
         {
             return;

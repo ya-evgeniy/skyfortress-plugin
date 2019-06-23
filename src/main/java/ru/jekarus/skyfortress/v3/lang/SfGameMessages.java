@@ -15,13 +15,13 @@ public class SfGameMessages {
     private final SkyFortressPlugin plugin;
     private final SfMessages messages;
 
-    private final PlayersDataContainer players;
+    private final PlayersDataContainer playersData;
 
     public SfGameMessages(SkyFortressPlugin plugin, SfMessages messages) {
         this.plugin = plugin;
         this.messages = messages;
 
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
     }
 
     public Map<Locale, Text> castleCapture(PlayerData player, SfTeam team) {

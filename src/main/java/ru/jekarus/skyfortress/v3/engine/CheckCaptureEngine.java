@@ -23,7 +23,7 @@ public class CheckCaptureEngine {
     private final SfTeamContainer teamContainer;
     private final SfCastleContainer castleContainer;
 
-    private final PlayersDataContainer players;
+    private final PlayersDataContainer playersData;
 
     private Task task;
     private boolean enabled = false;
@@ -36,7 +36,7 @@ public class CheckCaptureEngine {
         this.teamContainer = this.plugin.getTeamContainer();
         this.castleContainer = this.plugin.getCastleContainer();
 
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
     }
 
     public void start()

@@ -20,11 +20,11 @@ import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 public class PlayerRespawnListener {
 
     private final SkyFortressPlugin plugin;
-    private PlayersDataContainer players;
+    private PlayersDataContainer playersData;
 
     public PlayerRespawnListener(SkyFortressPlugin plugin) {
         this.plugin = plugin;
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
     }
 
     public void register() {
@@ -37,7 +37,7 @@ public class PlayerRespawnListener {
 
     @Listener
     public void onRespawn(RespawnPlayerEvent event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = this.players.getOrCreateData(player);
+        PlayerData playerData = this.playersData.getOrCreateData(player);
         SfTeam playerTeam = playerData.getTeam();
         SfGameStageType gameStage = plugin.getGame().getStage();
         if (playerTeam.getType() == SfTeam.Type.GAME && gameStage == SfGameStageType.IN_GAME) {

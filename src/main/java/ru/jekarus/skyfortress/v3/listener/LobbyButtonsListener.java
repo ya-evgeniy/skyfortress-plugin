@@ -18,12 +18,12 @@ import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 public class LobbyButtonsListener {
 
     private final SkyFortressPlugin plugin;
-    private final PlayersDataContainer players;
+    private final PlayersDataContainer playersData;
 
     public LobbyButtonsListener(SkyFortressPlugin plugin)
     {
         this.plugin = plugin;
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
     }
 
     public void register()
@@ -39,7 +39,7 @@ public class LobbyButtonsListener {
     @Listener
     public void onInteract(ChangeBlockEvent.Modify event, @First Player player)
     {
-        PlayerData playerData = this.players.getOrCreateData(player);
+        PlayerData playerData = this.playersData.getOrCreateData(player);
         for (Transaction<BlockSnapshot> transaction : event.getTransactions())
         {
             BlockSnapshot original = transaction.getOriginal();

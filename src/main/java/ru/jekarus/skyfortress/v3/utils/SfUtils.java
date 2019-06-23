@@ -47,7 +47,7 @@ public class SfUtils {
     public static void setPlayerSpectator(Player player)
     {
         SkyFortressPlugin plugin = SkyFortressPlugin.getInstance();
-        PlayersDataContainer players = PlayersDataContainer.getInstance();
+        PlayersDataContainer players = plugin.getPlayersDataContainer();
 
         PlayerData playerData = players.getOrCreateData(player);
         plugin.getTeamContainer().getSpectatorTeam().addPlayer(plugin, playerData);

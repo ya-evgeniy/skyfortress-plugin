@@ -11,7 +11,6 @@ import java.util.UUID;
 
 public class PlayersDataContainer {
 
-    private static final PlayersDataContainer instance = new PlayersDataContainer();
     private Map<UUID, PlayerData> dataByUniqueId = new HashMap<>();
 
     public PlayerData getOrCreateData(Player player) {
@@ -33,10 +32,6 @@ public class PlayersDataContainer {
 
     public Optional<PlayerData> get(Player player) {
         return this.get(player.getUniqueId());
-    }
-
-    public static PlayersDataContainer getInstance() {
-        return instance;
     }
 
     public void remove(UUID uniqueId) {

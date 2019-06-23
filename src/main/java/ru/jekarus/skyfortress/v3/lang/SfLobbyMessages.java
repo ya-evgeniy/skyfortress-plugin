@@ -14,17 +14,17 @@ public class SfLobbyMessages {
 
     private final SkyFortressPlugin plugin;
     private final SfMessages messages;
-    private final PlayersDataContainer players;
+    private final PlayersDataContainer playersData;
 
     public SfLobbyMessages(SkyFortressPlugin plugin, SfMessages messages) {
         this.plugin = plugin;
         this.messages = messages;
 
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
     }
 
     private SfLanguage getLang(Player player) {
-        return getLang(players.getOrCreateData(player));
+        return getLang(playersData.getOrCreateData(player));
     }
 
     private SfLanguage getLang(PlayerData player) {

@@ -14,11 +14,11 @@ import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 public class PlayerInteractListener {
 
     private final SkyFortressPlugin plugin;
-    private final PlayersDataContainer players;
+    private final PlayersDataContainer playersData;
 
     public PlayerInteractListener(SkyFortressPlugin plugin) {
         this.plugin = plugin;
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
     }
 
     public void register() {
@@ -33,7 +33,7 @@ public class PlayerInteractListener {
     public void onEntityInteract(InteractEntityEvent event, @First Player player) {
         Entity entity = event.getTargetEntity();
         if (entity.getType().equals(EntityTypes.ILLUSION_ILLAGER)) {
-            final val sfPlayer = this.players.getOrCreateData(player);
+            final val sfPlayer = this.playersData.getOrCreateData(player);
             final val shop = this.plugin.getShops().getShop(sfPlayer.getLocale());
             if (shop != null) {
                 player.openInventory(shop.getInventory());

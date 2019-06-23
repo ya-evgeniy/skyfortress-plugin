@@ -33,7 +33,7 @@ public class SfTeamCommand extends SfCommand {
             teamsMap.put(team.getUniqueId(), team);
         }
 
-        PlayersDataContainer players = PlayersDataContainer.getInstance();
+        PlayersDataContainer playersData = plugin.getPlayersDataContainer();
 
         SfMessages messages = plugin.getMessages();
         SfLobbyMessages lobby = messages.getLobby();
@@ -52,7 +52,7 @@ public class SfTeamCommand extends SfCommand {
                     }
 
                     Player player = (Player) src;
-                    PlayerData playerData = players.getOrCreateData(player);
+                    PlayerData playerData = playersData.getOrCreateData(player);
 
 
 //                    if (team == null)
@@ -72,7 +72,7 @@ public class SfTeamCommand extends SfCommand {
                         target = player;
                     }
 
-                    PlayerData sfTarget = players.getOrCreateData(target);
+                    PlayerData sfTarget = playersData.getOrCreateData(target);
 
                     if (team.getPlayers().contains(sfTarget)) {
                         if (playerData == sfTarget) {

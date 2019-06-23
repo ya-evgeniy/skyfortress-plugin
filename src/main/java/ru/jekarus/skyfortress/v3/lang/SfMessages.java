@@ -26,7 +26,7 @@ public class SfMessages {
 
     private final SkyFortressPlugin plugin;
     private final Server server;
-    private final PlayersDataContainer players;
+    private final PlayersDataContainer playersData;
 
     private ThreadLocalRandom random;
 
@@ -38,7 +38,7 @@ public class SfMessages {
     public SfMessages(SkyFortressPlugin plugin) {
         this.plugin = plugin;
         this.server = Sponge.getServer();
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
 
         this.random = ThreadLocalRandom.current();
 
@@ -58,7 +58,7 @@ public class SfMessages {
 
     public void broadcast(Map<Locale, Text> locatedTexts, boolean need_spaces) {
         for (Player player : this.server.getOnlinePlayers()) {
-            PlayerData playerData = this.players.getOrCreateData(player);
+            PlayerData playerData = this.playersData.getOrCreateData(player);
             Text text = locatedTexts.get(playerData.getLocale());
             if (text != null) {
                 if (need_spaces) {
@@ -86,7 +86,7 @@ public class SfMessages {
     }
 
     public void sendToPlayers(Collection<Player> targets, Map<Locale, Text> locatedTexts) {
-        List<PlayerData> sfTargets = targets.stream().map(this.players::getOrCreateData).collect(Collectors.toList());
+        List<PlayerData> sfTargets = targets.stream().map(this.playersData::getOrCreateData).collect(Collectors.toList());
         this.send(sfTargets, locatedTexts);
     }
 

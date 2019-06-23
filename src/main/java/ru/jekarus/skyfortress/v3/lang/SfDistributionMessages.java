@@ -18,13 +18,13 @@ public class SfDistributionMessages {
     private final SkyFortressPlugin plugin;
     private final SfMessages messages;
 
-    private final PlayersDataContainer players;
+    private final PlayersDataContainer playersData;
 
     public SfDistributionMessages(SkyFortressPlugin plugin, SfMessages messages) {
         this.plugin = plugin;
         this.messages = messages;
 
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
     }
 
     public Map<Locale, Text> captainSelected(PlayerData player, PlayerData target, SfTeam team) {

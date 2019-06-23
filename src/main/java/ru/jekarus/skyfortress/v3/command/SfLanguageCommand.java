@@ -56,7 +56,7 @@ public class SfLanguageCommand extends SfCommand {
                         return CommandResult.empty();
                     }
 
-                    PlayerData playerData = PlayersDataContainer.getInstance().getOrCreateData(player);
+                    PlayerData playerData = plugin.getPlayersDataContainer().getOrCreateData(player);
                     playerData.setLocale(locale);
 
                     plugin.getScoreboards().setFor(playerData, player);

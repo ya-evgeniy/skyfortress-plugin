@@ -85,7 +85,7 @@ public class LobbyRoom {
             if (joinPlate.getY() != playerPosition.getY()) continue;
             if (joinPlate.getZ() != playerPosition.getZ()) continue;
 
-            return Optional.of(PlayersDataContainer.getInstance().getOrCreateData(player));
+            return Optional.of(plugin.getPlayersDataContainer().getOrCreateData(player));
         }
         return Optional.empty();
     }

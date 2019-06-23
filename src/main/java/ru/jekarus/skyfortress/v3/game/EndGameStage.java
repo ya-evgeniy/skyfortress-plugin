@@ -27,14 +27,14 @@ public class EndGameStage extends SfGameStage {
         this.plugin.getScoreboards().setSideBar(SfScoreboards.Types.POST_GAME);
         this.plugin.getScoreboards().updatePlaces();
         final LobbySettings lobbySettings = plugin.getSettings().getLobby();
-        PlayersDataContainer players = PlayersDataContainer.getInstance();
+        PlayersDataContainer playersData = plugin.getPlayersDataContainer();
         for (Player player : Sponge.getServer().getOnlinePlayers()) {
             player.setLocationAndRotation(
                     lobbySettings.getCenter().getLocation(),
                     lobbySettings.getCenter().getRotation()
             );
             player.offer(Keys.GAME_MODE, GameModes.ADVENTURE);
-            PlayerData playerData = players.getOrCreateData(player);
+            PlayerData playerData = playersData.getOrCreateData(player);
             this.plugin.getTeamContainer().getNoneTeam().addPlayer(this.plugin, playerData);
             playerData.setZone(PlayerZone.LOBBY);
             player.getInventory().clear();

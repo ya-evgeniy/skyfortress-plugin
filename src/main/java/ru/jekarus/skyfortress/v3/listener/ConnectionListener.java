@@ -32,18 +32,18 @@ import java.util.Locale;
 public class ConnectionListener {
 
     private final SkyFortressPlugin plugin;
-    private PlayersDataContainer players;
+    private PlayersDataContainer playersData;
 
     public ConnectionListener() {
         this.plugin = SkyFortressPlugin.getInstance();
-        this.players = PlayersDataContainer.getInstance();
+        this.playersData = plugin.getPlayersDataContainer();
 
         Sponge.getEventManager().registerListeners(this.plugin, this);
     }
 
     @Listener
     public void onChangeClientSettings(PlayerChangeClientSettingsEvent event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = players.getOrCreateData(player);
+        PlayerData playerData = playersData.getOrCreateData(player);
         SfLanguages languages = plugin.getLanguages();
 
         Locale locale = event.getLocale();
@@ -55,7 +55,7 @@ public class ConnectionListener {
 
     @Listener
     public void onConnect(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = this.players.getOrCreateData(player);
+        PlayerData playerData = this.playersData.getOrCreateData(player);
         playerData.setLastPlayed(-1);
 
         if (playerData.getLocale() == null) {
@@ -159,7 +159,7 @@ public class ConnectionListener {
 
     @Listener
     public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = players.getOrCreateData(player);
+        PlayerData playerData = playersData.getOrCreateData(player);
         playerData.setLastPlayed(System.currentTimeMillis());
 
         SfGameStageType stage = this.plugin.getGame().getStage();
