@@ -13,17 +13,17 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 
 public class LobbyButtonsListener {
 
     private final SkyFortressPlugin plugin;
-    private final SfPlayers players;
+    private final PlayersDataContainer players;
 
     public LobbyButtonsListener(SkyFortressPlugin plugin)
     {
         this.plugin = plugin;
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
     }
 
     public void register()

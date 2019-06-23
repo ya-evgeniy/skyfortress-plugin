@@ -14,7 +14,7 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboard;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -140,7 +140,7 @@ public class CaptainSelection implements CaptainSelectedHandler {
 
     @Listener
     public void onLeftClick(InteractBlockEvent event, @First Player player) {
-        Optional<PlayerData> optionalSfPlayer = SfPlayers.getInstance().getPlayer(player);
+        Optional<PlayerData> optionalSfPlayer = PlayersDataContainer.getInstance().getPlayer(player);
         if (optionalSfPlayer.isPresent()) {
             PlayerData playerData = optionalSfPlayer.get();
             if (choosingCaptain.captain.player == playerData) {

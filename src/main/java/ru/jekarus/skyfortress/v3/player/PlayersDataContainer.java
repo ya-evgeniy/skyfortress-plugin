@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SfPlayers {
+public class PlayersDataContainer {
 
-    private static final SfPlayers instance = new SfPlayers();
+    private static final PlayersDataContainer instance = new PlayersDataContainer();
 
     private Map<UUID, PlayerData> players = new HashMap<>();
 
@@ -35,7 +35,7 @@ public class SfPlayers {
         return this.getPlayer(player.getUniqueId());
     }
 
-    public static SfPlayers getInstance() {
+    public static PlayersDataContainer getInstance() {
         return instance;
     }
 

@@ -9,16 +9,16 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 
 public class PlayerInteractListener {
 
     private final SkyFortressPlugin plugin;
-    private final SfPlayers players;
+    private final PlayersDataContainer players;
 
     public PlayerInteractListener(SkyFortressPlugin plugin) {
         this.plugin = plugin;
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
     }
 
     public void register() {

@@ -7,7 +7,7 @@ import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.castle.SfCastleContainer;
 import ru.jekarus.skyfortress.v3.castle.SfCastlePositions;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
@@ -23,7 +23,7 @@ public class CheckCaptureEngine {
     private final SfTeamContainer teamContainer;
     private final SfCastleContainer castleContainer;
 
-    private final SfPlayers players;
+    private final PlayersDataContainer players;
 
     private Task task;
     private boolean enabled = false;
@@ -36,7 +36,7 @@ public class CheckCaptureEngine {
         this.teamContainer = this.plugin.getTeamContainer();
         this.castleContainer = this.plugin.getCastleContainer();
 
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
     }
 
     public void start()

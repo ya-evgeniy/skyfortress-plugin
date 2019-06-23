@@ -13,7 +13,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 
 public class SfUtils {
 
@@ -47,7 +47,7 @@ public class SfUtils {
     public static void setPlayerSpectator(Player player)
     {
         SkyFortressPlugin plugin = SkyFortressPlugin.getInstance();
-        SfPlayers players = SfPlayers.getInstance();
+        PlayersDataContainer players = PlayersDataContainer.getInstance();
 
         PlayerData playerData = players.getOrCreatePlayer(player);
         plugin.getTeamContainer().getSpectatorTeam().addPlayer(plugin, playerData);

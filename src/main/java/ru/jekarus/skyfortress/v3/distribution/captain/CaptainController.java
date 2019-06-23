@@ -14,7 +14,7 @@ import ru.jekarus.skyfortress.v3.distribution.DistributionController;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigCaptain;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class CaptainController implements Distribution {
                 break;
             case DISTRIBUTION:
                 this.consumer.accept(this, ResultMessage.START_DISTRIBUTION);
-                SfPlayers players = SfPlayers.getInstance();
+                PlayersDataContainer players = PlayersDataContainer.getInstance();
                 Collection<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers();
                 List<PlayerData> playerDatas = onlinePlayers.stream().map(players::getOrCreatePlayer).collect(Collectors.toList());
 //                for (int i = 0; i < 10; i++) {

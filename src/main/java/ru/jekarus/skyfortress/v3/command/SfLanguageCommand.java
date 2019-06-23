@@ -8,7 +8,7 @@ import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -56,7 +56,7 @@ public class SfLanguageCommand extends SfCommand {
                         return CommandResult.empty();
                     }
 
-                    PlayerData playerData = SfPlayers.getInstance().getOrCreatePlayer(player);
+                    PlayerData playerData = PlayersDataContainer.getInstance().getOrCreatePlayer(player);
                     playerData.setLocale(locale);
 
                     plugin.getScoreboards().setFor(playerData, player);

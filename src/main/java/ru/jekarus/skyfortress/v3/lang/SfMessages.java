@@ -10,7 +10,7 @@ import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.chat.ChatTypes;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class SfMessages {
 
     private final SkyFortressPlugin plugin;
     private final Server server;
-    private final SfPlayers players;
+    private final PlayersDataContainer players;
 
     private ThreadLocalRandom random;
 
@@ -38,7 +38,7 @@ public class SfMessages {
     public SfMessages(SkyFortressPlugin plugin) {
         this.plugin = plugin;
         this.server = Sponge.getServer();
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
 
         this.random = ThreadLocalRandom.current();
 

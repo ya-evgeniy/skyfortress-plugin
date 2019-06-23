@@ -17,7 +17,7 @@ import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -204,7 +204,7 @@ public class CaptainDistributionCommand extends SfCommand {
                             this.command.settings.updateSelector(
                                     gameTeam,
                                     new CaptainSettings.PlayerSelector(
-                                            SfPlayers.getInstance().getOrCreatePlayer(optionalPlayer.get())
+                                            PlayersDataContainer.getInstance().getOrCreatePlayer(optionalPlayer.get())
                                     )
                             );
 
@@ -360,7 +360,7 @@ public class CaptainDistributionCommand extends SfCommand {
                         }
 
                         Player player = (Player) src;
-                        PlayerData playerData = SfPlayers.getInstance().getOrCreatePlayer(player);
+                        PlayerData playerData = PlayersDataContainer.getInstance().getOrCreatePlayer(player);
 
 
                         List<SfTeam> disabledTeams = new ArrayList<>();

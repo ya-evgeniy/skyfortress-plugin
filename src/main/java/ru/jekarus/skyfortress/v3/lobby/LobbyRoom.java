@@ -11,7 +11,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class LobbyRoom {
             if (joinPlate.getY() != playerPosition.getY()) continue;
             if (joinPlate.getZ() != playerPosition.getZ()) continue;
 
-            return Optional.of(SfPlayers.getInstance().getOrCreatePlayer(player));
+            return Optional.of(PlayersDataContainer.getInstance().getOrCreatePlayer(player));
         }
         return Optional.empty();
     }

@@ -20,7 +20,7 @@ import ru.jekarus.skyfortress.v3.lobby.LobbyRoomSettings;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomState;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
@@ -32,11 +32,11 @@ import java.util.Locale;
 public class ConnectionListener {
 
     private final SkyFortressPlugin plugin;
-    private SfPlayers players;
+    private PlayersDataContainer players;
 
     public ConnectionListener() {
         this.plugin = SkyFortressPlugin.getInstance();
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
 
         Sponge.getEventManager().registerListeners(this.plugin, this);
     }

@@ -13,7 +13,7 @@ import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomSettings;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class SfTeamCommand extends SfCommand {
             teamsMap.put(team.getUniqueId(), team);
         }
 
-        SfPlayers players = SfPlayers.getInstance();
+        PlayersDataContainer players = PlayersDataContainer.getInstance();
 
         SfMessages messages = plugin.getMessages();
         SfLobbyMessages lobby = messages.getLobby();

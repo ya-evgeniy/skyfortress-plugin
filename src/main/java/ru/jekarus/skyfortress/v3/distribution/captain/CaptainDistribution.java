@@ -216,7 +216,7 @@ public class CaptainDistribution {
 //        }
 //
 //        List<PlayerData> sfPlayers = new ArrayList<>();
-//        SfPlayers playersData = SfPlayers.getInstance();
+//        PlayersDataContainer playersData = PlayersDataContainer.getInstance();
 //        for (Player player : players) {
 //            PlayerData sfPlayer = playersData.getOrCreatePlayer(player);
 //            sfPlayers.register(sfPlayer);
@@ -268,7 +268,7 @@ public class CaptainDistribution {
 //        if (state.started) return;
 //        state.started = true;
 //
-//        List<PlayerData> sfPlayers = SfPlayers.getInstance().asList();
+//        List<PlayerData> sfPlayers = PlayersDataContainer.getInstance().asList();
 //        for (PlayerData sfPlayer : sfPlayers) {
 //            if (sfPlayer.getZone() == PlayerZone.CAPTAIN_SYSTEM) {
 //                sfPlayer.setZone(PlayerZone.LOBBY);

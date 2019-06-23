@@ -12,7 +12,7 @@ import org.spongepowered.api.event.filter.Getter;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
@@ -20,11 +20,11 @@ import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 public class PlayerRespawnListener {
 
     private final SkyFortressPlugin plugin;
-    private SfPlayers players;
+    private PlayersDataContainer players;
 
     public PlayerRespawnListener(SkyFortressPlugin plugin) {
         this.plugin = plugin;
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
     }
 
     public void register() {

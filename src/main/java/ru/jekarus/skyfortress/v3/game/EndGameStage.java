@@ -10,7 +10,7 @@ import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 
@@ -27,7 +27,7 @@ public class EndGameStage extends SfGameStage {
         this.plugin.getScoreboards().setSideBar(SfScoreboards.Types.POST_GAME);
         this.plugin.getScoreboards().updatePlaces();
         final LobbySettings lobbySettings = plugin.getSettings().getLobby();
-        SfPlayers players = SfPlayers.getInstance();
+        PlayersDataContainer players = PlayersDataContainer.getInstance();
         for (Player player : Sponge.getServer().getOnlinePlayers()) {
             player.setLocationAndRotation(
                     lobbySettings.getCenter().getLocation(),

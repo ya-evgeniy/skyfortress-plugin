@@ -4,7 +4,7 @@ import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.messages.SfTitleMessagesLanguage;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 import java.util.Locale;
@@ -15,13 +15,13 @@ public class SfGameMessages {
     private final SkyFortressPlugin plugin;
     private final SfMessages messages;
 
-    private final SfPlayers players;
+    private final PlayersDataContainer players;
 
     public SfGameMessages(SkyFortressPlugin plugin, SfMessages messages) {
         this.plugin = plugin;
         this.messages = messages;
 
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
     }
 
     public Map<Locale, Text> castleCapture(PlayerData player, SfTeam team) {

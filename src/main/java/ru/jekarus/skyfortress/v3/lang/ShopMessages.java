@@ -4,19 +4,19 @@ import lombok.var;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 
 public class ShopMessages {
 
     private final SkyFortressPlugin plugin;
     private final SfMessages messages;
-    private final SfPlayers players;
+    private final PlayersDataContainer players;
 
     public ShopMessages(SkyFortressPlugin plugin, SfMessages messages) {
         this.plugin = plugin;
         this.messages = messages;
 
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
     }
 
     public Text shopTitle(SfLanguage language) {

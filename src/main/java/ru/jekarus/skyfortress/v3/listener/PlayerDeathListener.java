@@ -29,7 +29,7 @@ import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.engine.CastleDeathEngine;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayers;
+import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -38,12 +38,12 @@ import java.util.Optional;
 public class PlayerDeathListener {
 
     private final SkyFortressPlugin plugin;
-    private final SfPlayers players;
+    private final PlayersDataContainer players;
 
     public PlayerDeathListener(SkyFortressPlugin plugin)
     {
         this.plugin = plugin;
-        this.players = SfPlayers.getInstance();
+        this.players = PlayersDataContainer.getInstance();
     }
 
     public void register()
