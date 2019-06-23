@@ -26,6 +26,7 @@ public class PlayerData {
     @NonNull @Getter @Setter private PlayerZone zone = PlayerZone.LOBBY;
     @Getter @Setter private long lastPlayed = -1;
 
+    @Getter @Setter private int capturePoints = 0;
     public long captureMessageTime = 0;
 
     public PlayerData(@NonNull Player player) {

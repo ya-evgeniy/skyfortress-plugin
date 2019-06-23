@@ -84,18 +84,21 @@ public class PlayerDeathListener {
             }
         }
 
-        this.checkPlayerLost(player);
         Task.builder().delayTicks(1).execute(player::respawnPlayer).submit(this.plugin);
-    }
 
-    private void checkPlayerLost(Player player)
-    {
-        Optional<PlayerData> optionalSfPlayer = this.playersData.get(player);
-        if (!optionalSfPlayer.isPresent())
-        {
+        final Optional<PlayerData> optionalPlayerData = playersData.get(player);
+        if (!optionalPlayerData.isPresent()) {
             return;
         }
-        PlayerData playerData = optionalSfPlayer.get();
+
+        final PlayerData playerData = optionalPlayerData.get();
+        this.checkPlayerLost(player, playerData);
+
+        playerData.setCapturePoints(0);
+    }
+
+    private void checkPlayerLost(Player player, PlayerData playerData)
+    {
         SfTeam team = playerData.getTeam();
         if (team.getType() != SfTeam.Type.GAME)
         {

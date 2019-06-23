@@ -118,6 +118,13 @@ public class ConnectionListener {
                         player.offer(effects);
                     });
                 }
+                else {
+                    player.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
+                        player.offer(
+                                effects.removeAll(potionEffect -> potionEffect.getType().equals(PotionEffectTypes.STRENGTH))
+                        );
+                    });
+                }
             }
         }
         else if (playerZone == PlayerZone.OTHER) {

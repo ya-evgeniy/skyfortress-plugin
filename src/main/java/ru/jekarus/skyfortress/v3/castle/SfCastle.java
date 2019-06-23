@@ -24,7 +24,9 @@ public class SfCastle {
 
     @Getter @Setter private SfGameTeam team;
 
-    @Getter private int health;
+    @Getter @Setter private int initialHealth;
+    @Getter @Setter private int additionalHealth;
+
     @Getter private boolean alive = true;
 
     @Getter private int deathSeconds;
@@ -41,25 +43,44 @@ public class SfCastle {
 
         SettingsContainer settings = SkyFortressPlugin.getInstance().getSettings();
         final WorldMapSettings worldMapSettings = settings.getWorldMap();
-        this.health = worldMapSettings.getCastleHealth();
+        this.initialHealth = worldMapSettings.getCastleHealth();
         this.deathSeconds = worldMapSettings.getCastleDeathSeconds();
     }
 
-    public boolean capture(SfScoreboards scoreboards) {
-        return this.capture(scoreboards, -1);
+    public int capture() {
+        return this.capture(-1);
     }
 
-    public boolean capture(SfScoreboards scoreboards, int value) {
+    public int capture(int value) {
         if (this.isCaptured() || !this.isAlive()) {
-            return true;
+            return 0;
         }
-        this.health += value;
-        scoreboards.updateLeftSeconds(this.team);
-        return this.isCaptured();
+        int capturePoints = Math.abs(value);
+        if (initialHealth >= capturePoints) {
+            initialHealth -= capturePoints;
+            return capturePoints;
+        }
+
+        int giveAdditionalPoints = initialHealth;
+        capturePoints -= initialHealth;
+
+        initialHealth = 0;
+
+        if (additionalHealth >= capturePoints) {
+            additionalHealth -= capturePoints;
+            return giveAdditionalPoints;
+        }
+
+        additionalHealth = 0;
+        return giveAdditionalPoints;
+    }
+
+    public int getHealth() {
+        return this.initialHealth + this.additionalHealth;
     }
 
     public boolean isCaptured() {
-        return this.health < 1;
+        return this.getHealth() < 1;
     }
 
     public void setDeath(boolean needBroadcast) {
@@ -76,7 +97,8 @@ public class SfCastle {
             this.played = false;
         }
 
-        this.health = 0;
+        this.initialHealth = 0;
+        this.additionalHealth = 0;
         this.place = CastleDeathEngine.getCastlePlace(plugin);
 
         SfScoreboards scoreboards = plugin.getScoreboards();

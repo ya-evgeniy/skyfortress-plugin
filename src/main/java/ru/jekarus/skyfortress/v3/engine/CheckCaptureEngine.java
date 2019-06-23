@@ -1,5 +1,8 @@
 package ru.jekarus.skyfortress.v3.engine;
 
+import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
@@ -14,6 +17,7 @@ import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class CheckCaptureEngine {
 
@@ -98,10 +102,7 @@ public class CheckCaptureEngine {
                 SfTeam team = playerData.getTeam();
                 for (SfCastle castle : this.castleContainer.getCollection())
                 {
-                    if (castle.isCaptured())
-                    {
-                        continue;
-                    }
+                    if (!castle.isAlive()) continue;
                     if (tryCastleCapture(castle, playerData, player, team))
                     {
                         return;
@@ -111,16 +112,33 @@ public class CheckCaptureEngine {
         }
     }
 
-    private boolean tryCastleCapture(SfCastle castle, PlayerData playerData, Player player, SfTeam team)
-    {
-        if (castle.getTeam() == team)
-        {
-            return false;
-        }
+    private boolean tryCastleCapture(SfCastle castle, PlayerData playerData, Player player, SfTeam team) {
         SfCastlePositions positions = castle.getPositions();
-        if (SfUtils.checkLocation(player, positions.getCapture().getLocation()))
-        {
-            this.captureEngine.addCapture(castle, playerData);
+        if (SfUtils.checkLocation(player, positions.getCapture().getLocation())) {
+            if (castle.getTeam() == team) {
+                if (playerData.getCapturePoints() > 0) {
+                    final boolean captured = castle.isCaptured();
+                    castle.setAdditionalHealth(castle.getAdditionalHealth() + (int) (playerData.getCapturePoints() * 0.20));
+                    playerData.setCapturePoints(0);
+                    plugin.getScoreboards().updateLeftSeconds(castle.getTeam());
+
+                    if (!captured) return true;
+
+                    for (PlayerData teammatePlayerData : castle.getTeam().getPlayers()) {
+                        teammatePlayerData.getPlayer().ifPresent(onlineTeammate -> {
+                            onlineTeammate.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
+                                onlineTeammate.offer(
+                                        effects.removeAll(potionEffect -> potionEffect.getType().equals(PotionEffectTypes.STRENGTH))
+                                );
+                            });
+                        });
+                    }
+                }
+            }
+            else {
+                if (castle.isCaptured()) return true;
+                this.captureEngine.addCapture(castle, playerData);
+            }
             return true;
         }
         return false;

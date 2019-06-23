@@ -74,7 +74,7 @@ public class CaptureEngine {
     {
         Collection<PlayerData> players = this.castleCaptures.computeIfAbsent(castle, k -> new HashSet<>());
         long now = System.currentTimeMillis() - playerData.captureMessageTime;
-        if (players.add(playerData) && now > 5_000)
+        if (players.add(playerData) && now > 5_000 && castle.getTeam() != playerData.getTeam())
         {
             SfMessages messages = this.plugin.getMessages();
             messages.broadcast(
@@ -87,43 +87,47 @@ public class CaptureEngine {
     private void run()
     {
         boolean needStop = true;
-        for (Map.Entry<SfCastle, Set<PlayerData>> entry : this.castleCaptures.entrySet())
-        {
-            SfCastle castle = entry.getKey();
-            if (castle.isCaptured() || !castle.isAlive())
-            {
+
+        final Iterator<Map.Entry<SfCastle, Set<PlayerData>>> castlesIterator = this.castleCaptures.entrySet().iterator();
+        while (castlesIterator.hasNext()) {
+            final Map.Entry<SfCastle, Set<PlayerData>> entry = castlesIterator.next();
+            final SfCastle castle = entry.getKey();
+            final Iterator<PlayerData> playersIterator = entry.getValue().iterator();
+
+            if (!castle.isAlive() || castle.isCaptured()) {
+                castlesIterator.remove();
                 continue;
             }
-            Iterator<PlayerData> iterator = entry.getValue().iterator();
+
             Set<PlayerData> capturePlayers = new HashSet<>();
-            while (iterator.hasNext())
+            while (playersIterator.hasNext())
             {
-                PlayerData playerData = iterator.next();
+                PlayerData playerData = playersIterator.next();
                 Optional<Player> optionalPlayer = playerData.getPlayer();
                 if (optionalPlayer.isPresent())
                 {
                     Player player = optionalPlayer.get();
                     if (!player.isOnline())
                     {
-                        iterator.remove();
+                        playersIterator.remove();
                         continue;
                     }
                     if (!checkGoldBlock(player))
                     {
-                        iterator.remove();
+                        playersIterator.remove();
                         continue;
                     }
                     SfCastlePositions positions = castle.getPositions();
                     if (!SfUtils.checkLocation(player, positions.getCapture().getLocation()))
                     {
-                        iterator.remove();
+                        playersIterator.remove();
                         continue;
                     }
                     capturePlayers.add(playerData);
                 }
                 else
                 {
-                    iterator.remove();
+                    playersIterator.remove();
                 }
             }
             if (!capturePlayers.isEmpty())
@@ -148,7 +152,15 @@ public class CaptureEngine {
                     });
                 }
 
-                if (castle.capture(this.scoreboards, -capturePlayers.size()))
+                int giveCastlePoints = castle.capture(-capturePlayers.size());
+                scoreboards.updateLeftSeconds(castle.getTeam());
+                if (giveCastlePoints > 0) {
+                    for (PlayerData playerData : capturePlayers) {
+                        playerData.setCapturePoints(playerData.getCapturePoints() + 1);
+                        if (--giveCastlePoints < 1) break;
+                    }
+                }
+                if (castle.isCaptured())
                 {
                     CastleDeathEngine.checkCapturedCastle(this.plugin, castle);
                     messages.broadcast(
@@ -178,6 +190,7 @@ public class CaptureEngine {
                 }
             }
         }
+
         if (needStop)
         {
             this.stop();
