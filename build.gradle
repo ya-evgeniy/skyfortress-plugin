@@ -27,10 +27,12 @@ configurations {
 }
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:7.2.0-SNAPSHOT'
+    implementation 'org.spongepowered:spongeapi:7.2.0-SNAPSHOT'
     
     compileOnly 'org.projectlombok:lombok:1.18.6'
-    extraLibs 'com.github.JekaRUS:config-serializer:build-7'
+    extraLibs('com.github.JekaRUS:config-serializer:build-8') {
+        exclude group: 'org.spongepowered', module: 'spongeapi'
+    }
     configurations.compile.extendsFrom(configurations.extraLibs)
 }
 
