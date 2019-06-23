@@ -22,6 +22,7 @@ import ru.jekarus.skyfortress.v3.engine.SfEngineManager;
 import ru.jekarus.skyfortress.v3.listener.ArrowMechanicsListener;
 import ru.jekarus.skyfortress.v3.listener.ChangeBlockListener;
 import ru.jekarus.skyfortress.v3.listener.DropItemListener;
+import ru.jekarus.skyfortress.v3.listener.FriendFireListener;
 import ru.jekarus.skyfortress.v3.listener.PlayerDeathListener;
 import ru.jekarus.skyfortress.v3.listener.PlayerInteractListener;
 import ru.jekarus.skyfortress.v3.listener.PlayerRespawnListener;
@@ -50,6 +51,7 @@ public class InGameStage extends SfGameStage {
     private final PlayerRespawnListener playerRespawnListener;
     private final ResourceListener resourceListener;
     private final ArrowMechanicsListener arrowMechanicsListener;
+    private final FriendFireListener friendFireListener;
 
     public InGameStage(SkyFortressPlugin plugin)
     {
@@ -62,6 +64,7 @@ public class InGameStage extends SfGameStage {
         this.playerRespawnListener = new PlayerRespawnListener(this.plugin);
         this.resourceListener = new ResourceListener(this.plugin);
         this.arrowMechanicsListener = new ArrowMechanicsListener(this.plugin);
+        this.friendFireListener = new FriendFireListener(this.plugin);
     }
 
     @Override
@@ -85,6 +88,7 @@ public class InGameStage extends SfGameStage {
         this.playerRespawnListener.register();
         this.resourceListener.register();
         this.arrowMechanicsListener.register();
+        this.friendFireListener.register();
 
         castle_for: for (SfCastle castle : this.plugin.getCastleContainer().getCollection())
         {
@@ -115,6 +119,7 @@ public class InGameStage extends SfGameStage {
         this.playerRespawnListener.unregister();
         this.resourceListener.unregister();
         this.arrowMechanicsListener.unregister();
+        this.friendFireListener.unregister();
     }
 
     @Override
