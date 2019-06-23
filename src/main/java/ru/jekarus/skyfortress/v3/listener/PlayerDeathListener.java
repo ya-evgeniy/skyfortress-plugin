@@ -27,8 +27,8 @@ import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.engine.CastleDeathEngine;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -90,13 +90,13 @@ public class PlayerDeathListener {
 
     private void checkPlayerLost(Player player)
     {
-        Optional<SfPlayer> optionalSfPlayer = this.players.getPlayer(player);
+        Optional<PlayerData> optionalSfPlayer = this.players.getPlayer(player);
         if (!optionalSfPlayer.isPresent())
         {
             return;
         }
-        SfPlayer sfPlayer = optionalSfPlayer.get();
-        SfTeam team = sfPlayer.getTeam();
+        PlayerData playerData = optionalSfPlayer.get();
+        SfTeam team = playerData.getTeam();
         if (team.getType() != SfTeam.Type.GAME)
         {
             return;
@@ -107,9 +107,9 @@ public class PlayerDeathListener {
         {
             return;
         }
-        sfPlayer.setZone(PlayerZone.LOBBY);
+        playerData.setZone(PlayerZone.LOBBY);
 
-        plugin.getTeamContainer().getNoneTeam().addPlayer(plugin, sfPlayer);
+        plugin.getTeamContainer().getNoneTeam().addPlayer(plugin, playerData);
         player.offer(Keys.GAME_MODE, GameModes.ADVENTURE);
         player.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
             effects.addElement(

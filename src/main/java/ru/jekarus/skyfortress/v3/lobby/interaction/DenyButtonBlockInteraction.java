@@ -7,7 +7,7 @@ import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomMessages;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomMovement;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomState;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.settings.GlobalLobbySettings;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
@@ -23,7 +23,7 @@ public class DenyButtonBlockInteraction extends ButtonBlockInteraction {
     }
 
     @Override
-    protected boolean onInteract(Player player, SfPlayer playerData, BlockSnapshot block) {
+    protected boolean onInteract(Player player, PlayerData playerData, BlockSnapshot block) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final GlobalLobbySettings lobbySettings = plugin.getSettings().getGlobalLobby();
 
@@ -34,7 +34,7 @@ public class DenyButtonBlockInteraction extends ButtonBlockInteraction {
         final SfGameTeam team = state.getTeam();
 
         System.out.println("deny");
-        final SfPlayer waitingPlayer = state.getWaitingPlayer();
+        final PlayerData waitingPlayer = state.getWaitingPlayer();
         if (waitingPlayer == null) {
             System.out.println("waiting null");
             return true;
@@ -57,9 +57,9 @@ public class DenyButtonBlockInteraction extends ButtonBlockInteraction {
 
         state.setWaitingPlayer(null);
 
-        final Optional<SfPlayer> optionalJoinPlatePlayer = room.getJoinPlatePlayer();
+        final Optional<PlayerData> optionalJoinPlatePlayer = room.getJoinPlatePlayer();
         if (optionalJoinPlatePlayer.isPresent()) {
-            final SfPlayer joinPlatePlayer = optionalJoinPlatePlayer.get();
+            final PlayerData joinPlatePlayer = optionalJoinPlatePlayer.get();
             room.setWaitingPlayer(null, joinPlatePlayer);
             messages.sendWaitAccepted(null, joinPlatePlayer);
         }

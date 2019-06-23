@@ -3,7 +3,7 @@ package ru.jekarus.skyfortress.v3.lobby;
 import lombok.Getter;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class LobbyRoomsContainer {
 
     public void clearWaitingPlayers() {
         for (LobbyRoom room : this.rooms) {
-            final SfPlayer waitingPlayer = room.getState().getWaitingPlayer();
+            final PlayerData waitingPlayer = room.getState().getWaitingPlayer();
             if (waitingPlayer != null) {
                 room.getMovement().moveToLobby(null, waitingPlayer);
                 room.getState().setWaitingPlayer(null);
@@ -33,7 +33,7 @@ public class LobbyRoomsContainer {
         }
     }
 
-    public void playerDisconnect(Player player, SfPlayer playerData) {
+    public void playerDisconnect(Player player, PlayerData playerData) {
 
     }
 }

@@ -17,7 +17,7 @@ import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.castle.SfCastlePositions;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.lang.messages.SfTitleMessagesLanguage;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
@@ -35,7 +35,7 @@ public class CaptureEngine {
     private final SkyFortressPlugin plugin;
     private final SfScoreboards scoreboards;
 
-    private Map<SfCastle, Set<SfPlayer>> castleCaptures = new HashMap<>();
+    private Map<SfCastle, Set<PlayerData>> castleCaptures = new HashMap<>();
 
     private Task task;
     private boolean enabled = false;
@@ -70,15 +70,15 @@ public class CaptureEngine {
         this.task.cancel();
     }
 
-    public void addCapture(SfCastle castle, SfPlayer sfPlayer)
+    public void addCapture(SfCastle castle, PlayerData playerData)
     {
-        Collection<SfPlayer> players = this.castleCaptures.computeIfAbsent(castle, k -> new HashSet<>());
-        long now = System.currentTimeMillis() - sfPlayer.captureMessageTime;
-        if (players.add(sfPlayer) && now > 5_000)
+        Collection<PlayerData> players = this.castleCaptures.computeIfAbsent(castle, k -> new HashSet<>());
+        long now = System.currentTimeMillis() - playerData.captureMessageTime;
+        if (players.add(playerData) && now > 5_000)
         {
             SfMessages messages = this.plugin.getMessages();
             messages.broadcast(
-                    messages.getGame().castleCapture(sfPlayer, castle.getTeam()), true
+                    messages.getGame().castleCapture(playerData, castle.getTeam()), true
             );
         }
         this.start();
@@ -87,19 +87,19 @@ public class CaptureEngine {
     private void run()
     {
         boolean needStop = true;
-        for (Map.Entry<SfCastle, Set<SfPlayer>> entry : this.castleCaptures.entrySet())
+        for (Map.Entry<SfCastle, Set<PlayerData>> entry : this.castleCaptures.entrySet())
         {
             SfCastle castle = entry.getKey();
             if (castle.isCaptured() || !castle.isAlive())
             {
                 continue;
             }
-            Iterator<SfPlayer> iterator = entry.getValue().iterator();
-            Set<SfPlayer> capturePlayers = new HashSet<>();
+            Iterator<PlayerData> iterator = entry.getValue().iterator();
+            Set<PlayerData> capturePlayers = new HashSet<>();
             while (iterator.hasNext())
             {
-                SfPlayer sfPlayer = iterator.next();
-                Optional<Player> optionalPlayer = sfPlayer.getPlayer();
+                PlayerData playerData = iterator.next();
+                Optional<Player> optionalPlayer = playerData.getPlayer();
                 if (optionalPlayer.isPresent())
                 {
                     Player player = optionalPlayer.get();
@@ -119,7 +119,7 @@ public class CaptureEngine {
                         iterator.remove();
                         continue;
                     }
-                    capturePlayers.add(sfPlayer);
+                    capturePlayers.add(playerData);
                 }
                 else
                 {
@@ -140,7 +140,7 @@ public class CaptureEngine {
                         ChatTypes.ACTION_BAR
                 );
 
-                for (SfPlayer player : castle.getTeam().getPlayers()) {
+                for (PlayerData player : castle.getTeam().getPlayers()) {
                     player.getPlayer().ifPresent(spongePlayer -> {
                         if (castle.getHealth() % 20 == 0) {
                             spongePlayer.playSound(SoundTypes.BLOCK_WOOD_BUTTON_CLICK_ON, spongePlayer.getPosition(), 0.1, 2.0);
@@ -155,9 +155,9 @@ public class CaptureEngine {
                             messages.getGame().castleCaptured(castle.getTeam())
                     );
                     Map<Locale, SfTitleMessagesLanguage> captured = messages.getGame().castleForTeamYouCaptured();
-                    for (SfPlayer sfPlayer : castle.getTeam().getPlayers()) {
-                        sfPlayer.getPlayer().ifPresent(player -> {
-                            SfTitleMessagesLanguage title = captured.get(sfPlayer.getLocale());
+                    for (PlayerData playerData : castle.getTeam().getPlayers()) {
+                        playerData.getPlayer().ifPresent(player -> {
+                            SfTitleMessagesLanguage title = captured.get(playerData.getLocale());
                             if (title != null) {
                                 player.sendTitle(Title.of(title.top.toText(), title.bottom.toText()));
                             }

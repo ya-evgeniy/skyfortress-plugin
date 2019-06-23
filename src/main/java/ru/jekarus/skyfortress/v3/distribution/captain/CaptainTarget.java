@@ -9,7 +9,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
@@ -22,13 +22,13 @@ import java.util.function.Supplier;
 
 public class CaptainTarget implements Supplier<Optional<Entity>> {
 
-    public SfPlayer player;
+    public PlayerData player;
     public UUID entityUniqueId = null;
 
     public LocationAndRotation cell;
     public List<LocationAndRotation> changedBlocks = new ArrayList<>();
 
-    public CaptainTarget(SfPlayer player, LocationAndRotation cell, List<LocationAndRotation> changedBlocks) {
+    public CaptainTarget(PlayerData player, LocationAndRotation cell, List<LocationAndRotation> changedBlocks) {
         this.player = player;
         this.cell = cell;
         this.changedBlocks = changedBlocks;

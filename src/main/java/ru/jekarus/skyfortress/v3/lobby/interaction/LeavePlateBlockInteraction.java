@@ -7,12 +7,10 @@ import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomMessages;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomMovement;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomState;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.settings.GlobalLobbySettings;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class LeavePlateBlockInteraction extends PlateBlockInteraction {
@@ -25,7 +23,7 @@ public class LeavePlateBlockInteraction extends PlateBlockInteraction {
     }
 
     @Override
-    protected boolean onInteract(Player player, SfPlayer playerData, BlockSnapshot block) {
+    protected boolean onInteract(Player player, PlayerData playerData, BlockSnapshot block) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final GlobalLobbySettings lobbySettings = plugin.getSettings().getGlobalLobby();
 
@@ -45,9 +43,9 @@ public class LeavePlateBlockInteraction extends PlateBlockInteraction {
         if (state.getCaptain() == playerData) {
             state.setCaptain(null);
 
-            Optional<SfPlayer> optionalRandomCaptain = room.getRandomCaptain();
+            Optional<PlayerData> optionalRandomCaptain = room.getRandomCaptain();
             if (optionalRandomCaptain.isPresent()) {
-                final SfPlayer randomCaptain = optionalRandomCaptain.get();
+                final PlayerData randomCaptain = optionalRandomCaptain.get();
                 state.setCaptain(randomCaptain);
             }
 
@@ -62,7 +60,7 @@ public class LeavePlateBlockInteraction extends PlateBlockInteraction {
 
             room.setReady(false);
 
-            final SfPlayer waitingPlayer = state.getWaitingPlayer();
+            final PlayerData waitingPlayer = state.getWaitingPlayer();
             if (waitingPlayer != null) {
                 state.setWaitingPlayer(null);
                 state.setCaptain(waitingPlayer);
@@ -70,9 +68,9 @@ public class LeavePlateBlockInteraction extends PlateBlockInteraction {
                 movement.moveToAccepted(null, waitingPlayer);
             }
 
-            final Optional<SfPlayer> optionalJoinPlatePlayer = room.getJoinPlatePlayer();
+            final Optional<PlayerData> optionalJoinPlatePlayer = room.getJoinPlatePlayer();
             if (optionalJoinPlatePlayer.isPresent()) {
-                final SfPlayer joinPlatePlayer = optionalJoinPlatePlayer.get();
+                final PlayerData joinPlatePlayer = optionalJoinPlatePlayer.get();
                 room.setWaitingPlayer(null, joinPlatePlayer);
                 messages.sendWaitAccepted(null, joinPlatePlayer);
             }

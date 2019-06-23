@@ -15,8 +15,8 @@ import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigCaptain;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigPlayer;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
@@ -56,38 +56,38 @@ public class CaptainDistribution {
         state.maxCaptains = 2;//config.captains.size();
     }
 
-    private void setupCaptains(Map<SfGameTeam, SfPlayer> captains) {
+    private void setupCaptains(Map<SfGameTeam, PlayerData> captains) {
         for (CaptainConfigCaptain captainConfig : config.captains) {
             SfGameTeam team = captainConfig.team;
-            SfPlayer sfPlayer = captains.get(team);
+            PlayerData playerData = captains.get(team);
 
-            if (sfPlayer == null) continue;
+            if (playerData == null) continue;
 
             Captain captain = new Captain(
-                    sfPlayer, team, captainConfig.cell, captainConfig.changedBlocks
+                    playerData, team, captainConfig.cell, captainConfig.changedBlocks
             );
 
-            team.addPlayer(plugin, sfPlayer);
+            team.addPlayer(plugin, playerData);
             state.captainByTeam.put(team, captain);
         }
     }
 
-    private void setupPlayerCells(List<SfPlayer> players, List<SfPlayer> playersWithTeam) {
+    private void setupPlayerCells(List<PlayerData> players, List<PlayerData> playersWithTeam) {
         Iterator<CaptainConfigPlayer> iterator = config.players.iterator();
         setupPlayerCells(iterator, players, true);
         setupPlayerCells(iterator, playersWithTeam, false);
     }
 
-    private void setupPlayerCells(Iterator<CaptainConfigPlayer> iterator, List<SfPlayer> players, boolean needDefaultTeam) {
-        for (SfPlayer sfPlayer : players) {
+    private void setupPlayerCells(Iterator<CaptainConfigPlayer> iterator, List<PlayerData> players, boolean needDefaultTeam) {
+        for (PlayerData playerData : players) {
             if (!iterator.hasNext()) throw new UnsupportedOperationException();
             CaptainConfigPlayer playerConfig = iterator.next();
 
-            CaptainTarget captainTarget = new CaptainTarget(sfPlayer, playerConfig.cell, playerConfig.changedBlocks);
-            state.targetByPlayerUniqueId.put(sfPlayer.getUniqueId(), captainTarget);
+            CaptainTarget captainTarget = new CaptainTarget(playerData, playerConfig.cell, playerConfig.changedBlocks);
+            state.targetByPlayerUniqueId.put(playerData.getUniqueId(), captainTarget);
 
             if (needDefaultTeam) {
-                defaultTeam.addPlayer(plugin, sfPlayer);
+                defaultTeam.addPlayer(plugin, playerData);
             }
         }
     }
@@ -215,10 +215,10 @@ public class CaptainDistribution {
 //            }
 //        }
 //
-//        List<SfPlayer> sfPlayers = new ArrayList<>();
+//        List<PlayerData> sfPlayers = new ArrayList<>();
 //        SfPlayers playersData = SfPlayers.getInstance();
 //        for (Player player : players) {
-//            SfPlayer sfPlayer = playersData.getOrCreatePlayer(player);
+//            PlayerData sfPlayer = playersData.getOrCreatePlayer(player);
 //            sfPlayers.register(sfPlayer);
 //            if (!useExistingTeams) {
 //                SfTeam playerTeam = sfPlayer.getTeam();
@@ -238,9 +238,9 @@ public class CaptainDistribution {
 //        for (SfGameTeam team : needRandomCaptain) {
 //            if (useExistingTeams) {
 //                if (!team.getPlayers().isEmpty()) {
-//                    ArrayList<SfPlayer> teamPlayers = new ArrayList<>(team.getPlayers());
+//                    ArrayList<PlayerData> teamPlayers = new ArrayList<>(team.getPlayers());
 //                    int nextCaptainIndex = random.nextInt(teamPlayers.size());
-//                    SfPlayer captain = teamPlayers.get(nextCaptainIndex);
+//                    PlayerData captain = teamPlayers.get(nextCaptainIndex);
 //
 //                    sfPlayers.unregister(captain);
 //                    addCaptain(captain, team);
@@ -253,23 +253,23 @@ public class CaptainDistribution {
 //                throw new UnsupportedOperationException("Developer is so stupid. (Not enough players)");
 //            }
 //            int nextCaptain = random.nextInt(sfPlayers.size());
-//            SfPlayer captain = sfPlayers.unregister(nextCaptain);
+//            PlayerData captain = sfPlayers.unregister(nextCaptain);
 //            addCaptain(captain, team);
 //        }
 //
 ////        for (int i = 0; i < config.players.size() - sfPlayers.size(); i++) {
-////            sfPlayers.register(new SfPlayer(UUID.randomUUID(), "ENTITY_" + i));
+////            sfPlayers.register(new PlayerData(UUID.randomUUID(), "ENTITY_" + i));
 ////        }
 //
 //        start(sfPlayers, useExistingTeams);
 //    }
 //
-//    public void start(List<SfPlayer> players, boolean useExistingTeams) {
+//    public void start(List<PlayerData> players, boolean useExistingTeams) {
 //        if (state.started) return;
 //        state.started = true;
 //
-//        List<SfPlayer> sfPlayers = SfPlayers.getInstance().asList();
-//        for (SfPlayer sfPlayer : sfPlayers) {
+//        List<PlayerData> sfPlayers = SfPlayers.getInstance().asList();
+//        for (PlayerData sfPlayer : sfPlayers) {
 //            if (sfPlayer.getZone() == PlayerZone.CAPTAIN_SYSTEM) {
 //                sfPlayer.setZone(PlayerZone.LOBBY);
 //                SfTeam team = sfPlayer.getTeam();
@@ -286,7 +286,7 @@ public class CaptainDistribution {
 //        selection.start();
 //    }
 
-    public void start(CaptainSettings settings, List<SfPlayer> players) {
+    public void start(CaptainSettings settings, List<PlayerData> players) {
         if (state.started) return;
         state.started = true;
 
@@ -394,11 +394,11 @@ public class CaptainDistribution {
         }
     }
 
-    public void onDisconnect(SfPlayer sfPlayer, Player player) {
-        CaptainTarget target = this.state.targetByPlayerUniqueId.get(sfPlayer.getUniqueId());
+    public void onDisconnect(PlayerData playerData, Player player) {
+        CaptainTarget target = this.state.targetByPlayerUniqueId.get(playerData.getUniqueId());
         if (target != null) {
             target.onDisconnect(player);
-            SfTeam team = sfPlayer.getTeam();
+            SfTeam team = playerData.getTeam();
             if (team == null || team.getType() != SfTeam.Type.GAME) {
                 player.getLocation().getExtent().getEntity(target.entityUniqueId).ifPresent(entity -> {
                     entity.offer(Keys.GLOWING, true);
@@ -413,18 +413,18 @@ public class CaptainDistribution {
             return;
         }
         for (Captain captain : this.state.captainByTeam.values()) {
-            if (captain.player == sfPlayer) {
+            if (captain.player == playerData) {
                 captain.onDisconnect(player);
                 return;
             }
         }
     }
 
-    public void onConnect(SfPlayer sfPlayer, Player player) {
-        CaptainTarget target = this.state.targetByPlayerUniqueId.get(sfPlayer.getUniqueId());
+    public void onConnect(PlayerData playerData, Player player) {
+        CaptainTarget target = this.state.targetByPlayerUniqueId.get(playerData.getUniqueId());
         if (target != null) {
             target.onConnect(player);
-            this.captainRandomizer.showBarTo(player, sfPlayer);
+            this.captainRandomizer.showBarTo(player, playerData);
             SfTeam team = target.player.getTeam();
             if (team == null || team.getType() != SfTeam.Type.GAME) {
                 player.offer(Keys.GLOWING, true);
@@ -435,9 +435,9 @@ public class CaptainDistribution {
             return;
         }
         for (Captain captain : this.state.captainByTeam.values()) {
-            if (captain.player == sfPlayer) {
+            if (captain.player == playerData) {
                 captain.onConnect(player);
-                this.captainRandomizer.showBarTo(player, sfPlayer);
+                this.captainRandomizer.showBarTo(player, playerData);
                 return;
             }
         }

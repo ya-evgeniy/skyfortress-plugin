@@ -26,8 +26,8 @@ import ru.jekarus.skyfortress.v3.listener.PlayerDeathListener;
 import ru.jekarus.skyfortress.v3.listener.PlayerInteractListener;
 import ru.jekarus.skyfortress.v3.listener.PlayerRespawnListener;
 import ru.jekarus.skyfortress.v3.listener.ResourceListener;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboard;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
@@ -88,7 +88,7 @@ public class InGameStage extends SfGameStage {
 
         castle_for: for (SfCastle castle : this.plugin.getCastleContainer().getCollection())
         {
-            for (SfPlayer player : castle.getTeam().getPlayers())
+            for (PlayerData player : castle.getTeam().getPlayers())
             {
                 if (player.getLastPlayed() == -1)
                 {
@@ -135,25 +135,25 @@ public class InGameStage extends SfGameStage {
                 scoreboard.getTeams().getTeam(gameTeam).ifPresent(scoreboardTeams::add);
             }
 
-            for (SfPlayer sfPlayer : gameTeam.getPlayers())
+            for (PlayerData playerData : gameTeam.getPlayers())
             {
-                scoreboardTeams.forEach(team -> team.addMember(Text.of(sfPlayer.getName())));
-                Optional<Player> optionalPlayer = sfPlayer.getPlayer();
+                scoreboardTeams.forEach(team -> team.addMember(Text.of(playerData.getName())));
+                Optional<Player> optionalPlayer = playerData.getPlayer();
                 if (optionalPlayer.isPresent())
                 {
                     Player player = optionalPlayer.get();
-                    setupPlayer(sfPlayer, player);
+                    setupPlayer(playerData, player);
                 }
             }
         }
     }
 
-    public void setupPlayer(SfPlayer sfPlayer, Player player) {
-        if (sfPlayer.getTeam().getType() != SfTeam.Type.GAME) {
+    public void setupPlayer(PlayerData playerData, Player player) {
+        if (playerData.getTeam().getType() != SfTeam.Type.GAME) {
             return;
         }
-        SfGameTeam team = (SfGameTeam) sfPlayer.getTeam();
-        sfPlayer.setZone(PlayerZone.GAME);
+        SfGameTeam team = (SfGameTeam) playerData.getTeam();
+        playerData.setZone(PlayerZone.GAME);
 
         SfCastlePositions positions = team.getCastle().getPositions();
         player.setLocationAndRotation(

@@ -3,7 +3,7 @@ package ru.jekarus.skyfortress.v3.engine;
 import org.spongepowered.api.scheduler.Task;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.settings.SettingsContainer;
 import ru.jekarus.skyfortress.v3.settings.WorldMapSettings;
@@ -98,30 +98,30 @@ public class CastleDeathEngine {
 
     public static boolean checkOnlinePlayers(SkyFortressPlugin plugin, SfCastle castle)
     {
-        Collection<SfPlayer> offlineDeathPlayers = new ArrayList<>();
+        Collection<PlayerData> offlineDeathPlayers = new ArrayList<>();
 
         SfGameTeam gameTeam = castle.getTeam();
         final SettingsContainer settings = SkyFortressPlugin.getInstance().getSettings();
         final WorldMapSettings worldMapSettings = settings.getWorldMap();
-        for (SfPlayer sfPlayer : gameTeam.getPlayers())
+        for (PlayerData playerData : gameTeam.getPlayers())
         {
-            if (sfPlayer.getLastPlayed() == -1)
+            if (playerData.getLastPlayed() == -1)
             {
                 return true;
             }
             else
             {
                 long playerOfflineDeath = TimeUnit.SECONDS.toMillis(worldMapSettings.getPlayerOfflineDeath());
-                if (sfPlayer.getLastPlayed() + playerOfflineDeath < System.currentTimeMillis())
+                if (playerData.getLastPlayed() + playerOfflineDeath < System.currentTimeMillis())
                 {
-                    offlineDeathPlayers.add(sfPlayer);
+                    offlineDeathPlayers.add(playerData);
                 }
             }
         }
 
-        for (SfPlayer sfPlayer : offlineDeathPlayers)
+        for (PlayerData playerData : offlineDeathPlayers)
         {
-            gameTeam.removePlayer(plugin, sfPlayer);
+            gameTeam.removePlayer(plugin, playerData);
         }
 
         return false;

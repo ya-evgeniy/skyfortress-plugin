@@ -19,14 +19,13 @@ import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomSettings;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomState;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,37 +43,37 @@ public class ConnectionListener {
 
     @Listener
     public void onChangeClientSettings(PlayerChangeClientSettingsEvent event, @Getter("getTargetEntity") Player player) {
-        SfPlayer sfPlayer = players.getOrCreatePlayer(player);
+        PlayerData playerData = players.getOrCreatePlayer(player);
         SfLanguages languages = plugin.getLanguages();
 
         Locale locale = event.getLocale();
         if (languages.has(locale)) {
-            sfPlayer.setLocale(locale);
+            playerData.setLocale(locale);
         }
-        plugin.getScoreboards().setFor(sfPlayer, player);
+        plugin.getScoreboards().setFor(playerData, player);
     }
 
     @Listener
     public void onConnect(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player player) {
-        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
-        sfPlayer.setLastPlayed(-1);
+        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        playerData.setLastPlayed(-1);
 
-        if (sfPlayer.getLocale() == null) {
+        if (playerData.getLocale() == null) {
             SfLanguages languages = this.plugin.getLanguages();
-            sfPlayer.setLocale(languages.getDef());
+            playerData.setLocale(languages.getDef());
         }
 
-        this.plugin.getScoreboards().setFor(sfPlayer, player);
+        this.plugin.getScoreboards().setFor(playerData, player);
 
-        SfTeam playerTeam = sfPlayer.getTeam();
-        PlayerZone playerZone = sfPlayer.getZone();
+        SfTeam playerTeam = playerData.getTeam();
+        PlayerZone playerZone = playerData.getZone();
 
         SfGameStageType gameStage = this.plugin.getGame().getStage();
 
         if (playerZone == PlayerZone.LOBBY || playerZone == PlayerZone.GAME || playerZone == PlayerZone.TEAM_ROOM) {
             if (playerTeam == null) {
                 playerTeam = this.plugin.getTeamContainer().getNoneTeam();
-                playerTeam.addPlayer(this.plugin, sfPlayer);
+                playerTeam.addPlayer(this.plugin, playerData);
             }
 
             if (playerTeam.getType() == SfTeam.Type.NONE || gameStage == SfGameStageType.END_GAME) {
@@ -125,7 +124,7 @@ public class ConnectionListener {
         }
         else if (playerZone == PlayerZone.CAPTAIN_SYSTEM) {
             if (gameStage == SfGameStageType.PRE_GAME) {
-                this.plugin.getDistributionController().onConnect(sfPlayer, player);
+                this.plugin.getDistributionController().onConnect(playerData, player);
             }
             if (!plugin.getDistributionController().isEnabled()) {
                 if (playerTeam.getType() == SfTeam.Type.GAME) {
@@ -134,7 +133,7 @@ public class ConnectionListener {
                         final LobbyRoomSettings settings = room.getSettings();
                         final LobbyRoomState state = room.getState();
                         if (playerTeam == state.getTeam()) {
-                            sfPlayer.setZone(PlayerZone.TEAM_ROOM);
+                            playerData.setZone(PlayerZone.TEAM_ROOM);
                             player.setLocationAndRotation(
                                     settings.getAccepted().getLocation(),
                                     settings.getAccepted().getRotation()
@@ -146,8 +145,8 @@ public class ConnectionListener {
                 else {
                     final LocationAndRotation center = plugin.getSettings().getLobby().getCenter();
 
-                    plugin.getTeamContainer().getNoneTeam().addPlayer(plugin, sfPlayer);
-                    sfPlayer.setZone(PlayerZone.LOBBY);
+                    plugin.getTeamContainer().getNoneTeam().addPlayer(plugin, playerData);
+                    playerData.setZone(PlayerZone.LOBBY);
                     player.setLocationAndRotation(
                             center.getLocation(),
                             center.getRotation()
@@ -160,13 +159,13 @@ public class ConnectionListener {
 
     @Listener
     public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
-        SfPlayer sfPlayer = players.getOrCreatePlayer(player);
-        sfPlayer.setLastPlayed(System.currentTimeMillis());
+        PlayerData playerData = players.getOrCreatePlayer(player);
+        playerData.setLastPlayed(System.currentTimeMillis());
 
         SfGameStageType stage = this.plugin.getGame().getStage();
-        SfTeam playerTeam = sfPlayer.getTeam();
+        SfTeam playerTeam = playerData.getTeam();
 
-        PlayerZone playerZone = sfPlayer.getZone();
+        PlayerZone playerZone = playerData.getZone();
         if (playerZone == PlayerZone.LOBBY) {
 
         }
@@ -186,7 +185,7 @@ public class ConnectionListener {
         }
         else if (playerZone == PlayerZone.CAPTAIN_SYSTEM) {
             if (stage == SfGameStageType.PRE_GAME) {
-                this.plugin.getDistributionController().onDisconnect(sfPlayer, player);
+                this.plugin.getDistributionController().onDisconnect(playerData, player);
             }
         }
     }

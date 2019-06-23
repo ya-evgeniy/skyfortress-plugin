@@ -6,7 +6,7 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.castle.SfCastleContainer;
 import ru.jekarus.skyfortress.v3.castle.SfCastlePositions;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -73,19 +73,19 @@ public class CheckCaptureEngine {
 
     private void tryTeamCapture(SfGameTeam gameTeam)
     {
-        for (SfPlayer sfPlayer : gameTeam.getPlayers())
+        for (PlayerData playerData : gameTeam.getPlayers())
         {
-            this.tryPlayerCapture(sfPlayer);
+            this.tryPlayerCapture(playerData);
         }
     }
 
-    private void tryPlayerCapture(SfPlayer sfPlayer)
+    private void tryPlayerCapture(PlayerData playerData)
     {
-        if (sfPlayer.getLastPlayed() != -1)
+        if (playerData.getLastPlayed() != -1)
         {
             return;
         }
-        Optional<Player> optionalPlayer = sfPlayer.getPlayer();
+        Optional<Player> optionalPlayer = playerData.getPlayer();
         if (optionalPlayer.isPresent())
         {
             Player player = optionalPlayer.get();
@@ -95,14 +95,14 @@ public class CheckCaptureEngine {
                 {
                     return;
                 }
-                SfTeam team = sfPlayer.getTeam();
+                SfTeam team = playerData.getTeam();
                 for (SfCastle castle : this.castleContainer.getCollection())
                 {
                     if (castle.isCaptured())
                     {
                         continue;
                     }
-                    if (tryCastleCapture(castle, sfPlayer, player, team))
+                    if (tryCastleCapture(castle, playerData, player, team))
                     {
                         return;
                     }
@@ -111,7 +111,7 @@ public class CheckCaptureEngine {
         }
     }
 
-    private boolean tryCastleCapture(SfCastle castle, SfPlayer sfPlayer, Player player, SfTeam team)
+    private boolean tryCastleCapture(SfCastle castle, PlayerData playerData, Player player, SfTeam team)
     {
         if (castle.getTeam() == team)
         {
@@ -120,7 +120,7 @@ public class CheckCaptureEngine {
         SfCastlePositions positions = castle.getPositions();
         if (SfUtils.checkLocation(player, positions.getCapture().getLocation()))
         {
-            this.captureEngine.addCapture(castle, sfPlayer);
+            this.captureEngine.addCapture(castle, playerData);
             return true;
         }
         return false;

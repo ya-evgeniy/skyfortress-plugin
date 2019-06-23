@@ -1,21 +1,13 @@
 package ru.jekarus.skyfortress.v3.lobby.interaction;
 
-import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.DyeColor;
-import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomMessages;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomMovement;
-import ru.jekarus.skyfortress.v3.lobby.LobbyRoomSettings;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomState;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.settings.GlobalLobbySettings;
 
 public class ReadyButtonBlockInteraction extends ButtonBlockInteraction {
@@ -28,7 +20,7 @@ public class ReadyButtonBlockInteraction extends ButtonBlockInteraction {
     }
 
     @Override
-    protected boolean onInteract(Player player, SfPlayer playerData, BlockSnapshot block) {
+    protected boolean onInteract(Player player, PlayerData playerData, BlockSnapshot block) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final GlobalLobbySettings lobbySettings = plugin.getSettings().getGlobalLobby();
 

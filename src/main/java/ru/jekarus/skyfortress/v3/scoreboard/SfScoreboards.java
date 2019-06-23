@@ -3,7 +3,7 @@ package ru.jekarus.skyfortress.v3.scoreboard;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -61,7 +61,7 @@ public class SfScoreboards {
         }
     }
 
-    public void setTeam(SfTeam sfTeam, SfPlayer player)
+    public void setTeam(SfTeam sfTeam, PlayerData player)
     {
         for (SfScoreboard scoreboard : this.scoreboardsByLocale.values())
         {
@@ -69,7 +69,7 @@ public class SfScoreboards {
         }
     }
 
-    public void removeTeam(SfTeam sfTeam, SfPlayer player)
+    public void removeTeam(SfTeam sfTeam, PlayerData player)
     {
         for (SfScoreboard scoreboard : this.scoreboardsByLocale.values())
         {
@@ -109,9 +109,9 @@ public class SfScoreboards {
         }
     }
 
-    public void setFor(SfPlayer sfPlayer, Player player)
+    public void setFor(PlayerData playerData, Player player)
     {
-        Locale locale = sfPlayer.getLocale();
+        Locale locale = playerData.getLocale();
         SfScoreboard scoreboard = this.scoreboardsByLocale.get(locale);
         if (scoreboard != null)
         {

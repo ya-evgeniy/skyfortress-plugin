@@ -8,7 +8,7 @@ import ru.jekarus.skyfortress.v3.lobby.interaction.JoinPlateBlockInteraction;
 import ru.jekarus.skyfortress.v3.lobby.interaction.LeaveButtonBlockInteraction;
 import ru.jekarus.skyfortress.v3.lobby.interaction.LeavePlateBlockInteraction;
 import ru.jekarus.skyfortress.v3.lobby.interaction.ReadyButtonBlockInteraction;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 
 public class LobbyRoomInteractions {
 
@@ -38,12 +38,12 @@ public class LobbyRoomInteractions {
         this.readyButton = new ReadyButtonBlockInteraction(this.room);
     }
 
-    public boolean standOnPlate(Player player, SfPlayer playerData, BlockSnapshot block) {
+    public boolean standOnPlate(Player player, PlayerData playerData, BlockSnapshot block) {
         return joinPlate.activate(player, playerData, block)
                 || leavePlate.activate(player, playerData, block);
     }
 
-    public boolean pressButton(Player player, SfPlayer playerData, BlockSnapshot block) {
+    public boolean pressButton(Player player, PlayerData playerData, BlockSnapshot block) {
         return acceptButton.activate(player, playerData, block)
                 || denyButton.activate(player, playerData, block)
                 || leaveButton.activate(player, playerData, block)

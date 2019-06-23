@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
 import java.util.Optional;
@@ -15,9 +15,9 @@ public class LobbyRoomState {
 
     @Getter @Setter private SfGameTeam team;
 
-    @Getter @Setter private SfPlayer captain;
+    @Getter @Setter private PlayerData captain;
 
-    @Getter @Setter private SfPlayer waitingPlayer;
+    @Getter @Setter private PlayerData waitingPlayer;
 
     @Getter @Setter private boolean ready = false;
 

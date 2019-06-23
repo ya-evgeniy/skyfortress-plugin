@@ -9,7 +9,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboards;
 import ru.jekarus.skyfortress.v3.settings.LobbySettings;
@@ -34,9 +34,9 @@ public class EndGameStage extends SfGameStage {
                     lobbySettings.getCenter().getRotation()
             );
             player.offer(Keys.GAME_MODE, GameModes.ADVENTURE);
-            SfPlayer sfPlayer = players.getOrCreatePlayer(player);
-            this.plugin.getTeamContainer().getNoneTeam().addPlayer(this.plugin, sfPlayer);
-            sfPlayer.setZone(PlayerZone.LOBBY);
+            PlayerData playerData = players.getOrCreatePlayer(player);
+            this.plugin.getTeamContainer().getNoneTeam().addPlayer(this.plugin, playerData);
+            playerData.setZone(PlayerZone.LOBBY);
             player.getInventory().clear();
             player.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
                 effects.addElement(

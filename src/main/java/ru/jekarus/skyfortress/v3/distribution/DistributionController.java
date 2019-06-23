@@ -5,7 +5,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainController;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 
 import java.util.function.BiConsumer;
 
@@ -26,21 +26,21 @@ public class DistributionController {
         return this.current != null;
     }
 
-    public void onDisconnect(SfPlayer sfPlayer, Player player) {
+    public void onDisconnect(PlayerData playerData, Player player) {
         if (current == null) return;
 
         if (current.getType() == Distribution.Type.CAPTAIN) {
             CaptainController captainDistribution = (CaptainController) this.current;
-            captainDistribution.onDisconnect(sfPlayer, player);
+            captainDistribution.onDisconnect(playerData, player);
         }
     }
 
-    public void onConnect(SfPlayer sfPlayer, Player player) {
+    public void onConnect(PlayerData playerData, Player player) {
         if (current == null) return;
 
         if (current.getType() == Distribution.Type.CAPTAIN) {
             CaptainController captainDistribution = (CaptainController) this.current;
-            captainDistribution.onConnect(sfPlayer, player);
+            captainDistribution.onConnect(playerData, player);
         }
     }
 

@@ -1,6 +1,5 @@
 package ru.jekarus.skyfortress.v3.lobby;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import lombok.Getter;
 import org.spongepowered.api.block.BlockTypes;
@@ -11,7 +10,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
@@ -49,10 +48,10 @@ public class LobbyRoom {
         this.interactions.init();
     }
 
-    public void setWaitingPlayer(Player player, SfPlayer playerData) {
+    public void setWaitingPlayer(Player player, PlayerData playerData) {
         if (playerData == null) return;
 
-        final SfPlayer waitingPlayer = state.getWaitingPlayer();
+        final PlayerData waitingPlayer = state.getWaitingPlayer();
         if (waitingPlayer != null) {
 
             if (playerData == waitingPlayer) {
@@ -66,19 +65,19 @@ public class LobbyRoom {
         movement.moveToWaiting(player, playerData);
     }
 
-    public Optional<SfPlayer> getRandomCaptain() {
+    public Optional<PlayerData> getRandomCaptain() {
         final SfGameTeam team = state.getTeam();
         final Random random = state.getRandom();
 
-        final List<SfPlayer> players = new ArrayList<>(team.getPlayers());
+        final List<PlayerData> players = new ArrayList<>(team.getPlayers());
         if (players.isEmpty()) return Optional.empty();
 
         final int randomCaptainIndex = random.nextInt(players.size());
-        final SfPlayer randomCaptain = players.get(randomCaptainIndex);
+        final PlayerData randomCaptain = players.get(randomCaptainIndex);
         return Optional.of(randomCaptain);
     }
 
-    public Optional<SfPlayer> getJoinPlatePlayer() {
+    public Optional<PlayerData> getJoinPlatePlayer() {
         final Vector3i joinPlate = settings.getJoinPlate();
         for (Player player : state.getServer().getOnlinePlayers()) {
             final Vector3i playerPosition = player.getLocation().getBlockPosition();

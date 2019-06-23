@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SfPlayer {
+public class PlayerData {
 
     @NonNull @Getter private final UUID uniqueId;
     @NonNull @Getter private final String name;
@@ -28,12 +28,12 @@ public class SfPlayer {
 
     public long captureMessageTime = 0;
 
-    public SfPlayer(@NonNull Player player) {
+    public PlayerData(@NonNull Player player) {
         this(player.getUniqueId(), player.getName());
         this.playerReference = new WeakReference<>(player);
     }
 
-    public SfPlayer(@NonNull UUID uniqueId, @NonNull String name) {
+    public PlayerData(@NonNull UUID uniqueId, @NonNull String name) {
         this.uniqueId = uniqueId;
         this.name = name;
     }
@@ -61,8 +61,8 @@ public class SfPlayer {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        SfPlayer sfPlayer = (SfPlayer) o;
-        return Objects.equals(uniqueId, sfPlayer.uniqueId);
+        PlayerData playerData = (PlayerData) o;
+        return Objects.equals(uniqueId, playerData.uniqueId);
     }
 
     @Override
@@ -72,6 +72,6 @@ public class SfPlayer {
 
     @Override
     public String toString() {
-        return String.format("SfPlayer{uniqueId=%s, name='%s'}", uniqueId, name);
+        return String.format("PlayerData{uniqueId=%s, name='%s'}", uniqueId, name);
     }
 }

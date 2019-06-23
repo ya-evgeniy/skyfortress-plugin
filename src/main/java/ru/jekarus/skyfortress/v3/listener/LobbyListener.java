@@ -11,8 +11,8 @@ import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -37,15 +37,15 @@ public class LobbyListener {
 
     @Listener
     public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
-        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreatePlayer(player);
 
         SfGameStageType stage = this.plugin.getGame().getStage();
 
-        SfTeam playerTeam = sfPlayer.getTeam();
-        PlayerZone playerZone = sfPlayer.getZone();
+        SfTeam playerTeam = playerData.getTeam();
+        PlayerZone playerZone = playerData.getZone();
 
         if (playerZone == PlayerZone.TEAM_ROOM && stage == SfGameStageType.PRE_GAME) {
-            this.plugin.getLobbyRoomsContainer().playerDisconnect(player, sfPlayer);
+            this.plugin.getLobbyRoomsContainer().playerDisconnect(player, playerData);
         }
     }
 
@@ -56,8 +56,8 @@ public class LobbyListener {
         double lobbyY = lobbySettings.getMinY();
 
         if (playerY < lobbyY) {
-            SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
-            PlayerZone playerZone = sfPlayer.getZone();
+            PlayerData playerData = this.players.getOrCreatePlayer(player);
+            PlayerZone playerZone = playerData.getZone();
             if (playerZone == PlayerZone.LOBBY) {
                 event.setToTransform(
                         new Transform<>(lobbySettings.getCenter().getLocation())
@@ -68,8 +68,8 @@ public class LobbyListener {
 
     @Listener
     public void onEntityDamage(DamageEntityEvent event, @Getter("getTargetEntity") Player player) {
-        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
-        PlayerZone playerZone = sfPlayer.getZone();
+        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        PlayerZone playerZone = playerData.getZone();
 
         if (playerZone == PlayerZone.LOBBY || playerZone == PlayerZone.TEAM_ROOM) {
             event.setCancelled(true);
@@ -78,10 +78,10 @@ public class LobbyListener {
 
     @Listener
     public void onRespawn(RespawnPlayerEvent event, @Getter("getTargetEntity") Player player) {
-        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreatePlayer(player);
 
-        SfTeam playerTeam = sfPlayer.getTeam();
-        PlayerZone playerZone = sfPlayer.getZone();
+        SfTeam playerTeam = playerData.getTeam();
+        PlayerZone playerZone = playerData.getZone();
 
         if (playerTeam.getType() == SfTeam.Type.NONE) {
             LobbySettings settings = this.plugin.getSettings().getLobby();
@@ -90,7 +90,7 @@ public class LobbyListener {
                     settings.getCenter().getLocation().getPosition(),
                     settings.getCenter().getRotation()
             ));
-            sfPlayer.setZone(PlayerZone.LOBBY);
+            playerData.setZone(PlayerZone.LOBBY);
         }
 
         if (playerTeam.getType() == SfTeam.Type.SPECTATOR) {

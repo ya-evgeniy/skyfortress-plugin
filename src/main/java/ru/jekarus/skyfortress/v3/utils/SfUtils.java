@@ -12,7 +12,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 
 public class SfUtils {
@@ -49,8 +49,8 @@ public class SfUtils {
         SkyFortressPlugin plugin = SkyFortressPlugin.getInstance();
         SfPlayers players = SfPlayers.getInstance();
 
-        SfPlayer sfPlayer = players.getOrCreatePlayer(player);
-        plugin.getTeamContainer().getSpectatorTeam().addPlayer(plugin, sfPlayer);
+        PlayerData playerData = players.getOrCreatePlayer(player);
+        plugin.getTeamContainer().getSpectatorTeam().addPlayer(plugin, playerData);
 
         player.offer(Keys.GAME_MODE, GameModes.SPECTATOR);
 

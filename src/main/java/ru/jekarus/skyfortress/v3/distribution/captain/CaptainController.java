@@ -13,7 +13,7 @@ import ru.jekarus.skyfortress.v3.distribution.Distribution;
 import ru.jekarus.skyfortress.v3.distribution.DistributionController;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfigCaptain;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
@@ -45,15 +45,15 @@ public class CaptainController implements Distribution {
         this.consumer = consumer;
     }
 
-    public void onDisconnect(SfPlayer sfPlayer, Player player) {
+    public void onDisconnect(PlayerData playerData, Player player) {
         if (distribution != null) {
-            distribution.onDisconnect(sfPlayer, player);
+            distribution.onDisconnect(playerData, player);
         }
     }
 
-    public void onConnect(SfPlayer sfPlayer, Player player) {
+    public void onConnect(PlayerData playerData, Player player) {
         if (distribution != null) {
-            distribution.onConnect(sfPlayer, player);
+            distribution.onConnect(playerData, player);
         }
     }
 
@@ -81,14 +81,14 @@ public class CaptainController implements Distribution {
                 this.consumer.accept(this, ResultMessage.START_DISTRIBUTION);
                 SfPlayers players = SfPlayers.getInstance();
                 Collection<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers();
-                List<SfPlayer> sfPlayers = onlinePlayers.stream().map(players::getOrCreatePlayer).collect(Collectors.toList());
+                List<PlayerData> playerDatas = onlinePlayers.stream().map(players::getOrCreatePlayer).collect(Collectors.toList());
 //                for (int i = 0; i < 10; i++) {
-//                    sfPlayers.register(new SfPlayer(
+//                    playerDatas.register(new PlayerData(
 //                            UUID.randomUUID(),
 //                            "ENTITY_" + i
 //                    ));
 //                }
-                this.distribution.start(this.settings, sfPlayers);
+                this.distribution.start(this.settings, playerDatas);
                 break;
         }
     }

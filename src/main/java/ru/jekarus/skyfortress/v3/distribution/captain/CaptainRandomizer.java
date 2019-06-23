@@ -10,7 +10,7 @@ import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.distribution.captain.config.CaptainConfig;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -96,8 +96,8 @@ public class CaptainRandomizer {
         this.task = null;
     }
 
-    public void showBarTo(Player player, SfPlayer sfPlayer) {
-        ServerBossBar bar = this.localizedBar.get(sfPlayer.getLocale());
+    public void showBarTo(Player player, PlayerData playerData) {
+        ServerBossBar bar = this.localizedBar.get(playerData.getLocale());
         if (bar != null) {
             bar.addPlayer(player);
         }

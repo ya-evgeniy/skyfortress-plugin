@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
@@ -85,7 +85,7 @@ public class CaptainSettings {
         this.selectorByTeam.put(team, selector);
     }
 
-    public Setup setup(List<SfPlayer> players) {
+    public Setup setup(List<PlayerData> players) {
         Setup result = new Setup();
         Random random = new Random();
 
@@ -96,16 +96,16 @@ public class CaptainSettings {
 
             if (selector.getType() == SelectorType.PLAYER) {
                 PlayerSelector playerSelector = (PlayerSelector) selector;
-                SfPlayer player = playerSelector.getPlayer();
+                PlayerData player = playerSelector.getPlayer();
                 players.remove(player);
                 result.captains.put(team, player);
             }
             else if (selector.getType() == SelectorType.RANDOM) {
                 if (useExistingTeams && !team.getPlayers().isEmpty()) {
-                    List<SfPlayer> teamPlayers = players.stream().filter(player -> player.getTeam() == team).collect(Collectors.toList());
+                    List<PlayerData> teamPlayers = players.stream().filter(player -> player.getTeam() == team).collect(Collectors.toList());
                     if (!teamPlayers.isEmpty()) {
                         int nextCaptainIndex = random.nextInt(teamPlayers.size());
-                        SfPlayer player = teamPlayers.get(nextCaptainIndex);
+                        PlayerData player = teamPlayers.get(nextCaptainIndex);
                         players.remove(player);
                         result.captains.put(team, player);
                         continue;
@@ -115,7 +115,7 @@ public class CaptainSettings {
             }
         }
 
-        for (SfPlayer player : players) {
+        for (PlayerData player : players) {
             SfTeam team = player.getTeam();
             if (useExistingTeams && (team == null || team.getType() == SfTeam.Type.GAME)) {
                 result.playersWithTeam.add(player);
@@ -154,16 +154,16 @@ public class CaptainSettings {
     public static class DebugSelector extends PlayerSelector {
 
         public DebugSelector(String name) {
-            super(new SfPlayer(UUID.randomUUID(), name));
+            super(new PlayerData(UUID.randomUUID(), name));
         }
 
     }
 
     public static class PlayerSelector extends Selector {
 
-        @Getter private final SfPlayer player;
+        @Getter private final PlayerData player;
 
-        public PlayerSelector(SfPlayer player) {
+        public PlayerSelector(PlayerData player) {
             super(SelectorType.PLAYER);
             this.player = player;
         }
@@ -189,9 +189,9 @@ public class CaptainSettings {
 
     public static class Setup {
 
-        @Getter @Setter Map<SfGameTeam, SfPlayer> captains = new HashMap<>();
-        @Getter @Setter List<SfPlayer> players = new ArrayList<>();
-        @Getter @Setter List<SfPlayer> playersWithTeam = new ArrayList<>();
+        @Getter @Setter Map<SfGameTeam, PlayerData> captains = new HashMap<>();
+        @Getter @Setter List<PlayerData> players = new ArrayList<>();
+        @Getter @Setter List<PlayerData> playersWithTeam = new ArrayList<>();
 
     }
 

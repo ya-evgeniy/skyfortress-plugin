@@ -9,7 +9,7 @@ import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.chat.ChatTypes;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 
 import java.util.Collection;
@@ -58,8 +58,8 @@ public class SfMessages {
 
     public void broadcast(Map<Locale, Text> locatedTexts, boolean need_spaces) {
         for (Player player : this.server.getOnlinePlayers()) {
-            SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
-            Text text = locatedTexts.get(sfPlayer.getLocale());
+            PlayerData playerData = this.players.getOrCreatePlayer(player);
+            Text text = locatedTexts.get(playerData.getLocale());
             if (text != null) {
                 if (need_spaces) {
                     player.sendMessage(Text.of());
@@ -72,29 +72,29 @@ public class SfMessages {
         }
     }
 
-    public void send(Collection<SfPlayer> targets, Map<Locale, Text> locatedTexts) {
+    public void send(Collection<PlayerData> targets, Map<Locale, Text> locatedTexts) {
         this.send(targets, locatedTexts, ChatTypes.CHAT);
     }
 
-    public void send(Collection<SfPlayer> targets, Map<Locale, Text> locatedTexts, ChatType chatType) {
-        for (SfPlayer sfPlayer : targets) {
-            sfPlayer.getPlayer().ifPresent(player -> {
-                Text text = locatedTexts.get(sfPlayer.getLocale());
+    public void send(Collection<PlayerData> targets, Map<Locale, Text> locatedTexts, ChatType chatType) {
+        for (PlayerData playerData : targets) {
+            playerData.getPlayer().ifPresent(player -> {
+                Text text = locatedTexts.get(playerData.getLocale());
                 player.sendMessage(chatType, text);
             });
         }
     }
 
     public void sendToPlayers(Collection<Player> targets, Map<Locale, Text> locatedTexts) {
-        List<SfPlayer> sfTargets = targets.stream().map(this.players::getOrCreatePlayer).collect(Collectors.toList());
+        List<PlayerData> sfTargets = targets.stream().map(this.players::getOrCreatePlayer).collect(Collectors.toList());
         this.send(sfTargets, locatedTexts);
     }
 
-    public SfLanguage getLang(SfPlayer player) {
+    public SfLanguage getLang(PlayerData player) {
         return this.plugin.getLanguages().get(player.getLocale());
     }
 
-    public Text construct(SfPlayer player, Function<SfLanguage, TextTemplate> textFromLanguage, Consumer<LanguageVariables> appendVariables) {
+    public Text construct(PlayerData player, Function<SfLanguage, TextTemplate> textFromLanguage, Consumer<LanguageVariables> appendVariables) {
         SfLanguage lang = getLang(player);
         TextTemplate template = textFromLanguage.apply(lang);
         LanguageVariables variables = new LanguageVariables(lang);

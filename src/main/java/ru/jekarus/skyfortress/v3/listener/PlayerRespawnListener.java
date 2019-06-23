@@ -11,7 +11,7 @@ import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEv
 import org.spongepowered.api.event.filter.Getter;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -37,8 +37,8 @@ public class PlayerRespawnListener {
 
     @Listener
     public void onRespawn(RespawnPlayerEvent event, @Getter("getTargetEntity") Player player) {
-        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
-        SfTeam playerTeam = sfPlayer.getTeam();
+        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        SfTeam playerTeam = playerData.getTeam();
         SfGameStageType gameStage = plugin.getGame().getStage();
         if (playerTeam.getType() == SfTeam.Type.GAME && gameStage == SfGameStageType.IN_GAME) {
             SfGameTeam gameTeam = (SfGameTeam) playerTeam;

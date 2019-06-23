@@ -3,7 +3,7 @@ package ru.jekarus.skyfortress.v3.lang;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColor;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
 public class LanguageValueVariables {
@@ -51,7 +51,7 @@ public class LanguageValueVariables {
         return this.variables;
     }
 
-    public LanguageVariables name(SfPlayer player) {
+    public LanguageVariables name(PlayerData player) {
         return this.string(player.getName());
     }
 

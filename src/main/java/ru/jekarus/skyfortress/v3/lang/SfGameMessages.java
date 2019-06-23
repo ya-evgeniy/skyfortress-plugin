@@ -3,7 +3,7 @@ package ru.jekarus.skyfortress.v3.lang;
 import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.messages.SfTitleMessagesLanguage;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -24,7 +24,7 @@ public class SfGameMessages {
         this.players = SfPlayers.getInstance();
     }
 
-    public Map<Locale, Text> castleCapture(SfPlayer player, SfTeam team) {
+    public Map<Locale, Text> castleCapture(PlayerData player, SfTeam team) {
         return messages.construct(
                 lang -> messages.chooseRandom(lang.messages.game.castleCapture),
                 vars -> vars.

@@ -4,7 +4,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextTemplate;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.messages.SfDistributionLanguage;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -27,7 +27,7 @@ public class SfDistributionMessages {
         this.players = SfPlayers.getInstance();
     }
 
-    public Map<Locale, Text> captainSelected(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Map<Locale, Text> captainSelected(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 lang -> messages.chooseRandom(lang.distribution.captainSelected),
                 vars -> vars
@@ -36,7 +36,7 @@ public class SfDistributionMessages {
         );
     }
 
-    public Map<Locale, Text> randomSelected(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Map<Locale, Text> randomSelected(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 lang -> messages.chooseRandom(lang.distribution.randomSelected),
                 vars -> vars
@@ -52,7 +52,7 @@ public class SfDistributionMessages {
         );
     }
 
-    public Text clickToSelect(SfPlayer player) {
+    public Text clickToSelect(PlayerData player) {
         Text rightClick = rightClick(player);
         return messages.construct(
                 player,
@@ -61,15 +61,15 @@ public class SfDistributionMessages {
         );
     }
 
-    public Text rightClick(SfPlayer player) {
+    public Text rightClick(PlayerData player) {
         return messages.getLang(player).distribution.rightClick.toText();
     }
 
-    public Text commandInfoHeader(SfPlayer player) {
+    public Text commandInfoHeader(PlayerData player) {
         return messages.getLang(player).distribution.commandInfoHeader.toText();
     }
 
-    public Text commandInfoRandom(SfPlayer player, SfTeam team) {
+    public Text commandInfoRandom(PlayerData player, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.distribution.commandInfoRandom,
@@ -77,7 +77,7 @@ public class SfDistributionMessages {
         );
     }
 
-    public Text commandInfoPlayer(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Text commandInfoPlayer(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.distribution.commandInfoPlayer,
@@ -87,7 +87,7 @@ public class SfDistributionMessages {
         );
     }
 
-    public Text commandInfoDisabled(SfPlayer player, List<SfTeam> disabledTeams) {
+    public Text commandInfoDisabled(PlayerData player, List<SfTeam> disabledTeams) {
         Text disabledTeamsText = commandInfoDisabledTeamsFormat(player, disabledTeams);
         return messages.construct(
                 player,
@@ -96,7 +96,7 @@ public class SfDistributionMessages {
         );
     }
 
-    public Text commandInfoDisabledTeamsFormat(SfPlayer player, List<SfTeam> disabledTeams) {
+    public Text commandInfoDisabledTeamsFormat(PlayerData player, List<SfTeam> disabledTeams) {
         if (disabledTeams.size() < 1) {
             return Text.EMPTY;
         }

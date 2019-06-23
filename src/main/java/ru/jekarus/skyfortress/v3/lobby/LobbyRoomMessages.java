@@ -4,7 +4,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class LobbyRoomMessages {
         this.room = room;
     }
 
-    public void sendCantJoin(Player player, SfPlayer playerData) {
+    public void sendCantJoin(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -32,7 +32,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantLeave(Player player, SfPlayer playerData) {
+    public void sendCantLeave(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -46,7 +46,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantJoinWhenDistribution(Player player, SfPlayer playerData) {
+    public void sendCantJoinWhenDistribution(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -60,7 +60,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendJoined(Player player, SfPlayer playerData) {
+    public void sendJoined(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -74,7 +74,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendPlayerLeaved(Player player, SfPlayer playerData) {
+    public void sendPlayerLeaved(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -88,7 +88,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendTeammateLeave(Player player, SfPlayer playerData, boolean isCaptain) {
+    public void sendTeammateLeave(Player player, PlayerData playerData, boolean isCaptain) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfMessages messages = plugin.getMessages();
         final SfLobbyMessages lobbyMessages = messages.getLobby();
@@ -106,8 +106,8 @@ public class LobbyRoomMessages {
         );
 
         if (plugin.getSettings().getGlobalLobby().isUseLobbyCaptainSystem() && isCaptain) {
-            final ArrayList<SfPlayer> players = new ArrayList<>(team.getPlayers());
-            final SfPlayer captainData = state.getCaptain();
+            final ArrayList<PlayerData> players = new ArrayList<>(team.getPlayers());
+            final PlayerData captainData = state.getCaptain();
 
             if (captainData == null) {
                 return;
@@ -132,7 +132,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendWaitAccepted(Player player, SfPlayer playerData) {
+    public void sendWaitAccepted(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfMessages messages = plugin.getMessages();
         final SfLobbyMessages lobbyMessages = messages.getLobby();
@@ -160,7 +160,7 @@ public class LobbyRoomMessages {
         }
     }
 
-    public void sendCantAccept(Player player, SfPlayer playerData) {
+    public void sendCantAccept(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -174,7 +174,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantDeny(Player player, SfPlayer playerData) {
+    public void sendCantDeny(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -188,7 +188,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantAcceptCaptain(Player player, SfPlayer playerData) {
+    public void sendCantAcceptCaptain(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -202,7 +202,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantDenyCaptain(Player player, SfPlayer playerData) {
+    public void sendCantDenyCaptain(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -216,7 +216,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendAccepted(Player player, SfPlayer playerData, Player target, SfPlayer targetData) {
+    public void sendAccepted(Player player, PlayerData playerData, Player target, PlayerData targetData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfMessages messages = plugin.getMessages();
         final SfLobbyMessages lobbyMessages = messages.getLobby();
@@ -234,7 +234,7 @@ public class LobbyRoomMessages {
         final LobbyRoomState state = room.getState();
         final SfGameTeam team = state.getTeam();
 
-        final ArrayList<SfPlayer> players = new ArrayList<>(team.getPlayers());
+        final ArrayList<PlayerData> players = new ArrayList<>(team.getPlayers());
         players.remove(playerData);
 
         messages.send(
@@ -252,7 +252,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendDenied(Player player, SfPlayer playerData, Player target, SfPlayer targetData) {
+    public void sendDenied(Player player, PlayerData playerData, Player target, PlayerData targetData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfMessages messages = plugin.getMessages();
         final SfLobbyMessages lobbyMessages = messages.getLobby();
@@ -270,7 +270,7 @@ public class LobbyRoomMessages {
         final LobbyRoomState state = room.getState();
         final SfGameTeam team = state.getTeam();
 
-        final ArrayList<SfPlayer> players = new ArrayList<>(team.getPlayers());
+        final ArrayList<PlayerData> players = new ArrayList<>(team.getPlayers());
         players.remove(playerData);
 
         messages.send(
@@ -285,7 +285,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantReady(Player player, SfPlayer playerData) {
+    public void sendCantReady(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -299,7 +299,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantUnready(Player player, SfPlayer playerData) {
+    public void sendCantUnready(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -313,7 +313,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantReadyCaptain(Player player, SfPlayer playerData) {
+    public void sendCantReadyCaptain(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 
@@ -327,7 +327,7 @@ public class LobbyRoomMessages {
         );
     }
 
-    public void sendCantUnreadyCaptain(Player player, SfPlayer playerData) {
+    public void sendCantUnreadyCaptain(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final SfLobbyMessages messages = plugin.getMessages().getLobby();
 

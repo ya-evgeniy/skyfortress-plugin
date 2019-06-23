@@ -13,25 +13,25 @@ public class SfPlayers {
 
     private static final SfPlayers instance = new SfPlayers();
 
-    private Map<UUID, SfPlayer> players = new HashMap<>();
+    private Map<UUID, PlayerData> players = new HashMap<>();
 
-    public SfPlayer getOrCreatePlayer(Player player) {
-        SfPlayer sfPlayer = this.players.get(player.getUniqueId());
-        if (sfPlayer == null) {
-            sfPlayer = new SfPlayer(player);
-            this.players.put(player.getUniqueId(), sfPlayer);
-            return sfPlayer;
+    public PlayerData getOrCreatePlayer(Player player) {
+        PlayerData playerData = this.players.get(player.getUniqueId());
+        if (playerData == null) {
+            playerData = new PlayerData(player);
+            this.players.put(player.getUniqueId(), playerData);
+            return playerData;
         }
         else {
-            return sfPlayer;
+            return playerData;
         }
     }
 
-    public Optional<SfPlayer> getPlayer(UUID uniqueId) {
+    public Optional<PlayerData> getPlayer(UUID uniqueId) {
         return Optional.ofNullable(this.players.get(uniqueId));
     }
 
-    public Optional<SfPlayer> getPlayer(Player player) {
+    public Optional<PlayerData> getPlayer(Player player) {
         return this.getPlayer(player.getUniqueId());
     }
 
@@ -47,7 +47,7 @@ public class SfPlayers {
         this.remove(player.getUniqueId());
     }
 
-    public List<SfPlayer> asList() {
+    public List<PlayerData> asList() {
         return new ArrayList<>(this.players.values());
     }
 }

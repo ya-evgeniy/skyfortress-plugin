@@ -3,7 +3,7 @@ package ru.jekarus.skyfortress.v3.lobby;
 import org.spongepowered.api.entity.living.player.Player;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.settings.LobbySettings;
 import ru.jekarus.skyfortress.v3.utils.LocationAndRotation;
 
@@ -15,7 +15,7 @@ public class LobbyRoomMovement {
         this.room = room;
     }
 
-    public void moveToAccepted(Player player, SfPlayer playerData) {
+    public void moveToAccepted(Player player, PlayerData playerData) {
         final LobbyRoomSettings settings = room.getSettings();
         final LocationAndRotation accepted = settings.getAccepted();
 
@@ -33,7 +33,7 @@ public class LobbyRoomMovement {
         );
     }
 
-    public void moveToWaiting(Player player, SfPlayer playerData) {
+    public void moveToWaiting(Player player, PlayerData playerData) {
         final LobbyRoomSettings settings = room.getSettings();
         final LocationAndRotation waiting = settings.getWaiting();
 
@@ -50,7 +50,7 @@ public class LobbyRoomMovement {
         );
     }
 
-    public void moveToLobby(Player player, SfPlayer playerData) {
+    public void moveToLobby(Player player, PlayerData playerData) {
         final SkyFortressPlugin plugin = room.getPlugin();
         final LobbySettings lobbySettings = plugin.getSettings().getLobby();
         final LocationAndRotation center = lobbySettings.getCenter();

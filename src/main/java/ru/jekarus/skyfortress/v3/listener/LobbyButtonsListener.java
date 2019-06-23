@@ -12,7 +12,7 @@ import org.spongepowered.api.event.filter.cause.First;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 
 public class LobbyButtonsListener {
@@ -39,7 +39,7 @@ public class LobbyButtonsListener {
     @Listener
     public void onInteract(ChangeBlockEvent.Modify event, @First Player player)
     {
-        SfPlayer sfPlayer = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreatePlayer(player);
         for (Transaction<BlockSnapshot> transaction : event.getTransactions())
         {
             BlockSnapshot original = transaction.getOriginal();
@@ -48,24 +48,24 @@ public class LobbyButtonsListener {
             {
                 if (plugin.getGame().getStage() == SfGameStageType.PRE_GAME) {
                     for (LobbyRoom room : this.plugin.getLobbyRoomsContainer().getRooms()) {
-                        final boolean result = room.getInteractions().standOnPlate(player, sfPlayer, original);
+                        final boolean result = room.getInteractions().standOnPlate(player, playerData, original);
                         if (result) {
                             break;
                         }
                     }
-//                    this.plugin.getLobby().standOnPlate(player, sfPlayer, original);
+//                    this.plugin.getLobby().standOnPlate(player, playerData, original);
                 }
             }
             else if (type.equals(BlockTypes.WOODEN_BUTTON))
             {
                 if (plugin.getGame().getStage() == SfGameStageType.PRE_GAME) {
                     for (LobbyRoom room : this.plugin.getLobbyRoomsContainer().getRooms()) {
-                        final boolean result = room.getInteractions().pressButton(player, sfPlayer, original);
+                        final boolean result = room.getInteractions().pressButton(player, playerData, original);
                         if (result) {
                             break;
                         }
                     }
-//                    this.plugin.getLobby().pressButton(player, sfPlayer, original);
+//                    this.plugin.getLobby().pressButton(player, playerData, original);
                 }
             }
         }

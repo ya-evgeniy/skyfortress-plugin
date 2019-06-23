@@ -3,7 +3,7 @@ package ru.jekarus.skyfortress.v3.lang;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -27,43 +27,43 @@ public class SfLobbyMessages {
         return getLang(players.getOrCreatePlayer(player));
     }
 
-    private SfLanguage getLang(SfPlayer player) {
+    private SfLanguage getLang(PlayerData player) {
         return plugin.getLanguages().get(player.getLocale());
     }
 
-    public Text cantJoin(SfPlayer player) {
+    public Text cantJoin(PlayerData player) {
         return getLang(player).messages.lobby.cantJoin.toText();
     }
 
-    public Text cantLeave(SfPlayer player) {
+    public Text cantLeave(PlayerData player) {
         return getLang(player).messages.lobby.cantLeave.toText();
     }
 
-    public Text cantReady(SfPlayer player) {
+    public Text cantReady(PlayerData player) {
         return getLang(player).messages.lobby.cantReady.toText();
     }
 
-    public Text cantUnready(SfPlayer player) {
+    public Text cantUnready(PlayerData player) {
         return getLang(player).messages.lobby.cantUnready.toText();
     }
 
-    public Text cantAccept(SfPlayer player) {
+    public Text cantAccept(PlayerData player) {
         return getLang(player).messages.lobby.cantAccept.toText();
     }
 
-    public Text cantDeny(SfPlayer player) {
+    public Text cantDeny(PlayerData player) {
         return getLang(player).messages.lobby.cantDeny.toText();
     }
 
-    public Text cantJoinWhenDistribution(SfPlayer player) {
+    public Text cantJoinWhenDistribution(PlayerData player) {
         return getLang(player).messages.lobby.cantJoinWhenDistribution.toText();
     }
 
-    public Text playerWaitAccepted(SfPlayer player) {
+    public Text playerWaitAccepted(PlayerData player) {
         return getLang(player).messages.lobby.playerWaitAccepted.toText();
     }
 
-    public Text playerWaitAcceptedByCaptain(SfPlayer player, SfPlayer captain, SfTeam team) {
+    public Text playerWaitAcceptedByCaptain(PlayerData player, PlayerData captain, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.playerWaitAcceptedByCaptain,
@@ -71,7 +71,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text playerJoined(SfPlayer player, SfTeam team) {
+    public Text playerJoined(PlayerData player, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.playerJoined,
@@ -79,7 +79,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text playerLeaved(SfPlayer player, SfTeam team) {
+    public Text playerLeaved(PlayerData player, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.playerLeaved,
@@ -87,7 +87,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text playerAcceptedBy(SfPlayer player, SfPlayer acceptor, SfTeam team) {
+    public Text playerAcceptedBy(PlayerData player, PlayerData acceptor, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.playerAcceptedBy,
@@ -95,7 +95,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text playerDeniedBy(SfPlayer player, SfPlayer denier, SfTeam team) {
+    public Text playerDeniedBy(PlayerData player, PlayerData denier, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.playerDeniedBy,
@@ -103,28 +103,28 @@ public class SfLobbyMessages {
         );
     }
 
-    public Map<Locale, Text> teammateWaitAccepted(SfPlayer player) {
+    public Map<Locale, Text> teammateWaitAccepted(PlayerData player) {
         return messages.construct(
                 lang -> lang.messages.lobby.teammateWaitAccepted,
                 vars -> vars.playerKey().name(player)
         );
     }
 
-    public Map<Locale, Text> teammateJoined(SfPlayer player) {
+    public Map<Locale, Text> teammateJoined(PlayerData player) {
         return messages.construct(
                 lang -> lang.messages.lobby.teammateJoined,
                 vars -> vars.playerKey().name(player)
         );
     }
 
-    public Map<Locale, Text> teammateLeaved(SfPlayer player) {
+    public Map<Locale, Text> teammateLeaved(PlayerData player) {
         return messages.construct(
                 lang -> lang.messages.lobby.teammateLeaved,
                 vars -> vars.playerKey().name(player)
         );
     }
 
-    public Text teammateYouAccepted(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Text teammateYouAccepted(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.teammateYouAccepted,
@@ -132,7 +132,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Map<Locale, Text> teammateAcceptedBy(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Map<Locale, Text> teammateAcceptedBy(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 lang -> lang.messages.lobby.teammateAcceptedBy,
                 vars -> vars
@@ -141,7 +141,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text teammateYouDenied(SfPlayer player, SfPlayer target) {
+    public Text teammateYouDenied(PlayerData player, PlayerData target) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.teammateYouDenied,
@@ -149,7 +149,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Map<Locale, Text> teammateDeniedBy(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Map<Locale, Text> teammateDeniedBy(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 lang -> lang.messages.lobby.teammateDeniedBy,
                 vars -> vars
@@ -158,7 +158,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text teammateCaptainYouAreNew(SfPlayer player, SfTeam team) {
+    public Text teammateCaptainYouAreNew(PlayerData player, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.teammateCaptainYouAreNew,
@@ -166,14 +166,14 @@ public class SfLobbyMessages {
         );
     }
 
-    public Map<Locale, Text> teammateNewCaptain(SfPlayer player, SfTeam team) {
+    public Map<Locale, Text> teammateNewCaptain(PlayerData player, SfTeam team) {
         return messages.construct(
                 lang -> lang.messages.lobby.teammateCaptainNew,
                 vars -> vars.playerKey().color(team).name(player)
         );
     }
 
-    public Text teammateCaptainYouReplaced(SfPlayer player, SfPlayer captain, SfTeam team) {
+    public Text teammateCaptainYouReplaced(PlayerData player, PlayerData captain, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.teammateCaptainYouAreNew,
@@ -181,7 +181,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Map<Locale, Text> teammateCaptainReplaced(SfPlayer player, SfPlayer captain, SfTeam team) {
+    public Map<Locale, Text> teammateCaptainReplaced(PlayerData player, PlayerData captain, SfTeam team) {
         return messages.construct(
                 lang -> lang.messages.lobby.teammateCaptainReplaced,
                 vars -> vars
@@ -190,7 +190,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text teammateCaptainLeavedYouNew(SfPlayer player, SfPlayer captain, SfTeam team) {
+    public Text teammateCaptainLeavedYouNew(PlayerData player, PlayerData captain, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.teammatesCaptainLeavedYouNew,
@@ -198,7 +198,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Map<Locale, Text> teammateCaptainLeaved(SfPlayer player, SfPlayer captain, SfTeam team) {
+    public Map<Locale, Text> teammateCaptainLeaved(PlayerData player, PlayerData captain, SfTeam team) {
         return messages.construct(
                 lang -> lang.messages.lobby.teammateCaptainLeaved,
                 vars -> vars
@@ -207,23 +207,23 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text teammateCaptainCantReady(SfPlayer player) {
+    public Text teammateCaptainCantReady(PlayerData player) {
         return getLang(player).messages.lobby.teammateCaptainCantReady.toText();
     }
 
-    public Text teammateCaptainCantUnready(SfPlayer player) {
+    public Text teammateCaptainCantUnready(PlayerData player) {
         return getLang(player).messages.lobby.teammateCaptainCantUnready.toText();
     }
 
-    public Text teammateCaptainCantAccept(SfPlayer player) {
+    public Text teammateCaptainCantAccept(PlayerData player) {
         return getLang(player).messages.lobby.teammateCaptainCantAccept.toText();
     }
 
-    public Text teammateCaptainCantDeny(SfPlayer player) {
+    public Text teammateCaptainCantDeny(PlayerData player) {
         return getLang(player).messages.lobby.teammateCaptainCantDeny.toText();
     }
 
-    public Text commandPlayerChangeSelfTeam(SfPlayer player, SfTeam team) {
+    public Text commandPlayerChangeSelfTeam(PlayerData player, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.commandPlayerChangeSelfTeam,
@@ -231,7 +231,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text commandPlayerChangePlayerTeam(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Text commandPlayerChangePlayerTeam(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.commandPlayerChangePlayerTeam,
@@ -241,11 +241,11 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text commandPlayerYouAlreadyInTeam(SfPlayer player) {
+    public Text commandPlayerYouAlreadyInTeam(PlayerData player) {
         return getLang(player).messages.lobby.commandPlayerYouAlreadyInTeam.toText();
     }
 
-    public Text commandPlayerAlreadyInTeam(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Text commandPlayerAlreadyInTeam(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.commandPlayerAlreadyInTeam,
@@ -253,7 +253,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Text commandTargetSetTeam(SfPlayer player, SfPlayer who, SfTeam team) {
+    public Text commandTargetSetTeam(PlayerData player, PlayerData who, SfTeam team) {
         return messages.construct(
                 player,
                 lang -> lang.messages.lobby.commandTargetSetTeam,
@@ -263,7 +263,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Map<Locale, Text> commandGlobalSetSelfTeam(SfPlayer player, SfTeam team) {
+    public Map<Locale, Text> commandGlobalSetSelfTeam(PlayerData player, SfTeam team) {
         return messages.construct(
                 lang -> lang.messages.lobby.commandGlobalSetSelfTeam,
                 vars -> vars
@@ -272,7 +272,7 @@ public class SfLobbyMessages {
         );
     }
 
-    public Map<Locale, Text> commandGlobalSetPlayerTeam(SfPlayer player, SfPlayer target, SfTeam team) {
+    public Map<Locale, Text> commandGlobalSetPlayerTeam(PlayerData player, PlayerData target, SfTeam team) {
         return messages.construct(
                 lang -> lang.messages.lobby.commandGlobalSetPlayerTeam,
                 vars -> vars

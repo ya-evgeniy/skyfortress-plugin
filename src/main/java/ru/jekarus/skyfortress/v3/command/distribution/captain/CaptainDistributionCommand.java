@@ -16,7 +16,7 @@ import ru.jekarus.skyfortress.v3.distribution.captain.CaptainController;
 import ru.jekarus.skyfortress.v3.distribution.captain.CaptainSettings;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -287,9 +287,9 @@ public class CaptainDistributionCommand extends SfCommand {
                             if (gameTeam.getPlayers().isEmpty()) {
                                 continue;
                             }
-                            SfPlayer captain = room.getState().getCaptain();
+                            PlayerData captain = room.getState().getCaptain();
                             if (captain == null) {
-                                ArrayList<SfPlayer> teamPlayers = new ArrayList<>(gameTeam.getPlayers());
+                                ArrayList<PlayerData> teamPlayers = new ArrayList<>(gameTeam.getPlayers());
                                 int captainIndex = random.nextInt(teamPlayers.size());
                                 this.command.settings.updateSelector(
                                         gameTeam,
@@ -360,7 +360,7 @@ public class CaptainDistributionCommand extends SfCommand {
                         }
 
                         Player player = (Player) src;
-                        SfPlayer sfPlayer = SfPlayers.getInstance().getOrCreatePlayer(player);
+                        PlayerData playerData = SfPlayers.getInstance().getOrCreatePlayer(player);
 
 
                         List<SfTeam> disabledTeams = new ArrayList<>();
@@ -387,20 +387,20 @@ public class CaptainDistributionCommand extends SfCommand {
                             CaptainSettings.Selector selector = entry.getValue();
 
                             if (selector.getType() == CaptainSettings.SelectorType.RANDOM) {
-                                Text randomText = distribution.commandInfoRandom(sfPlayer, team);
+                                Text randomText = distribution.commandInfoRandom(playerData, team);
                                 settings.add(randomText);
                             }
                             else {
                                 CaptainSettings.PlayerSelector playerSelector = (CaptainSettings.PlayerSelector) selector;
-                                Text playerText = distribution.commandInfoPlayer(sfPlayer, playerSelector.getPlayer(), team);
+                                Text playerText = distribution.commandInfoPlayer(playerData, playerSelector.getPlayer(), team);
                                 settings.add(playerText);
                             }
                         }
 
-                        Text header = distribution.commandInfoHeader(sfPlayer);
+                        Text header = distribution.commandInfoHeader(playerData);
                         Text disabled = null;
                         if (disabledTeams.size() > 0) {
-                            disabled = distribution.commandInfoDisabled(sfPlayer, disabledTeams);
+                            disabled = distribution.commandInfoDisabled(playerData, disabledTeams);
                         }
 
                         player.sendMessage(header);

@@ -4,7 +4,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +29,7 @@ public abstract class BlockInteraction {
         this.blockPositions = blockPositions;
     }
 
-    public final boolean activate(Player player, SfPlayer playerData, BlockSnapshot block) {
+    public final boolean activate(Player player, PlayerData playerData, BlockSnapshot block) {
         final Vector3i position = block.getPosition();
 
         for (Vector3i blockPosition : this.blockPositions) {
@@ -43,6 +43,6 @@ public abstract class BlockInteraction {
         return false;
     }
 
-    protected abstract boolean onInteract(Player player, SfPlayer playerData, BlockSnapshot block);
+    protected abstract boolean onInteract(Player player, PlayerData playerData, BlockSnapshot block);
 
 }

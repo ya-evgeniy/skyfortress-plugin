@@ -11,8 +11,8 @@ import ru.jekarus.skyfortress.v3.lang.SfLobbyMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoom;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomSettings;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
 
@@ -52,12 +52,12 @@ public class SfTeamCommand extends SfCommand {
                     }
 
                     Player player = (Player) src;
-                    SfPlayer sfPlayer = players.getOrCreatePlayer(player);
+                    PlayerData playerData = players.getOrCreatePlayer(player);
 
 
 //                    if (team == null)
 //                    {
-//                        globalLobby.commandPlayerTeamNotFound(sfPlayer, )
+//                        globalLobby.commandPlayerTeamNotFound(playerData, )
 //                        src.sendMessage(Text.of("Команда не найдена"));
 //                        return CommandResult.empty();
 //                    }
@@ -72,17 +72,17 @@ public class SfTeamCommand extends SfCommand {
                         target = player;
                     }
 
-                    SfPlayer sfTarget = players.getOrCreatePlayer(target);
+                    PlayerData sfTarget = players.getOrCreatePlayer(target);
 
                     if (team.getPlayers().contains(sfTarget)) {
-                        if (sfPlayer == sfTarget) {
+                        if (playerData == sfTarget) {
                             player.sendMessage(
                                     lobby.commandPlayerYouAlreadyInTeam(sfTarget)
                             );
                         }
                         else {
                             player.sendMessage(
-                                    lobby.commandPlayerAlreadyInTeam(sfPlayer, sfTarget, team)
+                                    lobby.commandPlayerAlreadyInTeam(playerData, sfTarget, team)
                             );
                         }
                     }
@@ -90,27 +90,27 @@ public class SfTeamCommand extends SfCommand {
                         List<Player> onlinePlayers = new ArrayList<>(Sponge.getServer().getOnlinePlayers());
                         onlinePlayers.remove(target);
 
-                        if (sfPlayer == sfTarget) {
+                        if (playerData == sfTarget) {
                             player.sendMessage(
-                                    lobby.commandPlayerChangeSelfTeam(sfPlayer, team)
+                                    lobby.commandPlayerChangeSelfTeam(playerData, team)
                             );
                             messages.sendToPlayers(
                                     onlinePlayers,
-                                    lobby.commandGlobalSetSelfTeam(sfPlayer, team)
+                                    lobby.commandGlobalSetSelfTeam(playerData, team)
                             );
                             needTp = false;
                         }
                         else {
                             onlinePlayers.remove(player);
                             player.sendMessage(
-                                    lobby.commandPlayerChangePlayerTeam(sfPlayer, sfTarget, team)
+                                    lobby.commandPlayerChangePlayerTeam(playerData, sfTarget, team)
                             );
                             target.sendMessage(
-                                    lobby.commandTargetSetTeam(sfTarget, sfPlayer, team)
+                                    lobby.commandTargetSetTeam(sfTarget, playerData, team)
                             );
                             messages.sendToPlayers(
                                     onlinePlayers,
-                                    lobby.commandGlobalSetPlayerTeam(sfPlayer, sfTarget, team)
+                                    lobby.commandGlobalSetPlayerTeam(playerData, sfTarget, team)
                             );
                         }
 
@@ -135,24 +135,24 @@ public class SfTeamCommand extends SfCommand {
                 .build();
     }
 
-    private static void teleport(SkyFortressPlugin plugin, Player player, SfPlayer sfPlayer, LobbyRoom room) {
+    private static void teleport(SkyFortressPlugin plugin, Player player, PlayerData playerData, LobbyRoom room) {
         if (room != null) {
             LobbyRoomSettings settings = room.getSettings();
             player.setLocationAndRotation(
                     settings.getAccepted().getLocation(),
                     settings.getAccepted().getRotation()
             );
-            sfPlayer.setZone(PlayerZone.TEAM_ROOM);
+            playerData.setZone(PlayerZone.TEAM_ROOM);
             return;
         }
 
-        SfTeam team = sfPlayer.getTeam();
+        SfTeam team = playerData.getTeam();
         if (team.getType() == SfTeam.Type.NONE) {
             player.setLocationAndRotation(
                     plugin.getSettings().getLobby().getCenter().getLocation(),
                     plugin.getSettings().getLobby().getCenter().getRotation()
             );
-            sfPlayer.setZone(PlayerZone.LOBBY);
+            playerData.setZone(PlayerZone.LOBBY);
             return;
         }
 

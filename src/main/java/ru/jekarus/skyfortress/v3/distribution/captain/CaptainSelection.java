@@ -13,7 +13,7 @@ import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfDistributionMessages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 import ru.jekarus.skyfortress.v3.scoreboard.SfScoreboard;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
@@ -105,8 +105,8 @@ public class CaptainSelection implements CaptainSelectedHandler {
         }
 
         CaptainsState state = this.distribution.getState();
-        List<SfPlayer> captainTargets = state.captainByTeam.values().stream().map(cap -> cap.player).collect(Collectors.toList());
-        List<SfPlayer> playerTargets = state.targetByPlayerUniqueId.values().stream().map(cTarget -> cTarget.player).collect(Collectors.toList());
+        List<PlayerData> captainTargets = state.captainByTeam.values().stream().map(cap -> cap.player).collect(Collectors.toList());
+        List<PlayerData> playerTargets = state.targetByPlayerUniqueId.values().stream().map(cTarget -> cTarget.player).collect(Collectors.toList());
 
         messages.send(captainTargets, localizedText);
         messages.send(playerTargets, localizedText);
@@ -140,10 +140,10 @@ public class CaptainSelection implements CaptainSelectedHandler {
 
     @Listener
     public void onLeftClick(InteractBlockEvent event, @First Player player) {
-        Optional<SfPlayer> optionalSfPlayer = SfPlayers.getInstance().getPlayer(player);
+        Optional<PlayerData> optionalSfPlayer = SfPlayers.getInstance().getPlayer(player);
         if (optionalSfPlayer.isPresent()) {
-            SfPlayer sfPlayer = optionalSfPlayer.get();
-            if (choosingCaptain.captain.player == sfPlayer) {
+            PlayerData playerData = optionalSfPlayer.get();
+            if (choosingCaptain.captain.player == playerData) {
                 choosingCaptain.select(this);
             }
         }

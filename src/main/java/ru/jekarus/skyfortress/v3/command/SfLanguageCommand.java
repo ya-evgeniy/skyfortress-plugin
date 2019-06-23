@@ -7,7 +7,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
-import ru.jekarus.skyfortress.v3.player.SfPlayer;
+import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.SfPlayers;
 
 import java.util.HashMap;
@@ -56,10 +56,10 @@ public class SfLanguageCommand extends SfCommand {
                         return CommandResult.empty();
                     }
 
-                    SfPlayer sfPlayer = SfPlayers.getInstance().getOrCreatePlayer(player);
-                    sfPlayer.setLocale(locale);
+                    PlayerData playerData = SfPlayers.getInstance().getOrCreatePlayer(player);
+                    playerData.setLocale(locale);
 
-                    plugin.getScoreboards().setFor(sfPlayer, player);
+                    plugin.getScoreboards().setFor(playerData, player);
 
                     return CommandResult.success();
 
