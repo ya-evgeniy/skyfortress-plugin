@@ -37,7 +37,7 @@ public class LobbyListener {
 
     @Listener
     public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreateData(player);
 
         SfGameStageType stage = this.plugin.getGame().getStage();
 
@@ -56,7 +56,7 @@ public class LobbyListener {
         double lobbyY = lobbySettings.getMinY();
 
         if (playerY < lobbyY) {
-            PlayerData playerData = this.players.getOrCreatePlayer(player);
+            PlayerData playerData = this.players.getOrCreateData(player);
             PlayerZone playerZone = playerData.getZone();
             if (playerZone == PlayerZone.LOBBY) {
                 event.setToTransform(
@@ -68,7 +68,7 @@ public class LobbyListener {
 
     @Listener
     public void onEntityDamage(DamageEntityEvent event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreateData(player);
         PlayerZone playerZone = playerData.getZone();
 
         if (playerZone == PlayerZone.LOBBY || playerZone == PlayerZone.TEAM_ROOM) {
@@ -78,7 +78,7 @@ public class LobbyListener {
 
     @Listener
     public void onRespawn(RespawnPlayerEvent event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreateData(player);
 
         SfTeam playerTeam = playerData.getTeam();
         PlayerZone playerZone = playerData.getZone();

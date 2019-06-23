@@ -58,7 +58,7 @@ public class SfMessages {
 
     public void broadcast(Map<Locale, Text> locatedTexts, boolean need_spaces) {
         for (Player player : this.server.getOnlinePlayers()) {
-            PlayerData playerData = this.players.getOrCreatePlayer(player);
+            PlayerData playerData = this.players.getOrCreateData(player);
             Text text = locatedTexts.get(playerData.getLocale());
             if (text != null) {
                 if (need_spaces) {
@@ -86,7 +86,7 @@ public class SfMessages {
     }
 
     public void sendToPlayers(Collection<Player> targets, Map<Locale, Text> locatedTexts) {
-        List<PlayerData> sfTargets = targets.stream().map(this.players::getOrCreatePlayer).collect(Collectors.toList());
+        List<PlayerData> sfTargets = targets.stream().map(this.players::getOrCreateData).collect(Collectors.toList());
         this.send(sfTargets, locatedTexts);
     }
 

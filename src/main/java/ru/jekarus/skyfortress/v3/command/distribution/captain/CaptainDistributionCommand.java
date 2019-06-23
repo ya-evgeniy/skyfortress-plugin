@@ -204,7 +204,7 @@ public class CaptainDistributionCommand extends SfCommand {
                             this.command.settings.updateSelector(
                                     gameTeam,
                                     new CaptainSettings.PlayerSelector(
-                                            PlayersDataContainer.getInstance().getOrCreatePlayer(optionalPlayer.get())
+                                            PlayersDataContainer.getInstance().getOrCreateData(optionalPlayer.get())
                                     )
                             );
 
@@ -360,7 +360,7 @@ public class CaptainDistributionCommand extends SfCommand {
                         }
 
                         Player player = (Player) src;
-                        PlayerData playerData = PlayersDataContainer.getInstance().getOrCreatePlayer(player);
+                        PlayerData playerData = PlayersDataContainer.getInstance().getOrCreateData(player);
 
 
                         List<SfTeam> disabledTeams = new ArrayList<>();

@@ -90,7 +90,7 @@ public class PlayerDeathListener {
 
     private void checkPlayerLost(Player player)
     {
-        Optional<PlayerData> optionalSfPlayer = this.players.getPlayer(player);
+        Optional<PlayerData> optionalSfPlayer = this.players.get(player);
         if (!optionalSfPlayer.isPresent())
         {
             return;

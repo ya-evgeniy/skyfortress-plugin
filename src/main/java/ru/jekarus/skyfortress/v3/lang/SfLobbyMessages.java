@@ -24,7 +24,7 @@ public class SfLobbyMessages {
     }
 
     private SfLanguage getLang(Player player) {
-        return getLang(players.getOrCreatePlayer(player));
+        return getLang(players.getOrCreateData(player));
     }
 
     private SfLanguage getLang(PlayerData player) {

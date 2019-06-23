@@ -12,14 +12,13 @@ import java.util.UUID;
 public class PlayersDataContainer {
 
     private static final PlayersDataContainer instance = new PlayersDataContainer();
+    private Map<UUID, PlayerData> dataByUniqueId = new HashMap<>();
 
-    private Map<UUID, PlayerData> players = new HashMap<>();
-
-    public PlayerData getOrCreatePlayer(Player player) {
-        PlayerData playerData = this.players.get(player.getUniqueId());
+    public PlayerData getOrCreateData(Player player) {
+        PlayerData playerData = this.dataByUniqueId.get(player.getUniqueId());
         if (playerData == null) {
             playerData = new PlayerData(player);
-            this.players.put(player.getUniqueId(), playerData);
+            this.dataByUniqueId.put(player.getUniqueId(), playerData);
             return playerData;
         }
         else {
@@ -27,12 +26,13 @@ public class PlayersDataContainer {
         }
     }
 
-    public Optional<PlayerData> getPlayer(UUID uniqueId) {
-        return Optional.ofNullable(this.players.get(uniqueId));
+
+    public Optional<PlayerData> get(UUID uniqueId) {
+        return Optional.ofNullable(this.dataByUniqueId.get(uniqueId));
     }
 
-    public Optional<PlayerData> getPlayer(Player player) {
-        return this.getPlayer(player.getUniqueId());
+    public Optional<PlayerData> get(Player player) {
+        return this.get(player.getUniqueId());
     }
 
     public static PlayersDataContainer getInstance() {
@@ -40,7 +40,7 @@ public class PlayersDataContainer {
     }
 
     public void remove(UUID uniqueId) {
-        this.players.remove(uniqueId);
+        this.dataByUniqueId.remove(uniqueId);
     }
 
     public void remove(Player player) {
@@ -48,6 +48,7 @@ public class PlayersDataContainer {
     }
 
     public List<PlayerData> asList() {
-        return new ArrayList<>(this.players.values());
+        return new ArrayList<>(this.dataByUniqueId.values());
     }
+
 }

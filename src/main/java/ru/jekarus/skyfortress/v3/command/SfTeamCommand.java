@@ -52,7 +52,7 @@ public class SfTeamCommand extends SfCommand {
                     }
 
                     Player player = (Player) src;
-                    PlayerData playerData = players.getOrCreatePlayer(player);
+                    PlayerData playerData = players.getOrCreateData(player);
 
 
 //                    if (team == null)
@@ -72,7 +72,7 @@ public class SfTeamCommand extends SfCommand {
                         target = player;
                     }
 
-                    PlayerData sfTarget = players.getOrCreatePlayer(target);
+                    PlayerData sfTarget = players.getOrCreateData(target);
 
                     if (team.getPlayers().contains(sfTarget)) {
                         if (playerData == sfTarget) {

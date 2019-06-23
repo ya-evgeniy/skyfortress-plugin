@@ -218,7 +218,7 @@ public class CaptainDistribution {
 //        List<PlayerData> sfPlayers = new ArrayList<>();
 //        PlayersDataContainer playersData = PlayersDataContainer.getInstance();
 //        for (Player player : players) {
-//            PlayerData sfPlayer = playersData.getOrCreatePlayer(player);
+//            PlayerData sfPlayer = playersData.getOrCreateData(player);
 //            sfPlayers.register(sfPlayer);
 //            if (!useExistingTeams) {
 //                SfTeam playerTeam = sfPlayer.getTeam();

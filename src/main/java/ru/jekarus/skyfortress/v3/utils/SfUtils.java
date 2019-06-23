@@ -49,7 +49,7 @@ public class SfUtils {
         SkyFortressPlugin plugin = SkyFortressPlugin.getInstance();
         PlayersDataContainer players = PlayersDataContainer.getInstance();
 
-        PlayerData playerData = players.getOrCreatePlayer(player);
+        PlayerData playerData = players.getOrCreateData(player);
         plugin.getTeamContainer().getSpectatorTeam().addPlayer(plugin, playerData);
 
         player.offer(Keys.GAME_MODE, GameModes.SPECTATOR);

@@ -39,7 +39,7 @@ public class LobbyButtonsListener {
     @Listener
     public void onInteract(ChangeBlockEvent.Modify event, @First Player player)
     {
-        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreateData(player);
         for (Transaction<BlockSnapshot> transaction : event.getTransactions())
         {
             BlockSnapshot original = transaction.getOriginal();

@@ -33,7 +33,7 @@ public class PlayerInteractListener {
     public void onEntityInteract(InteractEntityEvent event, @First Player player) {
         Entity entity = event.getTargetEntity();
         if (entity.getType().equals(EntityTypes.ILLUSION_ILLAGER)) {
-            final val sfPlayer = this.players.getOrCreatePlayer(player);
+            final val sfPlayer = this.players.getOrCreateData(player);
             final val shop = this.plugin.getShops().getShop(sfPlayer.getLocale());
             if (shop != null) {
                 player.openInventory(shop.getInventory());

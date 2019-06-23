@@ -37,7 +37,7 @@ public class PlayerRespawnListener {
 
     @Listener
     public void onRespawn(RespawnPlayerEvent event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreateData(player);
         SfTeam playerTeam = playerData.getTeam();
         SfGameStageType gameStage = plugin.getGame().getStage();
         if (playerTeam.getType() == SfTeam.Type.GAME && gameStage == SfGameStageType.IN_GAME) {

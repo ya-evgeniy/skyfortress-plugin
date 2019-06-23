@@ -81,7 +81,7 @@ public class CaptainController implements Distribution {
                 this.consumer.accept(this, ResultMessage.START_DISTRIBUTION);
                 PlayersDataContainer players = PlayersDataContainer.getInstance();
                 Collection<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers();
-                List<PlayerData> playerDatas = onlinePlayers.stream().map(players::getOrCreatePlayer).collect(Collectors.toList());
+                List<PlayerData> playerDatas = onlinePlayers.stream().map(players::getOrCreateData).collect(Collectors.toList());
 //                for (int i = 0; i < 10; i++) {
 //                    playerDatas.register(new PlayerData(
 //                            UUID.randomUUID(),

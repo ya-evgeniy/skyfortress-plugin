@@ -34,7 +34,7 @@ public class EndGameStage extends SfGameStage {
                     lobbySettings.getCenter().getRotation()
             );
             player.offer(Keys.GAME_MODE, GameModes.ADVENTURE);
-            PlayerData playerData = players.getOrCreatePlayer(player);
+            PlayerData playerData = players.getOrCreateData(player);
             this.plugin.getTeamContainer().getNoneTeam().addPlayer(this.plugin, playerData);
             playerData.setZone(PlayerZone.LOBBY);
             player.getInventory().clear();

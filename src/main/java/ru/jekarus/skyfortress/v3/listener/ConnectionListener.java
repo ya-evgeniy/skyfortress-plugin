@@ -43,7 +43,7 @@ public class ConnectionListener {
 
     @Listener
     public void onChangeClientSettings(PlayerChangeClientSettingsEvent event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = players.getOrCreatePlayer(player);
+        PlayerData playerData = players.getOrCreateData(player);
         SfLanguages languages = plugin.getLanguages();
 
         Locale locale = event.getLocale();
@@ -55,7 +55,7 @@ public class ConnectionListener {
 
     @Listener
     public void onConnect(ClientConnectionEvent.Join event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = this.players.getOrCreatePlayer(player);
+        PlayerData playerData = this.players.getOrCreateData(player);
         playerData.setLastPlayed(-1);
 
         if (playerData.getLocale() == null) {
@@ -159,7 +159,7 @@ public class ConnectionListener {
 
     @Listener
     public void onDisconnect(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
-        PlayerData playerData = players.getOrCreatePlayer(player);
+        PlayerData playerData = players.getOrCreateData(player);
         playerData.setLastPlayed(System.currentTimeMillis());
 
         SfGameStageType stage = this.plugin.getGame().getStage();

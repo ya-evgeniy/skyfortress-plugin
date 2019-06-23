@@ -140,7 +140,7 @@ public class CaptainSelection implements CaptainSelectedHandler {
 
     @Listener
     public void onLeftClick(InteractBlockEvent event, @First Player player) {
-        Optional<PlayerData> optionalSfPlayer = PlayersDataContainer.getInstance().getPlayer(player);
+        Optional<PlayerData> optionalSfPlayer = PlayersDataContainer.getInstance().get(player);
         if (optionalSfPlayer.isPresent()) {
             PlayerData playerData = optionalSfPlayer.get();
             if (choosingCaptain.captain.player == playerData) {
