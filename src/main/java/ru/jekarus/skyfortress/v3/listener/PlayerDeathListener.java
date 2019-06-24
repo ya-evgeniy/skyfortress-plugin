@@ -6,11 +6,17 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
+import org.spongepowered.api.entity.projectile.Projectile;
+import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.item.ItemTypes;
@@ -59,30 +65,35 @@ public class PlayerDeathListener {
     @Listener
     public void onDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player)
     {
-        for (Player anotherPlayer : event.getCause().allOf(Player.class))
-        {
-            if (anotherPlayer != player)
-            {
-                Location<World> location = anotherPlayer.getLocation();
-                Inventory hotbar = anotherPlayer.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class));
-                InventoryTransactionResult result = hotbar.offer(ItemStack.of(ItemTypes.GOLD_INGOT, 1));
-                if (!result.getRejectedItems().isEmpty())
-                {
-                    Inventory playerInventory = anotherPlayer.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
-                    for (ItemStackSnapshot stackSnapshot : result.getRejectedItems())
-                    {
-                        InventoryTransactionResult resultOffer = playerInventory.offer(stackSnapshot.createStack());
-                        for (ItemStackSnapshot itemStackSnapshot : resultOffer.getRejectedItems())
-                        {
-                            Item item = (Item) location.createEntity(EntityTypes.ITEM);
-                            item.offer(Keys.REPRESENTED_ITEM, itemStackSnapshot);
-                            item.offer(Keys.VELOCITY, Vector3d.from(0));
-                            location.spawnEntity(item);
-                        }
+        final Optional<User> optionalUser = event.getContext().get(EventContextKeys.NOTIFIER);
+        if (optionalUser.isPresent()) {
+            final User user = optionalUser.get();
+            final Optional<Player> optionalKiller = user.getPlayer();
+            optionalKiller.ifPresent(this::giveIngot);
+        }
+        else {
+            Optional<EntityDamageSource> optionalDamageSource = event.getCause().first(EntityDamageSource.class);
+            if (optionalDamageSource.isPresent()) {
+                EntityDamageSource damageSource = optionalDamageSource.get();
+                Entity killerEntity = damageSource.getSource();
+                if (killerEntity.getType().equals(EntityTypes.PLAYER)) {
+                    giveIngot((Player) killerEntity);
+                }
+                else if (killerEntity instanceof Projectile) {
+                    final Projectile projectile = (Projectile) killerEntity;
+                    final ProjectileSource shooter = projectile.getShooter();
+                    if (shooter instanceof Player) {
+                        giveIngot((Player) shooter);
                     }
                 }
             }
+            else {
+                System.out.println(event);
+                System.out.println(event.getCause());
+                System.out.println(event.getContext());
+            }
         }
+
 
         Task.builder().delayTicks(1).execute(player::respawnPlayer).submit(this.plugin);
 
@@ -95,6 +106,27 @@ public class PlayerDeathListener {
         this.checkPlayerLost(player, playerData);
 
         playerData.setCapturePoints(0);
+    }
+
+    private void giveIngot(Player player) {
+        Location<World> location = player.getLocation();
+        Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class));
+        InventoryTransactionResult result = hotbar.offer(ItemStack.of(ItemTypes.GOLD_INGOT, 1));
+        if (!result.getRejectedItems().isEmpty())
+        {
+            Inventory playerInventory = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
+            for (ItemStackSnapshot stackSnapshot : result.getRejectedItems())
+            {
+                InventoryTransactionResult resultOffer = playerInventory.offer(stackSnapshot.createStack());
+                for (ItemStackSnapshot itemStackSnapshot : resultOffer.getRejectedItems())
+                {
+                    Item item = (Item) location.createEntity(EntityTypes.ITEM);
+                    item.offer(Keys.REPRESENTED_ITEM, itemStackSnapshot);
+                    item.offer(Keys.VELOCITY, Vector3d.from(0));
+                    location.spawnEntity(item);
+                }
+            }
+        }
     }
 
     private void checkPlayerLost(Player player, PlayerData playerData)
