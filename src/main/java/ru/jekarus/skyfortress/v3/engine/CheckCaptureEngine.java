@@ -1,14 +1,19 @@
 package ru.jekarus.skyfortress.v3.engine;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.chat.ChatTypes;
+import org.spongepowered.api.text.title.Title;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.castle.SfCastle;
 import ru.jekarus.skyfortress.v3.castle.SfCastleContainer;
 import ru.jekarus.skyfortress.v3.castle.SfCastlePositions;
+import ru.jekarus.skyfortress.v3.lang.SfMessages;
+import ru.jekarus.skyfortress.v3.lang.messages.SfTitleMessagesLanguage;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
@@ -16,6 +21,8 @@ import ru.jekarus.skyfortress.v3.team.SfTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeamContainer;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -95,6 +102,13 @@ public class CheckCaptureEngine {
             Player player = optionalPlayer.get();
             if (player.isOnline())
             {
+                if (playerData.getCapturePoints() > 0) {
+                    final SfMessages messages = plugin.getMessages();
+                    player.sendMessage(
+                            ChatTypes.ACTION_BAR,
+                            messages.getGame().castleHaveSeconds(playerData, playerData.getCapturePoints())
+                    );
+                }
                 if (!CaptureEngine.checkGoldBlock(player))
                 {
                     return;
@@ -119,13 +133,26 @@ public class CheckCaptureEngine {
                 if (playerData.getCapturePoints() > 0) {
                     final boolean captured = castle.isCaptured();
                     castle.setAdditionalHealth(castle.getAdditionalHealth() + (int) (playerData.getCapturePoints() * 0.20));
-                    playerData.setCapturePoints(0);
                     plugin.getScoreboards().updateLeftSeconds(castle.getTeam());
+
+                    final SfMessages messages = plugin.getMessages();
+                    messages.sendToPlayers(
+                            Sponge.getServer().getOnlinePlayers(),
+                            messages.getGame().castleGiveSeconds(playerData, playerData.getCapturePoints())
+                    );
+
+                    playerData.setCapturePoints(0);
 
                     if (!captured) return true;
 
+                    final Map<Locale, SfTitleMessagesLanguage> localized = messages.getGame().castleForTeamStrengthRemoved();
+
                     for (PlayerData teammatePlayerData : castle.getTeam().getPlayers()) {
                         teammatePlayerData.getPlayer().ifPresent(onlineTeammate -> {
+                            final SfTitleMessagesLanguage title = localized.get(teammatePlayerData.getLocale());
+                            if (title != null) {
+                                player.sendTitle(Title.of(title.top.toText(), title.bottom.toText()));
+                            }
                             onlineTeammate.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
                                 onlineTeammate.offer(
                                         effects.removeAll(potionEffect -> potionEffect.getType().equals(PotionEffectTypes.STRENGTH))

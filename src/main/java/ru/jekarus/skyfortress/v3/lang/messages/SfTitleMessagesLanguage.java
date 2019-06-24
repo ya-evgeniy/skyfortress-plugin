@@ -11,10 +11,10 @@ import static ru.jekarus.skyfortress.v3.serializer.text.SfTextParser.parse;
 public class SfTitleMessagesLanguage {
 
     @OptionalValue @MethodConverter(inClass = TextParserConverter.class, method = "templateGray")
-    public TextTemplate top = SfTextParser.parse("Вас захватили!");
+    public TextTemplate top = SfTextParser.parse("");
 
     @OptionalValue @MethodConverter(inClass = TextParserConverter.class, method = "templateGray")
-    public TextTemplate bottom = SfTextParser.parse("У вас теперь сила!");
+    public TextTemplate bottom = SfTextParser.parse("");
 
     public SfTitleMessagesLanguage() {
     }

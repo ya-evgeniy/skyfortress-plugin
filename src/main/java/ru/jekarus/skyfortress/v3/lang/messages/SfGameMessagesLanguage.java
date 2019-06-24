@@ -27,6 +27,15 @@ public class SfGameMessagesLanguage {
     @ConfigPath("castle.for_team.you_captured") @OptionalValue @Generics(SfTitleMessagesLanguage.class)
     public List<SfTitleMessagesLanguage> castleForTeamCaptured = singletonList(new SfTitleMessagesLanguage());
 
+    @ConfigPath("castle.for_team.strength_removed") @OptionalValue @Generics(SfTitleMessagesLanguage.class)
+    public List<SfTitleMessagesLanguage> castleForTeamStrengthRemoved = singletonList(new SfTitleMessagesLanguage());
+
+    @ConfigPath("castle.have_seconds") @OptionalValue @MethodConverter(inClass = TextParserConverter.class, method = "templateGray")
+    public TextTemplate castleHaveSeconds = parse("Дополнительных секунд: {seconds}");
+
+    @ConfigPath("castle.give_seconds") @OptionalValue @MethodConverter(inClass = TextParserConverter.class, method = "templateListGray")
+    public List<TextTemplate> castleGiveSeconds = singletonList(parse("{player.name} принес своей команде {seconds} секунд"));
+
     @ConfigPath("team.lost") @OptionalValue @MethodConverter(inClass = TextParserConverter.class, method = "templateListGray")
     public List<TextTemplate> teamLost = singletonList(parse("Команда {team.name_1} проиграла!"));
 
