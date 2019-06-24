@@ -25,8 +25,10 @@ import org.spongepowered.api.world.World;
 import ru.jekarus.jgui.gui.slot.item.GuiItem;
 import ru.jekarus.skyfortress.v3.lang.SfLanguage;
 import ru.jekarus.skyfortress.v3.lang.ShopMessages;
+import ru.jekarus.skyfortress.v3.utils.InventoryUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -184,29 +186,10 @@ public class ShopItem extends GuiItem {
             player.setItemInHand(HandTypes.MAIN_HAND, this.buy.getStack().copy());
         }
         else {
-            Location<World> location = player.getLocation();
-            Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class));
-            InventoryTransactionResult result = hotbar.offer(this.buy.getStack().copy());
-//            InventoryTransactionResult result = player.getInventory().offer(this.buy.copy());
-            if (!result.getRejectedItems().isEmpty()) {
-                Inventory playerInventory = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
-                for (ItemStackSnapshot stackSnapshot : result.getRejectedItems()) {
-                    InventoryTransactionResult resultOffer = playerInventory.offer(stackSnapshot.createStack());
-                    for (ItemStackSnapshot itemStackSnapshot : resultOffer.getRejectedItems()) {
-                        Item item = (Item) location.createEntity(EntityTypes.ITEM);
-                        item.offer(Keys.REPRESENTED_ITEM, itemStackSnapshot);
-                        item.offer(Keys.VELOCITY, Vector3d.from(0));
-                        location.spawnEntity(item);
-                    }
-                }
-            }
-//            for (ItemStackSnapshot itemStackSnapshot : result.getRejectedItems())
-//            {
-//                Item item = (Item) location.createEntity(EntityTypes.ITEM);
-//                item.offer(Keys.REPRESENTED_ITEM, itemStackSnapshot);
-//                item.offer(Keys.VELOCITY, Vector3d.from(0));
-//                location.spawnEntity(item);
-//            }
+            InventoryUtils.drop(
+                    player.getLocation(),
+                    InventoryUtils.put(player, Collections.singletonList(this.buy.getStack()))
+            );
         }
     }
 

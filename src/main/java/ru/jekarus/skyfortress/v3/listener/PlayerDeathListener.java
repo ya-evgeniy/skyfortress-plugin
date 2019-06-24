@@ -38,7 +38,9 @@ import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfGameTeam;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
+import ru.jekarus.skyfortress.v3.utils.InventoryUtils;
 
+import java.util.Collections;
 import java.util.Optional;
 
 public class PlayerDeathListener {
@@ -109,24 +111,11 @@ public class PlayerDeathListener {
     }
 
     private void giveIngot(Player player) {
-        Location<World> location = player.getLocation();
-        Inventory hotbar = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class));
-        InventoryTransactionResult result = hotbar.offer(ItemStack.of(ItemTypes.GOLD_INGOT, 1));
-        if (!result.getRejectedItems().isEmpty())
-        {
-            Inventory playerInventory = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
-            for (ItemStackSnapshot stackSnapshot : result.getRejectedItems())
-            {
-                InventoryTransactionResult resultOffer = playerInventory.offer(stackSnapshot.createStack());
-                for (ItemStackSnapshot itemStackSnapshot : resultOffer.getRejectedItems())
-                {
-                    Item item = (Item) location.createEntity(EntityTypes.ITEM);
-                    item.offer(Keys.REPRESENTED_ITEM, itemStackSnapshot);
-                    item.offer(Keys.VELOCITY, Vector3d.from(0));
-                    location.spawnEntity(item);
-                }
-            }
-        }
+        final ItemStack goldIngot = ItemStack.of(ItemTypes.GOLD_INGOT, 1);
+        InventoryUtils.drop(
+                player.getLocation(),
+                InventoryUtils.put(player, Collections.singletonList(goldIngot))
+        );
     }
 
     private void checkPlayerLost(Player player, PlayerData playerData)
