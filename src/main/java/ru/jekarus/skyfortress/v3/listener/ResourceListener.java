@@ -6,6 +6,7 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.scheduler.Task;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.resource.BlockResource;
 import ru.jekarus.skyfortress.v3.utils.SfUtils;
@@ -39,7 +40,7 @@ public class ResourceListener {
                     transaction.setValid(false);
                 }
                 else {
-                    resource.getLocation().setBlock(resource.getWhileWaitBlock());
+                    Task.builder().delayTicks(1).execute(() -> resource.getLocation().setBlock(resource.getWhileWaitBlock())).submit(plugin);
                     resource.setRunned(true);
                 }
             }
