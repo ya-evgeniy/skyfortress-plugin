@@ -6,6 +6,7 @@ import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.title.Title;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
@@ -141,6 +142,10 @@ public class CheckCaptureEngine {
                     );
 
                     playerData.setCapturePoints(0);
+
+                    player.sendMessage(
+                            ChatTypes.ACTION_BAR, Text.EMPTY
+                    );
 
                     if (!captured) return true;
 
