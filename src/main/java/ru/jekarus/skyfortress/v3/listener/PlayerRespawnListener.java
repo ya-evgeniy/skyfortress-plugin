@@ -9,6 +9,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
 import org.spongepowered.api.event.filter.Getter;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.chat.ChatTypes;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.game.SfGameStageType;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
@@ -41,6 +43,9 @@ public class PlayerRespawnListener {
         SfTeam playerTeam = playerData.getTeam();
         SfGameStageType gameStage = plugin.getGame().getStage();
         if (playerTeam.getType() == SfTeam.Type.GAME && gameStage == SfGameStageType.IN_GAME) {
+            player.sendMessage(
+                    ChatTypes.ACTION_BAR, Text.EMPTY
+            );
             SfGameTeam gameTeam = (SfGameTeam) playerTeam;
             LocationAndRotation respawn = gameTeam.getCastle().getPositions().getRespawn().get(0); // fixme get(0)
             event.setToTransform(new Transform<>(
