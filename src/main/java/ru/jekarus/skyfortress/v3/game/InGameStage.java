@@ -160,10 +160,10 @@ public class InGameStage extends SfGameStage {
         SfGameTeam team = (SfGameTeam) playerData.getTeam();
         playerData.setZone(PlayerZone.GAME);
 
-        SfCastlePositions positions = team.getCastle().getPositions();
+        final LocationAndRotation randomRespawn = team.getCastle().getRandomRespawn();
         player.setLocationAndRotation(
-                positions.getRespawn().get(0).getLocation(), // fixme get(0)
-                positions.getRespawn().get(0).getRotation() // fixme get(0)
+                randomRespawn.getLocation(),
+                randomRespawn.getRotation()
         );
 
         player.offer(Keys.GAME_MODE, GameModes.SURVIVAL);

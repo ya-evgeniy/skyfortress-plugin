@@ -47,7 +47,7 @@ public class PlayerRespawnListener {
                     ChatTypes.ACTION_BAR, Text.EMPTY
             );
             SfGameTeam gameTeam = (SfGameTeam) playerTeam;
-            LocationAndRotation respawn = gameTeam.getCastle().getPositions().getRespawn().get(0); // fixme get(0)
+            LocationAndRotation respawn = gameTeam.getCastle().getRandomRespawn();
             event.setToTransform(new Transform<>(
                     respawn.getLocation().getExtent(),
                     respawn.getLocation().getPosition(),
