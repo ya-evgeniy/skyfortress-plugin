@@ -67,33 +67,25 @@ public class PlayerDeathListener {
     @Listener
     public void onDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player)
     {
-        final Optional<User> optionalUser = event.getContext().get(EventContextKeys.NOTIFIER);
-        if (optionalUser.isPresent()) {
-            final User user = optionalUser.get();
-            final Optional<Player> optionalKiller = user.getPlayer();
-            optionalKiller.ifPresent(this::giveIngot);
+        Optional<EntityDamageSource> optionalDamageSource = event.getCause().first(EntityDamageSource.class);
+        if (optionalDamageSource.isPresent()) {
+            EntityDamageSource damageSource = optionalDamageSource.get();
+            Entity killerEntity = damageSource.getSource();
+            if (killerEntity.getType().equals(EntityTypes.PLAYER)) {
+                giveIngot((Player) killerEntity);
+            }
+            else if (killerEntity instanceof Projectile) {
+                final Projectile projectile = (Projectile) killerEntity;
+                final ProjectileSource shooter = projectile.getShooter();
+                if (shooter instanceof Player) {
+                    giveIngot((Player) shooter);
+                }
+            }
         }
         else {
-            Optional<EntityDamageSource> optionalDamageSource = event.getCause().first(EntityDamageSource.class);
-            if (optionalDamageSource.isPresent()) {
-                EntityDamageSource damageSource = optionalDamageSource.get();
-                Entity killerEntity = damageSource.getSource();
-                if (killerEntity.getType().equals(EntityTypes.PLAYER)) {
-                    giveIngot((Player) killerEntity);
-                }
-                else if (killerEntity instanceof Projectile) {
-                    final Projectile projectile = (Projectile) killerEntity;
-                    final ProjectileSource shooter = projectile.getShooter();
-                    if (shooter instanceof Player) {
-                        giveIngot((Player) shooter);
-                    }
-                }
-            }
-            else {
-                System.out.println(event);
-                System.out.println(event.getCause());
-                System.out.println(event.getContext());
-            }
+            System.out.println(event);
+            System.out.println(event.getCause());
+            System.out.println(event.getContext());
         }
 
 
