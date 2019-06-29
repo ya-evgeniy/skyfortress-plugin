@@ -24,6 +24,7 @@ public class SfCastle {
 
     @Getter @Setter private SfGameTeam team;
 
+    @Getter @Setter private boolean nowCapturing;
     @Getter @Setter private int initialHealth;
     @Getter @Setter private int additionalHealth;
 

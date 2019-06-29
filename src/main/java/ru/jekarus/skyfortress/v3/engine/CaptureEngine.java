@@ -81,13 +81,12 @@ public class CaptureEngine {
                     messages.getGame().castleCapture(playerData, castle.getTeam()), true
             );
         }
+        castle.setNowCapturing(true);
         this.start();
     }
 
     private void run()
     {
-        boolean needStop = true;
-
         final Iterator<Map.Entry<SfCastle, Set<PlayerData>>> castlesIterator = this.castleCaptures.entrySet().iterator();
         while (castlesIterator.hasNext()) {
             final Map.Entry<SfCastle, Set<PlayerData>> entry = castlesIterator.next();
@@ -95,6 +94,7 @@ public class CaptureEngine {
             final Iterator<PlayerData> playersIterator = entry.getValue().iterator();
 
             if (!castle.isAlive() || castle.isCaptured()) {
+                castle.setNowCapturing(false);
                 castlesIterator.remove();
                 continue;
             }
@@ -130,68 +130,68 @@ public class CaptureEngine {
                     playersIterator.remove();
                 }
             }
-            if (!capturePlayers.isEmpty())
-            {
-                long currentTimeMillis = System.currentTimeMillis();
-                capturePlayers.forEach(sfPlayer -> {
-                    sfPlayer.captureMessageTime = currentTimeMillis;
+
+            if (capturePlayers.isEmpty()) {
+                castle.setNowCapturing(false);
+                castlesIterator.remove();
+                continue;
+            }
+
+            long currentTimeMillis = System.currentTimeMillis();
+            capturePlayers.forEach(sfPlayer -> {
+                sfPlayer.captureMessageTime = currentTimeMillis;
+            });
+
+            SfMessages messages = plugin.getMessages();
+            messages.send(
+                    castle.getTeam().getPlayers(),
+                    messages.getGame().castleForTeamYouCapturing(),
+                    ChatTypes.ACTION_BAR
+            );
+
+            for (PlayerData player : castle.getTeam().getPlayers()) {
+                player.getPlayer().ifPresent(spongePlayer -> {
+                    if (castle.getHealth() % 20 == 0) {
+                        spongePlayer.playSound(SoundTypes.BLOCK_WOOD_BUTTON_CLICK_ON, spongePlayer.getPosition(), 0.1, 2.0);
+                    }
                 });
+            }
 
-                SfMessages messages = plugin.getMessages();
-                messages.send(
-                        castle.getTeam().getPlayers(),
-                        messages.getGame().castleForTeamYouCapturing(),
-                        ChatTypes.ACTION_BAR
+            int giveCastlePoints = castle.capture(-capturePlayers.size());
+            scoreboards.updateLeftSeconds(castle.getTeam());
+            if (giveCastlePoints > 0) {
+                for (PlayerData playerData : capturePlayers) {
+                    playerData.setCapturePoints(playerData.getCapturePoints() + 1);
+                    if (--giveCastlePoints < 1) break;
+                }
+            }
+            if (castle.isCaptured())
+            {
+                CastleDeathEngine.checkCapturedCastle(this.plugin, castle);
+                messages.broadcast(
+                        messages.getGame().castleCaptured(castle.getTeam())
                 );
-
-                for (PlayerData player : castle.getTeam().getPlayers()) {
-                    player.getPlayer().ifPresent(spongePlayer -> {
-                        if (castle.getHealth() % 20 == 0) {
-                            spongePlayer.playSound(SoundTypes.BLOCK_WOOD_BUTTON_CLICK_ON, spongePlayer.getPosition(), 0.1, 2.0);
+                Map<Locale, SfTitleMessagesLanguage> captured = messages.getGame().castleForTeamYouCaptured();
+                for (PlayerData playerData : castle.getTeam().getPlayers()) {
+                    playerData.getPlayer().ifPresent(player -> {
+                        SfTitleMessagesLanguage title = captured.get(playerData.getLocale());
+                        if (title != null) {
+                            player.sendTitle(Title.of(title.top.toText(), title.bottom.toText()));
+                        }
+                        if (player.isOnline()) {
+                            player.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
+                                effects.addElement(
+                                        PotionEffect.builder().potionType(PotionEffectTypes.STRENGTH).duration(1_000_000).amplifier(0).particles(false).build()
+                                );
+                                player.offer(effects);
+                            });
                         }
                     });
-                }
-
-                int giveCastlePoints = castle.capture(-capturePlayers.size());
-                scoreboards.updateLeftSeconds(castle.getTeam());
-                if (giveCastlePoints > 0) {
-                    for (PlayerData playerData : capturePlayers) {
-                        playerData.setCapturePoints(playerData.getCapturePoints() + 1);
-                        if (--giveCastlePoints < 1) break;
-                    }
-                }
-                if (castle.isCaptured())
-                {
-                    CastleDeathEngine.checkCapturedCastle(this.plugin, castle);
-                    messages.broadcast(
-                            messages.getGame().castleCaptured(castle.getTeam())
-                    );
-                    Map<Locale, SfTitleMessagesLanguage> captured = messages.getGame().castleForTeamYouCaptured();
-                    for (PlayerData playerData : castle.getTeam().getPlayers()) {
-                        playerData.getPlayer().ifPresent(player -> {
-                            SfTitleMessagesLanguage title = captured.get(playerData.getLocale());
-                            if (title != null) {
-                                player.sendTitle(Title.of(title.top.toText(), title.bottom.toText()));
-                            }
-                            if (player.isOnline()) {
-                                player.getOrCreate(PotionEffectData.class).ifPresent(effects -> {
-                                    effects.addElement(
-                                            PotionEffect.builder().potionType(PotionEffectTypes.STRENGTH).duration(1_000_000).amplifier(0).particles(false).build()
-                                    );
-                                    player.offer(effects);
-                                });
-                            }
-                        });
-                    }
-                }
-                else
-                {
-                    needStop = false;
                 }
             }
         }
 
-        if (needStop)
+        if (this.castleCaptures.isEmpty())
         {
             this.stop();
         }

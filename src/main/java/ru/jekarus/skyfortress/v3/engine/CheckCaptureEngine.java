@@ -86,11 +86,11 @@ public class CheckCaptureEngine {
     {
         for (PlayerData playerData : gameTeam.getPlayers())
         {
-            this.tryPlayerCapture(playerData);
+            this.tryPlayerCapture(playerData, gameTeam);
         }
     }
 
-    private void tryPlayerCapture(PlayerData playerData)
+    private void tryPlayerCapture(PlayerData playerData, SfGameTeam playerTeam)
     {
         if (playerData.getLastPlayed() != -1)
         {
@@ -102,7 +102,7 @@ public class CheckCaptureEngine {
             Player player = optionalPlayer.get();
             if (player.isOnline())
             {
-                if (playerData.getCapturePoints() > 0) {
+                if (playerData.getCapturePoints() > 0 && !playerTeam.getCastle().isNowCapturing()) {
                     final SfMessages messages = plugin.getMessages();
                     player.sendMessage(
                             ChatTypes.ACTION_BAR,
@@ -113,11 +113,10 @@ public class CheckCaptureEngine {
                 {
                     return;
                 }
-                SfTeam team = playerData.getTeam();
                 for (SfCastle castle : this.castleContainer.getCollection())
                 {
                     if (!castle.isAlive()) continue;
-                    if (tryCastleCapture(castle, playerData, player, team))
+                    if (tryCastleCapture(castle, playerData, player, playerTeam))
                     {
                         return;
                     }
@@ -126,7 +125,7 @@ public class CheckCaptureEngine {
         }
     }
 
-    private boolean tryCastleCapture(SfCastle castle, PlayerData playerData, Player player, SfTeam team) {
+    private boolean tryCastleCapture(SfCastle castle, PlayerData playerData, Player player, SfGameTeam team) {
         SfCastlePositions positions = castle.getPositions();
         if (SfUtils.checkLocation(player, positions.getCapture().getLocation())) {
             if (castle.getTeam() == team) {
