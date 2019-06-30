@@ -22,6 +22,7 @@ import ru.jekarus.skyfortress.v3.gui.Shops;
 import ru.jekarus.skyfortress.v3.lang.SfLanguages;
 import ru.jekarus.skyfortress.v3.lang.SfMessages;
 import ru.jekarus.skyfortress.v3.listener.ConnectionListener;
+import ru.jekarus.skyfortress.v3.listener.CraftingListener;
 import ru.jekarus.skyfortress.v3.lobby.LobbyRoomsContainer;
 import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.resource.ResourceContainer;
@@ -111,6 +112,8 @@ public class SkyFortressPlugin {
 
         this.getLobbyRoomsContainer().init();
         this.game.init();
+
+        new CraftingListener(this).register();
     }
 
     @Listener
