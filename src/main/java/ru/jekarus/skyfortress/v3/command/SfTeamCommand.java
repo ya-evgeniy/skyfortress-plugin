@@ -15,6 +15,7 @@ import ru.jekarus.skyfortress.v3.player.PlayerData;
 import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 import ru.jekarus.skyfortress.v3.team.SfTeam;
+import ru.jekarus.skyfortress.v3.utils.SfUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,6 +128,9 @@ public class SfTeamCommand extends SfCommand {
                         }
                         if (needTp && !finded) {
                             teleport(plugin, target, sfTarget, null);
+                        }
+                        if (team == plugin.getTeamContainer().getSpectatorTeam()) {
+                            SfUtils.setPlayerSpectator(target);
                         }
                     }
 

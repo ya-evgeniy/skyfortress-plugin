@@ -13,6 +13,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import ru.jekarus.skyfortress.v3.SkyFortressPlugin;
 import ru.jekarus.skyfortress.v3.player.PlayerData;
+import ru.jekarus.skyfortress.v3.player.PlayerZone;
 import ru.jekarus.skyfortress.v3.player.PlayersDataContainer;
 
 public class SfUtils {
@@ -51,6 +52,7 @@ public class SfUtils {
 
         PlayerData playerData = players.getOrCreateData(player);
         plugin.getTeamContainer().getSpectatorTeam().addPlayer(plugin, playerData);
+        playerData.setZone(PlayerZone.GAME);
 
         player.offer(Keys.GAME_MODE, GameModes.SPECTATOR);
 
