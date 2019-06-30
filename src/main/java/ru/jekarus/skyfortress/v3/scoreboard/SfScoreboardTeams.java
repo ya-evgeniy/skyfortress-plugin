@@ -33,7 +33,7 @@ public class SfScoreboardTeams {
                     .name(sfTeam.getUniqueId())
                     .color(sfTeam.getColor())
                     .allowFriendlyFire(false)
-                    .collisionRule(CollisionRules.ALWAYS)
+                    .collisionRule(CollisionRules.NEVER) // fixme push other team not working
                     .prefix(Text.builder().append(Text.of()).color(sfTeam.getColor()).build())
                     .build();
             this.scoreboard.registerTeam(team);
