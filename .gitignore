@@ -53,5 +53,4 @@ fabric.properties
 .gradle/*
 build/*
 run/*
-src/main/resources/assets/todo
 .idea

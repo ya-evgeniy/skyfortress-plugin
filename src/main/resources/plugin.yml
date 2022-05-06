@@ -1,0 +1,4 @@
+main: ru.jekarus.skyfortress.SkyFortressPlugin
+name: SkyFortress
+version: ${version}
+api-version: "1.18"
