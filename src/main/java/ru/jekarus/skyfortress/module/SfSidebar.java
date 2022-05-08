@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
-import ru.jekarus.skyfortress.SkyFortress;
+import ru.jekarus.skyfortress.state.SkyFortress;
 import ru.jekarus.skyfortress.config.SfTeam;
 
 import java.util.*;

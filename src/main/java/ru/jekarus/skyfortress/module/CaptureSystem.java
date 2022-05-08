@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
-import ru.jekarus.skyfortress.SkyFortress;
+import ru.jekarus.skyfortress.state.SkyFortress;
 import ru.jekarus.skyfortress.config.SfTeam;
 
 import java.util.*;

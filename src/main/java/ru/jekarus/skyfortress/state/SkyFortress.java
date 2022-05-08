@@ -1,11 +1,15 @@
-package ru.jekarus.skyfortress;
+package ru.jekarus.skyfortress.state;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
+import ru.jekarus.skyfortress.GameStartEvent;
+import ru.jekarus.skyfortress.GameStopEvent;
 import ru.jekarus.skyfortress.config.SfTeam;
 import ru.jekarus.skyfortress.module.SfSidebar;
-import ru.jekarus.skyfortress.state.SfPlayerState;
-import ru.jekarus.skyfortress.state.SfTeamState;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -19,6 +23,14 @@ public class SkyFortress {
     private final Map<SfTeam, SfTeamState> teamsState = new EnumMap<>(SfTeam.class);
     private final Map<UUID, SfPlayerState> playersState = new HashMap<>();
 
+    private final @NotNull PluginManager pluginMan;
+    private final @NotNull Scoreboard scoreboard;
+
+    public SkyFortress() {
+        pluginMan = Bukkit.getServer().getPluginManager();
+        scoreboard = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
+    }
+
     public SfTeamState getTeamState(SfTeam sft) {
         return this.teamsState.computeIfAbsent(sft, v -> new SfTeamState());
     }
@@ -28,13 +40,26 @@ public class SkyFortress {
     }
 
     public void gameStart() {
+        gameStart(false);
+    }
+    public void gameStart(boolean noTp) {
         if(gameStarted) return;
         gameStarted = true;
-        for (SfTeam sft : SfTeam.values()) {
-            for (Player player : sft.players()) {
-                sft.spawn.teleport(player, sft.face);
+        pluginMan.callEvent(new GameStartEvent());
+        if(!noTp) {
+            for (SfTeam sft : SfTeam.values()) {
+                for (Player player : sft.players()) {
+                    sft.spawn.teleport(player, sft.face);
+                }
             }
         }
+        SfSidebar.updateAll();
+    }
+
+    public void gameStop() {
+        if(!gameStarted) return;
+        gameStarted = false;
+        pluginMan.callEvent(new GameStopEvent());
         SfSidebar.updateAll();
     }
 
@@ -60,5 +85,17 @@ public class SkyFortress {
             if(!isReady(sft)) return false;
         }
         return true;
+    }
+
+    public void playerJoin(SfTeam sft, OfflinePlayer player) {
+        sft.team().addPlayer(player);
+        this.getPlayerState(player).team = sft;
+    }
+
+    public void playerLeave(Player player) {
+        final var team = scoreboard.getPlayerTeam(player);
+        if (team == null) return;
+        team.removePlayer(player);
+        this.getPlayerState(player).team = null;
     }
 }

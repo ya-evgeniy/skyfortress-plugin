@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitTask;
-import ru.jekarus.skyfortress.SkyFortress;
+import ru.jekarus.skyfortress.state.SkyFortress;
 
 import java.time.Duration;
 import java.util.ArrayList;

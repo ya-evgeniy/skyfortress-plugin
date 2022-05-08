@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.plugin.Plugin;
-import ru.jekarus.skyfortress.SkyFortress;
+import ru.jekarus.skyfortress.state.SkyFortress;
 import ru.jekarus.skyfortress.config.SfTeam;
 
 public class ScaleSystem implements Listener {
@@ -45,7 +45,7 @@ public class ScaleSystem implements Listener {
         final var sft = SfTeam.get(player);
         if (sft != null) {
             final var state = sf.getTeamState(sft);
-            damage += state.getLevel();
+            damage += Math.pow(state.getLevel() / 32.0, 1.6) * 40.0;
         }
         return damage;
     }

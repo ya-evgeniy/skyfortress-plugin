@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
-import ru.jekarus.skyfortress.SkyFortress;
+import ru.jekarus.skyfortress.state.SkyFortress;
 import ru.jekarus.skyfortress.Vec3i;
 import ru.jekarus.skyfortress.config.SfConfig;
 import ru.jekarus.skyfortress.config.SfTeam;
@@ -36,20 +36,14 @@ public class SfLobby implements Listener {
 
     @EventHandler
     public void onBlockMove(BlockPlayerMove.Event event) {
-        final var sb = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
         for (SfTeam sft : SfTeam.values()) {
             if(sft.join.contains(event.getTo())) {
-                sft.team().addPlayer(event.getPlayer());
-                sf.getPlayerState(event.getPlayer()).team = sft;
+                sf.playerJoin(sft, event.getPlayer());
                 return;
             }
         }
         if(SfConfig.LEAVE.contains(event.getTo())) {
-            final var team = sb.getPlayerTeam(event.getPlayer());
-            if (team != null) {
-                team.removePlayer(event.getPlayer());
-                sf.getPlayerState(event.getPlayer()).team = null;
-            }
+            sf.playerLeave(event.getPlayer());
         }
     }
 

@@ -15,12 +15,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import ru.jekarus.skyfortress.Area3i;
 import ru.jekarus.skyfortress.ChestGuiBase;
-import ru.jekarus.skyfortress.SkyFortress;
+import ru.jekarus.skyfortress.state.SkyFortress;
 import ru.jekarus.skyfortress.Vec3i;
 import ru.jekarus.skyfortress.config.SfConfig;
 import ru.jekarus.skyfortress.config.SfTeam;
-import ru.jekarus.skyfortress.state.SfPlayerState;
-import ru.jekarus.skyfortress.state.SfTeamState;
 
 import java.util.List;
 
@@ -58,6 +56,9 @@ public class DevelopersGui extends ChestGuiBase {
                     "тп join " + sft.name
             ).setOnClick(e -> {
                 clickArea(e, sft.join, sft.face);
+                if(e.getClick() == ClickType.SHIFT_LEFT) {
+                    sf.playerJoin(sft, (Player) e.getWhoClicked());
+                }
             });
             x++;
         }
@@ -104,6 +105,9 @@ public class DevelopersGui extends ChestGuiBase {
                 "тп exit area"
         ).setOnClick(e -> {
             clickArea(e, SfConfig.LEAVE, BlockFace.NORTH);
+            if(e.getClick() == ClickType.SHIFT_LEFT) {
+                sf.playerLeave(((Player) e.getWhoClicked()));
+            }
         });
 
         set(
@@ -112,6 +116,47 @@ public class DevelopersGui extends ChestGuiBase {
                 "тп force start"
         ).setOnClick(e -> {
             clickLoc(e, SfConfig.FORCE_START, BlockFace.NORTH);
+            if(e.getClick() == ClickType.SHIFT_LEFT) {
+                sf.gameStart(true);
+            } else if(e.getClick() == ClickType.SHIFT_RIGHT) {
+                sf.gameStop();
+            }
+        });
+
+        set(
+                SfTeam.values().length + 1, 0,
+                Material.EXPERIENCE_BOTTLE,
+                "experience",
+                "ЛКМ: +=2",
+                "Shift+ЛКМ: +=8",
+                "ПКМ: +=25",
+                "Shift+ПКМ: +=100",
+                "Q: =0"
+        ).setOnClick(e -> {
+            final var player = (Player) e.getWhoClicked();
+            final var pstate = sf.getPlayerState(player);
+            if (pstate != null && pstate.team != null) {
+                final var state = sf.getTeamState(pstate.team);
+                if (state != null) {
+                    switch (e.getClick()) {
+                        case LEFT -> {
+                            state.experience += 2.0;
+                        }
+                        case SHIFT_LEFT -> {
+                            state.experience += 8.0;
+                        }
+                        case RIGHT -> {
+                            state.experience += 25.0;
+                        }
+                        case SHIFT_RIGHT -> {
+                            state.experience += 100.0;
+                        }
+                        case DROP -> {
+                            state.experience = 0;
+                        }
+                    }
+                }
+            }
         });
     }
 

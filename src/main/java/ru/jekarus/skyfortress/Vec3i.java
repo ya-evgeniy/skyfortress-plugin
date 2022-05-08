@@ -5,6 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.util.Vector;
 
 import java.util.Collection;
 
@@ -19,6 +20,10 @@ public record Vec3i(int x, int y, int z) {
 
     public Location toLocation(World world, BlockFace face) {
         return toLocation(world).setDirection(face.getDirection());
+    }
+
+    public Vector toVector() {
+        return new Vector(x, y, z);
     }
 
     public void teleport(HumanEntity human, BlockFace face) {

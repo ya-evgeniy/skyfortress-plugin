@@ -1,12 +1,14 @@
 package ru.jekarus.skyfortress;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import ru.jekarus.skyfortress.config.SfTeam;
 import ru.jekarus.skyfortress.module.*;
 import ru.jekarus.skyfortress.module.fight.FightSystem;
+import ru.jekarus.skyfortress.state.SkyFortress;
 
 import java.util.Arrays;
 
@@ -36,14 +38,22 @@ public class SkyFortressPlugin extends JavaPlugin {
         SfRespawn.register(this, sf);
         ScaleSystem.register(this, sf);
         FightSystem.register(this, sf);
+        DragonObject.register(this, sf);
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             player.closeInventory();
+        }
+
+        for (SfTeam sft : SfTeam.values()) {
+            for (OfflinePlayer player : sft.offlinePlayers()) {
+                sf.playerJoin(sft, player);
+            }
         }
     }
 
     @Override
     public void onDisable() {
+        DragonObject.unregister();
         FightSystem.unregister();
         ScaleSystem.unregister();
         AreaOutline.unregister();
