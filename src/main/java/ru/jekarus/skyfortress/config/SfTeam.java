@@ -8,7 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.Nullable;
-import ru.jekarus.skyfortress.Area2i;
+import ru.jekarus.skyfortress.Area3i;
 import ru.jekarus.skyfortress.Vec3i;
 
 import java.util.Collection;
@@ -19,7 +19,7 @@ public enum SfTeam {
     RED(
             "sf_red", "Красная", "Красные", "Красных",
             ChatColor.RED, NamedTextColor.RED,
-            new Area2i(
+            new Area3i(
                     new Vec3i(198, 100, 3),
                     new Vec3i(202, 101, 5)
             ), new Vec3i(200, 100, 3),
@@ -29,7 +29,7 @@ public enum SfTeam {
     GREEN(
             "sf_green", "Зеленая", "Зеленые", "Зеленых",
             ChatColor.GREEN, NamedTextColor.GREEN,
-            new Area2i(
+            new Area3i(
                     new Vec3i(195, 100, -2),
                     new Vec3i(197, 101, 2)
             ), new Vec3i(197, 100, 0),
@@ -39,7 +39,7 @@ public enum SfTeam {
     BLUE(
             "sf_blue", "Синяя", "Синие", "Синих",
             ChatColor.BLUE, NamedTextColor.BLUE,
-            new Area2i(
+            new Area3i(
                     new Vec3i(198, 100, -5),
                     new Vec3i(202, 101, -3)
             ), new Vec3i(200, 100, -3),
@@ -49,7 +49,7 @@ public enum SfTeam {
     YELLOW(
             "sf_yellow", "Жёлтая", "Жёлтые", "Жёлтых",
             ChatColor.YELLOW, NamedTextColor.YELLOW,
-            new Area2i(
+            new Area3i(
                     new Vec3i(203, 100, -2),
                     new Vec3i(205, 101, 2)
             ), new Vec3i(203, 100, 0),
@@ -63,7 +63,7 @@ public enum SfTeam {
     public final String displayNameOf;
     public final ChatColor chat;
     public final NamedTextColor color;
-    public final Area2i join;
+    public final Area3i join;
     public final Vec3i ready;
     public final Vec3i spawn;
     public final BlockFace face;
@@ -74,7 +74,7 @@ public enum SfTeam {
     private SfTeam(
             String name, String displayName, String displayNameTo, String displayNameOf,
             ChatColor chat, NamedTextColor color,
-            Area2i join, Vec3i ready,
+            Area3i join, Vec3i ready,
             Vec3i spawn, BlockFace face,
             Vec3i capture
     ) {

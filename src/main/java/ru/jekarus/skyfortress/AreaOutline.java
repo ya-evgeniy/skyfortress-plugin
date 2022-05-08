@@ -27,7 +27,7 @@ public class AreaOutline {
     };
 
     private static void show(
-            Player player, Area2i a,
+            Player player, Area3i a,
             ParticleEffect effect,
             Vector off, float speed, int amount,
             ParticleData data
@@ -67,9 +67,9 @@ public class AreaOutline {
     }
 
     public static void show(Player player, Vec3i v) {
-        show(player, new Area2i(v));
+        show(player, new Area3i(v));
     }
-    public static void show(Player player, Area2i a) {
+    public static void show(Player player, Area3i a) {
         if(plugin == null) return;
         Runnable spawn = () -> show(
                 player, a,

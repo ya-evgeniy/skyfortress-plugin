@@ -13,12 +13,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Vector;
 import ru.jekarus.skyfortress.config.SfConfig;
 import ru.jekarus.skyfortress.config.SfTeam;
-import xyz.xenondevs.particle.ParticleEffect;
-import xyz.xenondevs.particle.data.ParticleData;
-import xyz.xenondevs.particle.data.color.DustData;
 
 import java.util.List;
 
@@ -123,7 +119,7 @@ public class DevelopersGui extends ChestGuiBase {
         }
     }
 
-    public void clickArea(InventoryClickEvent event, Area2i a, BlockFace face) {
+    public void clickArea(InventoryClickEvent event, Area3i a, BlockFace face) {
         if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.RIGHT) {
             final var player = (Player) event.getWhoClicked();
             player.closeInventory();
