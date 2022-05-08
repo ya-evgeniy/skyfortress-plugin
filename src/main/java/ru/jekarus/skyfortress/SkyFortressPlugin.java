@@ -33,6 +33,8 @@ public class SkyFortressPlugin extends JavaPlugin {
         DevelopersGui.register(this);
         AreaOutline.register(this);
         SfRespawn.register(this, sf);
+        ScaleSystem.register(this, sf);
+        FightSystem.register(this, sf);
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             player.closeInventory();
@@ -41,6 +43,8 @@ public class SkyFortressPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        FightSystem.unregister();
+        ScaleSystem.unregister();
         AreaOutline.unregister();
         DevelopersGui.unregister();
         SfLobby.unregister();
