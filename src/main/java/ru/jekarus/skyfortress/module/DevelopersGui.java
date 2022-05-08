@@ -154,7 +154,7 @@ public class DevelopersGui extends ChestGuiBase {
                 final var sfpState = sf.getPlayerState(event.getPlayer());
                 if (sfpState.team != null) {
                     final var sftState = sf.getTeamState(sfpState.team);
-                    event.getPlayer().sendMessage(sftState.experience + "");
+                    event.getPlayer().sendMessage("lvl: " + sftState.getLevel() + " exp: " + sftState.experience);
                 }
             }
         }

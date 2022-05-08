@@ -160,7 +160,7 @@ public class SfRespawn implements Listener {
         final var deathMessage = event.deathMessage();
         if (deathMessage != null) Bukkit.broadcast(deathMessage);
 
-        final var respawnTime = 5; // getTeam().getRespawnTime();
+        final var respawnTime = 1; // getTeam().getRespawnTime();
         final var playerState = sf.getPlayerState(player);
         playerState.respawnedAt = System.currentTimeMillis() + respawnTime * 1000;
 
