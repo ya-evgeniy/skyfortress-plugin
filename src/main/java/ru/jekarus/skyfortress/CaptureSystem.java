@@ -44,7 +44,7 @@ public class CaptureSystem implements Listener {
             final var sft = entry.getKey();
             final var players = entry.getValue();
             if(players.isEmpty()) continue;
-            final var state = sf.getState(sft);
+            final var state = sf.getTeamState(sft);
             if(state.health > 0) {
                 state.health -= 1;
                 changed = true;
