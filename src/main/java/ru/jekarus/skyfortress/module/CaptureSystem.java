@@ -1,9 +1,11 @@
 package ru.jekarus.skyfortress.module;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import ru.jekarus.skyfortress.SkyFortress;
@@ -80,6 +82,10 @@ public class CaptureSystem implements Listener {
     @EventHandler
     public void onBlockMove(BlockPlayerMove.Event event) {
         if(!sf.isGameStarted()) return;
+
+        final var playerGameMode = event.getPlayer().getGameMode();
+        if (playerGameMode == GameMode.SPECTATOR) return;
+
         for (SfTeam sft : SfTeam.values()) {
             final var psft = SfTeam.get(event.getPlayer());
             boolean isTeammate = psft != null && psft.equals(sft);
@@ -92,6 +98,15 @@ public class CaptureSystem implements Listener {
             if(frContains && !toContains) {  // exit
                 remove(sft, event.getPlayer());
             }
+        }
+    }
+
+    @EventHandler
+    public void on(PlayerGameModeChangeEvent event) {
+        if (event.getNewGameMode() != GameMode.SPECTATOR) return;
+
+        for (Map.Entry<SfTeam, List<Player>> entry : capturePlayers.entrySet()) {
+            entry.getValue().remove(event.getPlayer());
         }
     }
 
