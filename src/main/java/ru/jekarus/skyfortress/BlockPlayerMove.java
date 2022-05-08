@@ -5,10 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
@@ -78,6 +76,14 @@ public class BlockPlayerMove implements Listener {
     public void onBlockMove(Player player, Vec3i fr, Vec3i to) {
         final var event = new Event(player, fr, to);
         pluginMan.callEvent(event);
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event) {
+        final var fr = new Vec3i(event.getPlayer().getLocation());
+        final var to = new Vec3i(event.getRespawnLocation());
+        if(fr.eq(to)) return;
+        onBlockMove(event.getPlayer(), fr, to);
     }
 
     @EventHandler

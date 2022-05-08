@@ -110,6 +110,7 @@ public class ChestGuiBase implements InventoryHolder, Listener {
         final int rawSlot = e.getRawSlot();
 
         // verify current item is not null
+        if (rawSlot < 0) return;
         if (rawSlot >= inv.getSize()) return;
         final var element = elements[rawSlot];
         if(element == null) return;
