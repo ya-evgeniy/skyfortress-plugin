@@ -86,7 +86,7 @@ public class DevelopersGui extends ChestGuiBase {
                     Material.BEDROCK,
                     "тп захват " + sft.name
             ).setOnClick(e -> {
-                clickLoc(e, sft.capture, sft.face);
+                clickArea(e, sft.capture, sft.face);
             });
             x++;
         }

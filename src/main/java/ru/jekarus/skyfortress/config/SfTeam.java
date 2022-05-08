@@ -19,42 +19,46 @@ public enum SfTeam {
     RED(
             "sf_red", "Красная", "Красные", "Красных",
             ChatColor.RED, NamedTextColor.RED,
-            new Area3i(
-                    new Vec3i(198, 100, 3),
-                    new Vec3i(202, 101, 5)
-            ), new Vec3i(200, 100, 3),
-            new Vec3i(-358, 51, 0), BlockFace.WEST,
-            new Vec3i(-347, 82, -9)
+            Area3i.of(
+                    new Vec3i(498, 101, 4),
+                    new Vec3i(502, 103, 9)
+            ),
+            new Vec3i(500, 101, 4),
+            new Vec3i(2606, 97, 0), BlockFace.WEST,
+            new Area3i(new Vec3i(2614, 122, 10))
     ),
     GREEN(
             "sf_green", "Зеленая", "Зеленые", "Зеленых",
             ChatColor.GREEN, NamedTextColor.GREEN,
-            new Area3i(
-                    new Vec3i(195, 100, -2),
-                    new Vec3i(197, 101, 2)
-            ), new Vec3i(197, 100, 0),
-            new Vec3i(-500, 51, 142), BlockFace.NORTH,
-            new Vec3i(-491, 82, 153)
+            Area3i.of(
+                    new Vec3i(492, 101, -2),
+                    new Vec3i(496, 103, 2)
+            ),
+            new Vec3i(496, 101, 0),
+            new Vec3i(2500, 97, 106), BlockFace.NORTH,
+            new Area3i(new Vec3i(2490, 122, 114))
     ),
     BLUE(
             "sf_blue", "Синяя", "Синие", "Синих",
             ChatColor.BLUE, NamedTextColor.BLUE,
-            new Area3i(
-                    new Vec3i(198, 100, -5),
-                    new Vec3i(202, 101, -3)
-            ), new Vec3i(200, 100, -3),
-            new Vec3i(-642, 51, 0), BlockFace.EAST,
-            new Vec3i(-653, 82, 9)
+            Area3i.of(
+                    new Vec3i(498, 101, -8),
+                    new Vec3i(502, 103, -4)
+            ),
+            new Vec3i(500, 101, -4),
+            new Vec3i(2394, 97, 0), BlockFace.EAST,
+            new Area3i(new Vec3i(2386, 122, -10))
     ),
     YELLOW(
             "sf_yellow", "Жёлтая", "Жёлтые", "Жёлтых",
             ChatColor.YELLOW, NamedTextColor.YELLOW,
-            new Area3i(
-                    new Vec3i(203, 100, -2),
-                    new Vec3i(205, 101, 2)
-            ), new Vec3i(203, 100, 0),
-            new Vec3i(-500, 51, -142), BlockFace.SOUTH,
-            new Vec3i(-509, 82, -153)
+            Area3i.of(
+                    new Vec3i(504, 101, -2),
+                    new Vec3i(508, 103, 2)
+            ),
+            new Vec3i(504, 101, 0),
+            new Vec3i(2500, 97, -106), BlockFace.SOUTH,
+            new Area3i(new Vec3i(2510, 122, -114))
     );
 
     public final String name;
@@ -67,7 +71,7 @@ public enum SfTeam {
     public final Vec3i ready;
     public final Vec3i spawn;
     public final BlockFace face;
-    public final Vec3i capture;
+    public final Area3i capture;
 
     private @Nullable Team cachedTeam;
 
@@ -76,7 +80,7 @@ public enum SfTeam {
             ChatColor chat, NamedTextColor color,
             Area3i join, Vec3i ready,
             Vec3i spawn, BlockFace face,
-            Vec3i capture
+            Area3i capture
     ) {
         this.name = name;
         this.displayName = displayName;
