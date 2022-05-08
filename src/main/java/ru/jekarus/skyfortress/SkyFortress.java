@@ -10,12 +10,12 @@ public class SkyFortress {
 
     private boolean gameStarted = false;
     private final Map<SfTeam, Boolean> ready = new EnumMap<>(SfTeam.class);
-    private final Map<SfTeam, SFTeamState> state = new EnumMap<>(SfTeam.class);
+    private final Map<SfTeam, SfTeamState> state = new EnumMap<>(SfTeam.class);
 
-    public SFTeamState getState(SfTeam sft) {
+    public SfTeamState getState(SfTeam sft) {
         var state = this.state.get(sft);
         if(state == null) {
-            state = new SFTeamState();
+            state = new SfTeamState();
             this.state.put(sft, state);
         }
         return state;

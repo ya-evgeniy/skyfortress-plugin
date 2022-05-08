@@ -1,14 +1,11 @@
 package ru.jekarus.skyfortress;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 import ru.jekarus.skyfortress.config.SfConfig;
 import ru.jekarus.skyfortress.config.SfTeam;
@@ -20,9 +17,6 @@ public class SfLobby implements Listener {
     public static void register(Plugin plugin, SkyFortress sf) {
         if(INST == null) INST = new SfLobby(sf);
         plugin.getServer().getPluginManager().registerEvents(INST, plugin);
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            INST.onBlockMove(player, new Vec3i(player.getLocation()), new Vec3i(player.getLocation()));
-        }
     }
 
     public static void unregister() {
@@ -38,40 +32,26 @@ public class SfLobby implements Listener {
         this.sf = sf;
     }
 
-
-    public void onBlockMove(Player player, Vec3i fr, Vec3i to) {
+    @EventHandler
+    public void onBlockMove(BlockPlayerMove.Event event) {
         final var sb = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
         for (SfTeam sft : SfTeam.values()) {
-            if(sft.join.contains(to)) {
-                sft.team().addPlayer(player);
+            if(sft.join.contains(event.getTo())) {
+                sft.team().addPlayer(event.getPlayer());
                 return;
             }
         }
-        if(SfConfig.LEAVE.contains(to)) {
-            final var team = sb.getPlayerTeam(player);
-            if (team != null) team.removePlayer(player);
+        if(SfConfig.LEAVE.contains(event.getTo())) {
+            final var team = sb.getPlayerTeam(event.getPlayer());
+            if (team != null) team.removePlayer(event.getPlayer());
         }
-    }
-    @EventHandler
-    public void onTeleport(PlayerTeleportEvent event) {
-        final var fr = new Vec3i(event.getFrom());
-        final var to = new Vec3i(event.getTo());
-        if(fr.equals(to)) return;
-        onBlockMove(event.getPlayer(), fr, to);
-    }
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        final var fr = new Vec3i(event.getFrom());
-        final var to = new Vec3i(event.getTo());
-        if(fr.equals(to)) return;
-        onBlockMove(event.getPlayer(), fr, to);
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             final var v = new Vec3i(event.getClickedBlock().getLocation());
-            if(SfConfig.FORCE_START.equals(v)) {
+            if(SfConfig.FORCE_START.eq(v)) {
                 if(!sf.isGameStarted()) {
                     sf.gameStart();
                 } else {
@@ -83,7 +63,7 @@ public class SfLobby implements Listener {
                 }
             }
             for (SfTeam sft : SfTeam.values()) {
-                if(sft.ready.equals(v)) {
+                if(sft.ready.eq(v)) {
                     this.sf.toggleReady(sft);
                     SfSidebar.updateAll();
                 }

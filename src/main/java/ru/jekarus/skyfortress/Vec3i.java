@@ -46,4 +46,8 @@ public record Vec3i(int x, int y, int z) {
         );
     }
 
+    public boolean eq(Vec3i that) {
+        return this.x == that.x && this.y == that.y && this.z == that.z;
+    }
+
 }

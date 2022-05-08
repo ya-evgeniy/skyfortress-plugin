@@ -95,6 +95,7 @@ public enum SfTeam {
         this.capture = capture;
     }
 
+    @Nullable
     public static SfTeam get(String name) {
         for (SfTeam sft : SfTeam.values()) {
             if (sft.name.endsWith(name)) return sft;
@@ -102,6 +103,7 @@ public enum SfTeam {
         return null;
     }
 
+    @Nullable
     public static SfTeam get(Player player) {
         final var team = Bukkit.getServer().getScoreboardManager().getMainScoreboard().getPlayerTeam(player);
         if (team == null) return null;
