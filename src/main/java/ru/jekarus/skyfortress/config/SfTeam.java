@@ -50,7 +50,7 @@ public enum SfTeam {
             new Area3i(new Vec3i(2386, 122, -10))
     ),
     YELLOW(
-            "sf_yellow", "Жёлтая", "Жёлтые", "Жёлтых",
+            "sf_yellow", "Желтая", "Жёлтые", "Жёлтых",
             ChatColor.YELLOW, NamedTextColor.YELLOW,
             Area3i.of(
                     new Vec3i(504, 101, -2),
