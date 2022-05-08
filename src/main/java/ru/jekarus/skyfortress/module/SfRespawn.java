@@ -5,17 +5,23 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitTask;
 import ru.jekarus.skyfortress.SkyFortress;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -120,14 +126,43 @@ public class SfRespawn implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTask(plugin, () -> player.spigot().respawn());
+        event.setCancelled(true);
+
         this.deathsPlayers.put(player.getUniqueId(), player);
+        player.setGameMode(GameMode.SPECTATOR);
+
+        final var deathLocation = player.getLocation();
+        final var world = deathLocation.getWorld();
+
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null) world.dropItemNaturally(deathLocation, item);
+        }
+        player.getInventory().clear();
+
+        final var droppedExp = event.getDroppedExp();
+        if (droppedExp > 0) {
+            world.spawnEntity(deathLocation, EntityType.EXPERIENCE_ORB, CreatureSpawnEvent.SpawnReason.CUSTOM, entity -> {
+                if (entity instanceof ExperienceOrb orb) {
+                    orb.setExperience(droppedExp);
+                }
+            });
+        }
+        player.setTotalExperience(0);
+        player.setHealth(20.0);
+        player.setFoodLevel(20);
+        player.setSaturation(5f);
+
+        new ArrayList<>(player.getActivePotionEffects())
+                .stream()
+                .map(PotionEffect::getType)
+                .forEach(player::removePotionEffect);
+
+        final var deathMessage = event.deathMessage();
+        if (deathMessage != null) Bukkit.broadcast(deathMessage);
 
         final var respawnTime = 5; // getTeam().getRespawnTime();
         final var playerState = sf.getPlayerState(player);
         playerState.respawnedAt = System.currentTimeMillis() + respawnTime * 1000;
-
-        player.setGameMode(GameMode.SPECTATOR);
 
         if (this.deathsPlayers.size() == 1) {
             this.respawnTask = Bukkit.getScheduler().runTaskTimer(plugin, this::respawnTick, 0, 1);
