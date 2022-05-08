@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar;
+
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "7.0.0"
@@ -28,10 +30,18 @@ dependencies {
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
+
+    // project dependencies
+    implementation("fr.mrmicky:fastboard:1.2.1")  // (1.7.10 - 1.18) MIT license
+    implementation("xyz.xenondevs:particle:1.7.1")  // (1.8 - 1.18.2) MIT license
 }
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
 }
 
 tasks.processResources {
@@ -40,12 +50,17 @@ tasks.processResources {
     }
 }
 
-val jar by tasks.getting(Jar::class)
+val shadowJar by tasks.getting(ShadowJar::class) {
+    mergeServiceFiles {
+        exclude("META-INF/*.DSA")
+        exclude("META-INF/*.RSA")
+    }
+}
 
 val devBuild by tasks.creating(Copy::class) {
     group = "plugin"
 
-    from(jar)
+    from(shadowJar)
     into("$projectDir/run/plugins")
     this.rename {"${project.name}.jar" }
 }
