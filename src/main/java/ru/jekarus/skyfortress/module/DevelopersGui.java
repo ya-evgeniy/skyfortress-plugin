@@ -15,9 +15,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import ru.jekarus.skyfortress.Area3i;
 import ru.jekarus.skyfortress.ChestGuiBase;
+import ru.jekarus.skyfortress.SkyFortress;
 import ru.jekarus.skyfortress.Vec3i;
 import ru.jekarus.skyfortress.config.SfConfig;
 import ru.jekarus.skyfortress.config.SfTeam;
+import ru.jekarus.skyfortress.state.SfPlayerState;
+import ru.jekarus.skyfortress.state.SfTeamState;
 
 import java.util.List;
 
@@ -25,8 +28,11 @@ public class DevelopersGui extends ChestGuiBase {
 
     private static DevelopersGui INST;
 
-    public static void register(Plugin plugin) {
-        if(INST == null) INST = new DevelopersGui();
+    private final Plugin plugin;
+    private final SkyFortress sf;
+
+    public static void register(Plugin plugin, SkyFortress sf) {
+        if(INST == null) INST = new DevelopersGui(plugin, sf);
         plugin.getServer().getPluginManager().registerEvents(INST, plugin);
     }
 
@@ -37,13 +43,11 @@ public class DevelopersGui extends ChestGuiBase {
         }
     }
 
-    public static void open(Player player) {
-        if(INST == null) INST = new DevelopersGui();
-        INST.openInventory(player);
-    }
-
-    public DevelopersGui() {
+    public DevelopersGui(Plugin plugin, SkyFortress sf) {
         super(6, "Гуи разработчика");
+
+        this.plugin = plugin;
+        this.sf = sf;
 
         int x;
         x = 0;
@@ -145,6 +149,13 @@ public class DevelopersGui extends ChestGuiBase {
                 item.setItemMeta(meta);
                 event.getPlayer().getInventory().addItem(item);
                 event.setCancelled(true);
+            }
+            if (msg.equals("!exp")) {
+                final var sfpState = sf.getPlayerState(event.getPlayer());
+                if (sfpState.team != null) {
+                    final var sftState = sf.getTeamState(sfpState.team);
+                    event.getPlayer().sendMessage(sftState.experience + "");
+                }
             }
         }
     }

@@ -12,4 +12,8 @@ public class SfPlayerState {
 
     public boolean needsRespawn = false;
 
+    public int kills = 0;
+    public int deaths = 0;
+    public int assists = 0;
+
 }

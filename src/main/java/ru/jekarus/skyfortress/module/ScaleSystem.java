@@ -45,7 +45,7 @@ public class ScaleSystem implements Listener {
         final var sft = SfTeam.get(player);
         if (sft != null) {
             final var state = sf.getTeamState(sft);
-            damage += state.level;
+            damage += state.experience;
         }
         return damage;
     }
@@ -54,7 +54,7 @@ public class ScaleSystem implements Listener {
         final var sft = SfTeam.get(player);
         if (sft != null) {
             final var state = sf.getTeamState(sft);
-            damage -= state.level;
+            damage -= state.experience;
         }
         return damage;
     }

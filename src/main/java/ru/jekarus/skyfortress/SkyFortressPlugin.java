@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import ru.jekarus.skyfortress.config.SfTeam;
 import ru.jekarus.skyfortress.module.*;
+import ru.jekarus.skyfortress.module.fight.FightSystem;
 
 import java.util.Arrays;
 
@@ -30,7 +31,7 @@ public class SkyFortressPlugin extends JavaPlugin {
         CaptureSystem.register(this, sf);
         SfSidebar.register(this, sf);
         SfLobby.register(this, sf);
-        DevelopersGui.register(this);
+        DevelopersGui.register(this, sf);
         AreaOutline.register(this);
         SfRespawn.register(this, sf);
         ScaleSystem.register(this, sf);
