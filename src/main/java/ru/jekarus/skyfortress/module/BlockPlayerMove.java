@@ -1,15 +1,15 @@
-package ru.jekarus.skyfortress;
+package ru.jekarus.skyfortress.module;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
+import ru.jekarus.skyfortress.Vec3i;
 
 public class BlockPlayerMove implements Listener {
 

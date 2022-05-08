@@ -3,7 +3,9 @@ package ru.jekarus.skyfortress;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import ru.jekarus.skyfortress.config.SfTeam;
-import ru.jekarus.skyfortress.player.SfPlayerState;
+import ru.jekarus.skyfortress.module.SfSidebar;
+import ru.jekarus.skyfortress.state.SfPlayerState;
+import ru.jekarus.skyfortress.state.SfTeamState;
 
 import java.util.EnumMap;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package ru.jekarus.skyfortress.respawn;
+package ru.jekarus.skyfortress.module;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;

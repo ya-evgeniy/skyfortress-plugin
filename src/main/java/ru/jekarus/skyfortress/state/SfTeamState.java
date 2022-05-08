@@ -1,4 +1,4 @@
-package ru.jekarus.skyfortress;
+package ru.jekarus.skyfortress.state;
 
 public class SfTeamState {
 

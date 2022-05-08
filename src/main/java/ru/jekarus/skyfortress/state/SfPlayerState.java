@@ -1,4 +1,4 @@
-package ru.jekarus.skyfortress.player;
+package ru.jekarus.skyfortress.state;
 
 import ru.jekarus.skyfortress.config.SfTeam;
 

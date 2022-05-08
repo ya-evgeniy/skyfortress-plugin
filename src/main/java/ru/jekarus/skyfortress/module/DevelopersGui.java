@@ -1,4 +1,4 @@
-package ru.jekarus.skyfortress;
+package ru.jekarus.skyfortress.module;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -13,6 +13,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import ru.jekarus.skyfortress.Area3i;
+import ru.jekarus.skyfortress.ChestGuiBase;
+import ru.jekarus.skyfortress.Vec3i;
 import ru.jekarus.skyfortress.config.SfConfig;
 import ru.jekarus.skyfortress.config.SfTeam;
 

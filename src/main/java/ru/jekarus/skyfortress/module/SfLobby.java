@@ -1,4 +1,4 @@
-package ru.jekarus.skyfortress;
+package ru.jekarus.skyfortress.module;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -7,6 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
+import ru.jekarus.skyfortress.SkyFortress;
+import ru.jekarus.skyfortress.Vec3i;
 import ru.jekarus.skyfortress.config.SfConfig;
 import ru.jekarus.skyfortress.config.SfTeam;
 

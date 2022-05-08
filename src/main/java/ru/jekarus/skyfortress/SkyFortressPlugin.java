@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import ru.jekarus.skyfortress.config.SfTeam;
-import ru.jekarus.skyfortress.respawn.SfRespawn;
+import ru.jekarus.skyfortress.module.*;
 
 import java.util.Arrays;
 

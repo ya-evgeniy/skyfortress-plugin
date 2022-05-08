@@ -1,12 +1,12 @@
-package ru.jekarus.skyfortress;
+package ru.jekarus.skyfortress.module;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
+import ru.jekarus.skyfortress.SkyFortress;
 import ru.jekarus.skyfortress.config.SfTeam;
 
 import java.util.*;

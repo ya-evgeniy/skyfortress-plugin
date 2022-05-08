@@ -1,9 +1,11 @@
-package ru.jekarus.skyfortress;
+package ru.jekarus.skyfortress.module;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+import ru.jekarus.skyfortress.Area3i;
+import ru.jekarus.skyfortress.Vec3i;
 import xyz.xenondevs.particle.ParticleEffect;
 import xyz.xenondevs.particle.data.ParticleData;
 
