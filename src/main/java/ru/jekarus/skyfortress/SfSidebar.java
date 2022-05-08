@@ -75,7 +75,7 @@ public class SfSidebar implements Listener {
         } else {
             final var lines = new ArrayList<String>();
             for (SfTeam sft : SfTeam.values()) {
-                final var state = this.sf.getState(sft);
+                final var state = this.sf.getTeamState(sft);
 
                 lines.add(ChatColor.GRAY + "Команда " + sft.chat + sft.displayNameOf + ": " + ChatColor.WHITE + state.health);
             }

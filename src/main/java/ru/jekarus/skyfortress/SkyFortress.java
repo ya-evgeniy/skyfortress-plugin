@@ -1,24 +1,28 @@
 package ru.jekarus.skyfortress;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import ru.jekarus.skyfortress.config.SfTeam;
+import ru.jekarus.skyfortress.player.SfPlayerState;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class SkyFortress {
 
     private boolean gameStarted = false;
     private final Map<SfTeam, Boolean> ready = new EnumMap<>(SfTeam.class);
-    private final Map<SfTeam, SFTeamState> state = new EnumMap<>(SfTeam.class);
+    private final Map<SfTeam, SFTeamState> teamsState = new EnumMap<>(SfTeam.class);
+    private final Map<UUID, SfPlayerState> playersState = new HashMap<>();
 
-    public SFTeamState getState(SfTeam sft) {
-        var state = this.state.get(sft);
-        if(state == null) {
-            state = new SFTeamState();
-            this.state.put(sft, state);
-        }
-        return state;
+    public SFTeamState getTeamState(SfTeam sft) {
+        return this.teamsState.computeIfAbsent(sft, v -> new SFTeamState());
+    }
+
+    public SfPlayerState getPlayerState(OfflinePlayer player) {
+        return this.playersState.computeIfAbsent(player.getUniqueId(), v -> new SfPlayerState());
     }
 
     public void gameStart() {

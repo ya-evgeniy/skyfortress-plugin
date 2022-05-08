@@ -1,6 +1,7 @@
 package ru.jekarus.skyfortress;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.HumanEntity;
@@ -16,10 +17,14 @@ public record Vec3i(int x, int y, int z) {
         return new Location(world, x + 0.5, y + 0.2, z + 0.5);
     }
 
-    public void teleport(HumanEntity player, BlockFace face) {
-        final var location = toLocation(player.getWorld());
+    public Location toLocation(World world, BlockFace face) {
+        return toLocation(world).setDirection(face.getDirection());
+    }
+
+    public void teleport(HumanEntity human, BlockFace face) {
+        final var location = toLocation(human.getWorld());
         location.setDirection(face.getDirection());
-        player.teleport(location);
+        human.teleport(location);
     }
 
     public Vec3i add(int x, int y, int z) {

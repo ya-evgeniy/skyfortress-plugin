@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import ru.jekarus.skyfortress.config.SfTeam;
+import ru.jekarus.skyfortress.respawn.SfRespawn;
 
 import java.util.Arrays;
 
@@ -29,6 +30,7 @@ public class SkyFortressPlugin extends JavaPlugin {
         SfLobby.register(this, sf);
         DevelopersGui.register(this);
         AreaOutline.register(this);
+        SfRespawn.register(this, sf);
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             player.closeInventory();
@@ -41,6 +43,7 @@ public class SkyFortressPlugin extends JavaPlugin {
         DevelopersGui.unregister();
         SfLobby.unregister();
         SfSidebar.unregister();
+        SfRespawn.unregister();
     }
 
 }

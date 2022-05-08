@@ -44,12 +44,16 @@ public class SfLobby implements Listener {
         for (SfTeam sft : SfTeam.values()) {
             if(sft.join.contains(to)) {
                 sft.team().addPlayer(player);
+                sf.getPlayerState(player).team = sft;
                 return;
             }
         }
         if(SfConfig.LEAVE.contains(to)) {
             final var team = sb.getPlayerTeam(player);
-            if (team != null) team.removePlayer(player);
+            if (team != null) {
+                team.removePlayer(player);
+                sf.getPlayerState(player).team = null;
+            }
         }
     }
     @EventHandler
