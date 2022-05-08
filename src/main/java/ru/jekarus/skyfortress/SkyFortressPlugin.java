@@ -26,6 +26,8 @@ public class SkyFortressPlugin extends JavaPlugin {
             }
         }
 
+        BlockPlayerMove.register(this);
+        CaptureSystem.register(this, sf);
         SfSidebar.register(this, sf);
         SfLobby.register(this, sf);
         DevelopersGui.register(this);
@@ -44,6 +46,8 @@ public class SkyFortressPlugin extends JavaPlugin {
         SfLobby.unregister();
         SfSidebar.unregister();
         SfRespawn.unregister();
+        CaptureSystem.unregister();
+        BlockPlayerMove.unregister();
     }
 
 }

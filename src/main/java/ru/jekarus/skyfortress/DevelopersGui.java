@@ -133,7 +133,7 @@ public class DevelopersGui extends ChestGuiBase {
     @EventHandler
     public void onChat(AsyncChatEvent event) {
         final var msg = PlainTextComponentSerializer.plainText().serialize(event.message());
-        if(event.getPlayer().isOp() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if(event.getPlayer().isOp()) {
             if(msg.equals("!dev")) {
                 final var item = new ItemStack(Material.EMERALD);
                 final ItemMeta meta = item.getItemMeta();
@@ -148,7 +148,7 @@ public class DevelopersGui extends ChestGuiBase {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if(event.getPlayer().isOp() && event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if(event.getPlayer().isOp()) {
             if (event.getItem() != null && event.getItem().getType() == Material.EMERALD) {
                 final var lore = event.getItem().getItemMeta().getLore();
                 if(lore != null && !lore.isEmpty()) {

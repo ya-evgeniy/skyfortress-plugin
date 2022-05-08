@@ -14,11 +14,11 @@ public class SkyFortress {
 
     private boolean gameStarted = false;
     private final Map<SfTeam, Boolean> ready = new EnumMap<>(SfTeam.class);
-    private final Map<SfTeam, SFTeamState> teamsState = new EnumMap<>(SfTeam.class);
+    private final Map<SfTeam, SfTeamState> teamsState = new EnumMap<>(SfTeam.class);
     private final Map<UUID, SfPlayerState> playersState = new HashMap<>();
 
-    public SFTeamState getTeamState(SfTeam sft) {
-        return this.teamsState.computeIfAbsent(sft, v -> new SFTeamState());
+    public SfTeamState getTeamState(SfTeam sft) {
+        return this.teamsState.computeIfAbsent(sft, v -> new SfTeamState());
     }
 
     public SfPlayerState getPlayerState(OfflinePlayer player) {
