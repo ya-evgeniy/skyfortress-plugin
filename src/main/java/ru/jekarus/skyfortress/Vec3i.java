@@ -32,6 +32,12 @@ public record Vec3i(int x, int y, int z) {
         human.teleport(location);
     }
 
+    public void teleport(HumanEntity human, Vector dir) {
+        final var location = toLocation(human.getWorld());
+        location.setDirection(dir);
+        human.teleport(location);
+    }
+
     public Vec3i add(int x, int y, int z) {
         return new Vec3i(
                 this.x + x,

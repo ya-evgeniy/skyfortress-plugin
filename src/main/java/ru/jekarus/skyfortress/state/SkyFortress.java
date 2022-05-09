@@ -23,10 +23,13 @@ public class SkyFortress {
     private final Map<SfTeam, SfTeamState> teamsState = new EnumMap<>(SfTeam.class);
     private final Map<UUID, SfPlayerState> playersState = new HashMap<>();
 
-    private final @NotNull PluginManager pluginMan;
-    private final @NotNull Scoreboard scoreboard;
+    private @NotNull PluginManager pluginMan;
+    private @NotNull Scoreboard scoreboard;
 
     public SkyFortress() {
+    }
+
+    public void init() {
         pluginMan = Bukkit.getServer().getPluginManager();
         scoreboard = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
     }

@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 import ru.jekarus.skyfortress.Area3i;
 import ru.jekarus.skyfortress.ChestGuiBase;
 import ru.jekarus.skyfortress.state.SkyFortress;
@@ -158,16 +159,32 @@ public class DevelopersGui extends ChestGuiBase {
                 }
             }
         });
+
+        int y;
+        y = 0;
+        for (SfConfig.DragonLoc dragon : SfConfig.DRAGONS) {
+            set(
+                    SfTeam.values().length + 2, y,
+                    Material.DRAGON_EGG,
+                    "dragon"
+            ).setOnClick(e -> {
+                clickLoc(e, dragon.loc(), dragon.dir().toVector());
+            });
+            y++;
+        }
     }
 
     public void clickLoc(InventoryClickEvent event, Vec3i v, BlockFace face) {
+        clickLoc(event, v, face.getDirection());
+    }
+    public void clickLoc(InventoryClickEvent event, Vec3i v, Vector vec) {
         if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.RIGHT) {
             final var player = (Player) event.getWhoClicked();
             player.closeInventory();
             AreaOutline.show(player, v);
         }
         if (event.getClick() == ClickType.LEFT) {
-            v.teleport(event.getWhoClicked(), face);
+            v.teleport(event.getWhoClicked(), vec);
         }
     }
 

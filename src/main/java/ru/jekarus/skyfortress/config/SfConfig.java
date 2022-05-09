@@ -17,13 +17,13 @@ public class SfConfig {
     public record DragonLoc(Vec3i loc, Vec3i dir) {
 
         public Location toLocation(World world) {
-            return loc.toLocation(world).setDirection(dir.toVector());
+            return loc.toLocation(world).setDirection(dir.toVector().normalize());
         }
     }
 
     public static DragonLoc[] DRAGONS = new DragonLoc[] {
-            new DragonLoc(new Vec3i(2570, 96, -70), new Vec3i(1, 0, -1))
-//            new DragonLoc(new Vec3i(2430, 96, 70), new Vec3i(-1, 0, 1))
+            new DragonLoc(new Vec3i(2570, 96, -70), new Vec3i(-1, 0, 1)),
+            new DragonLoc(new Vec3i(2430, 96, 70), new Vec3i(1, 0, -1))
     };
 
 }
