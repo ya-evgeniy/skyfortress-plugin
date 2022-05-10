@@ -39,7 +39,8 @@ public class SkyFortressPlugin extends JavaPlugin {
         SfRespawn.register(this, sf);
         ScaleSystem.register(this, sf);
         FightSystem.register(this, sf);
-        DragonObject.register(this, sf);
+        DragonObject.register(this);
+        WitherObject.register(this);
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             player.closeInventory();
@@ -54,6 +55,7 @@ public class SkyFortressPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        WitherObject.unregister();
         DragonObject.unregister();
         FightSystem.unregister();
         ScaleSystem.unregister();

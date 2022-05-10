@@ -162,11 +162,21 @@ public class DevelopersGui extends ChestGuiBase {
 
         int y;
         y = 0;
-        for (SfConfig.DragonLoc dragon : SfConfig.DRAGONS) {
+        for (SfConfig.ObjectLoc dragon : SfConfig.DRAGONS) {
             set(
                     SfTeam.values().length + 2, y,
                     Material.DRAGON_EGG,
                     "dragon"
+            ).setOnClick(e -> {
+                clickLoc(e, dragon.loc(), dragon.dir().toVector());
+            });
+            y++;
+        }
+        for (SfConfig.ObjectLoc dragon : SfConfig.WITHERS) {
+            set(
+                    SfTeam.values().length + 2, y,
+                    Material.WITHER_SKELETON_SKULL,
+                    "wither"
             ).setOnClick(e -> {
                 clickLoc(e, dragon.loc(), dragon.dir().toVector());
             });

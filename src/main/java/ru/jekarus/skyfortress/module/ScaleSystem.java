@@ -64,7 +64,7 @@ public class ScaleSystem implements Listener {
         damage = baseDamageModifier(damage);
         double scaled = damage;
         damage = teamDamageModifier(player, damage);
-        Bukkit.broadcastMessage("p2m %.2f -> base:%.2f -> team:%.2f%n".formatted(source, scaled, damage));
+        Bukkit.broadcastMessage("p2m %.2f -> base:%.2f -> team:%.2f".formatted(source, scaled, damage));
         return damage;
     }
 
@@ -75,7 +75,7 @@ public class ScaleSystem implements Listener {
         damage = teamDamageModifier(player, damage);
         double team1 = damage;
         damage = teamDefenceModifier(target, damage);
-        Bukkit.broadcastMessage("p2p %.2f -> base:%.2f -> team:%.2f -> final:%.2f%n".formatted(source, scaled, team1, damage));
+        Bukkit.broadcastMessage("p2p %.2f -> base:%.2f -> team:%.2f -> final:%.2f".formatted(source, scaled, team1, damage));
         return damage;
     }
 
@@ -84,7 +84,7 @@ public class ScaleSystem implements Listener {
         damage = baseDamageModifier(damage);
         double team1 = damage;
         damage = teamDefenceModifier(target, damage);
-        Bukkit.broadcastMessage("o2p %.2f -> base:%.2f -> teamDef:%.2f%n".formatted(source, team1, damage));
+        Bukkit.broadcastMessage("o2p %.2f -> base:%.2f -> teamDef:%.2f".formatted(source, team1, damage));
         return damage;
     }
 

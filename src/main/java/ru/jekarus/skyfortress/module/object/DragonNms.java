@@ -1,4 +1,4 @@
-package ru.jekarus.skyfortress;
+package ru.jekarus.skyfortress.module.object;
 
 import fr.mrmicky.fastboard.FastReflection;
 import net.minecraft.world.entity.boss.enderdragon.EntityEnderDragon;
@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3D;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEnderDragon;
 import org.bukkit.entity.EnderDragon;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
@@ -60,62 +61,58 @@ public class DragonNms {
         }
     }
 
-    public static class MyPhase extends AbstractDragonController {
+    public interface SfDragonPhase {
 
-        private final EnderDragon dragon;
-        private final Location moveTo;
-        private final Runnable onDone;
-        private final double distanceSquared;
+        void serverTick();
 
-        public MyPhase(EnderDragon dragon, Location moveTo, double distance, Runnable onDone) {
-            super(((CraftEnderDragon)dragon).getHandle());
-            this.dragon = dragon;
-            this.moveTo = moveTo;
-            this.onDone = onDone;
-            this.distanceSquared = distance * distance;
+        default Vector getFlyTargetLocation() {
+            return null;
+        }
+
+    }
+
+    public static class SfDragonPhaseImpl extends AbstractDragonController {
+
+        private final EnderDragon.Phase phase;
+        private final SfDragonPhase sfphase;
+
+        public SfDragonPhaseImpl(EntityEnderDragon dragon, EnderDragon.Phase phase, SfDragonPhase sfphase) {
+            super(dragon);
+            this.phase = phase;
+            this.sfphase = sfphase;
         }
 
         @Override
         public void c() {
-            if(onDone == null) return;
-            double d = dragon.getLocation().distanceSquared(moveTo);
-            if (d < this.distanceSquared) {
-                onDone.run();
-            }
+            sfphase.serverTick();
         }
 
         @Override
         public DragonControllerPhase<? extends IDragonController> i() {
-            return CraftEnderDragon.getMinecraftPhase(EnderDragon.Phase.LEAVE_PORTAL);
+            return CraftEnderDragon.getMinecraftPhase(phase);
         }
 
         @Nullable
         @Override
         public Vec3D g() {
-            return new Vec3D(moveTo.getX(), moveTo.getY(), moveTo.getZ());
+            final var loc = sfphase.getFlyTargetLocation();
+            if (loc == null) return null;
+            return new Vec3D(loc.getX(), loc.getY(), loc.getZ());
         }
 
     }
 
-//    static Location MoveTo;
-//    private static DragonControllerPhase<MyPhase> myPhase;
-
-    static {
-//        myPhase = replaceDragonPhase(EnderDragon.Phase.LEAVE_PORTAL, MyPhase.class, "Fly");
-    }
-
-    public static void moveTo(EnderDragon entity, Location moveTo, double distance, @Nullable Runnable onDone) {
+    public static void setPhase(EnderDragon entity, EnderDragon.Phase phase, SfDragonPhase sfphase) {
         EntityEnderDragon nmsEntity = ((CraftEnderDragon)entity).getHandle();
-//        nmsEntity.fx().b(CraftEnderDragon.getMinecraftPhase(EnderDragon.Phase.LEAVE_PORTAL));
         try {
             final Object[] phases = (Object[]) f_phases.get(nmsEntity.fx());
-            phases[EnderDragon.Phase.LEAVE_PORTAL.ordinal()] = new MyPhase(entity, moveTo, distance, onDone);
+            phases[phase.ordinal()] = new SfDragonPhaseImpl(nmsEntity, phase, sfphase);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         // reload phase
         entity.setPhase(EnderDragon.Phase.HOVER);
-        entity.setPhase(EnderDragon.Phase.LEAVE_PORTAL);
+        entity.setPhase(phase);
     }
 
 }

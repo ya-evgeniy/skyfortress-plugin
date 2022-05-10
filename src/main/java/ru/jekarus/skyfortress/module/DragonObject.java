@@ -11,23 +11,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EnderDragonChangePhaseEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Vector;
 import ru.jekarus.skyfortress.GameStartEvent;
 import ru.jekarus.skyfortress.GameStopEvent;
-import ru.jekarus.skyfortress.DragonNms;
 import ru.jekarus.skyfortress.config.SfConfig;
+import ru.jekarus.skyfortress.module.object.SfDragon;
 import ru.jekarus.skyfortress.state.SkyFortress;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class DragonObject implements Listener {
 
     private static DragonObject INS;
 
-    public static void register(Plugin plugin, SkyFortress sf) {
+    public static void register(Plugin plugin) {
         assert INS == null : "DragonObject already registered";
-        INS = new DragonObject(plugin, sf);
+        INS = new DragonObject(plugin);
 
         Bukkit.getPluginManager().registerEvents(INS, plugin);
     }
@@ -39,78 +37,26 @@ public class DragonObject implements Listener {
         INS = null;
     }
 
-    enum State {
-        WANDERING,
-        GET_ON_POSITION,
-        LOOK_AT_TARGET;
-    }
 
-    public static class SfDragon {
-        public final EnderDragon entity;
-        private final Location location;
-        public State state = State.WANDERING;
-        private Player target;
-
-
-        public SfDragon(EnderDragon entity, Location location) {
-            this.entity = entity;
-            this.location = location;
-            entity.setSilent(true);
-            entity.getPathfinder().stopPathfinding();
-            Bukkit.getMobGoals().removeAllGoals(entity);
-            entity.setPodium(location);
-            actState();
-        }
-
-        public void setState(State state) {
-            if(state == this.state) return;
-            System.out.println("state " + this.state + " -> " + state);
-            this.state = state;
-            actState();
-        }
-
-        private void actState() {
-            switch (state) {
-                case WANDERING -> {
-                    DragonNms.moveTo(entity,
-                            entity.getLocation().clone().add(entity.getLocation().getDirection().multiply(7)),
-                            4, () -> {
-                        DragonNms.moveTo(entity, location, 0, null);
-                    });
-                }
-                case GET_ON_POSITION -> {
-                    DragonNms.moveTo(entity, location, 4, () -> {
-                        setState(State.LOOK_AT_TARGET);
-                    });
-                }
-                case LOOK_AT_TARGET -> {
-                    entity.setPhase(EnderDragon.Phase.HOVER);
-                }
-            }
-        }
-    }
-
-    private final SkyFortress sf;
     private final Map<UUID, SfDragon> dragons = new HashMap<>();
 
-    public DragonObject(Plugin plugin, SkyFortress sf) {
-        this.sf = sf;
+    public DragonObject(Plugin plugin) {
         plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             for (SfDragon dragon : dragons.values()) {
-                if(dragon.state == State.GET_ON_POSITION) continue;
-                final var players = dragon.location.getNearbyEntitiesByType(Player.class, 10);
+                if(dragon.state == SfDragon.State.GET_ON_POSITION) continue;
+                final var players = dragon.location.getNearbyEntitiesByType(Player.class, SfConfig.OBJECT_HOME_RADIUS);
                 if(players.size() > 0) {
-                    if(dragon.state == State.LOOK_AT_TARGET) continue;
+                    if(dragon.state == SfDragon.State.ATTACK_TARGET) continue;
                     dragon.target = players.iterator().next();
-                    dragon.setState(State.GET_ON_POSITION);
+                    dragon.setState(SfDragon.State.GET_ON_POSITION);
                 } else {
-                    dragon.setState(State.WANDERING);
+                    dragon.setState(SfDragon.State.WANDERING);
                 }
             }
         }, 20, 20);
         plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             for (SfDragon sfd : dragons.values()) {
-                if(sfd.state != State.LOOK_AT_TARGET) continue;
+                if(sfd.state != SfDragon.State.ATTACK_TARGET) continue;
                 final var loc = sfd.entity.getLocation().clone();
                 final var yaw = loc.getYaw();  // [-180:180]
                 final var pitch = loc.getPitch();  // [-90:90]
@@ -130,6 +76,10 @@ public class DragonObject implements Listener {
                 if(dpitch > rotSpeed) dpitch = rotSpeed;
                 else if(dpitch < rotSpeed) dpitch = -rotSpeed;
                 sfd.entity.setRotation(yaw + dyaw, pitch + dpitch);
+                if(Math.abs(dyaw) < 45) {
+                    sfd.tryAttack();
+                }
+
                 double flySpeed = 0.3f;
                 double dy = delta.getY();
                 if(dy > flySpeed) dy = flySpeed;
@@ -139,21 +89,12 @@ public class DragonObject implements Listener {
         }, 3, 3);
     }
 
-    public void rotate(Location loc, double angle) {
-//        final var dir = loc.getDirection();
-//        loc.setDirection(new Vector(
-//                Math.cos(Math.toRadians(angle)) * dir.getX(),
-//                dir.getY(),
-//                Math.sin(Math.toRadians(angle)) * dir.getZ()
-//        ));
-    }
-
     @EventHandler
     public void on(GameStartEvent event) {
         final var world = Bukkit.getServer().getWorlds().get(0);
-        for(SfConfig.DragonLoc dragonLoc : SfConfig.DRAGONS) {
-            final var location = dragonLoc.toLocation(world);
-            world.spawnEntity(location, EntityType.ENDER_DRAGON, CreatureSpawnEvent.SpawnReason.COMMAND, entity -> {
+        for(SfConfig.ObjectLoc objectLoc : SfConfig.DRAGONS) {
+            final var location = objectLoc.toLocation(world);
+            world.spawnEntity(location, EntityType.ENDER_DRAGON, CreatureSpawnEvent.SpawnReason.DEFAULT, entity -> {
                 dragons.put(entity.getUniqueId(), new SfDragon((EnderDragon) entity, location));
             });
         }
@@ -163,9 +104,9 @@ public class DragonObject implements Listener {
     public void on(EnderDragonChangePhaseEvent event) {
         final var sfd = dragons.get(event.getEntity().getUniqueId());
         if (sfd == null) return;
-        System.out.println(event.getCurrentPhase() + " -> " + event.getNewPhase());
-        if(event.getNewPhase() == EnderDragon.Phase.HOVER) return;
-        event.setNewPhase(EnderDragon.Phase.LEAVE_PORTAL);
+        if(event.getNewPhase() == EnderDragon.Phase.LEAVE_PORTAL) return;
+        if(event.getNewPhase() == EnderDragon.Phase.BREATH_ATTACK) return;
+        event.setNewPhase(EnderDragon.Phase.HOVER);
     }
 
     @EventHandler
