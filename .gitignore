@@ -54,3 +54,4 @@ fabric.properties
 build/*
 run/*
 .idea
+*.ignore

@@ -1,4 +1,4 @@
-package ru.jekarus.skyfortress.module.fight;
+package ru.jekarus.skyfortress.module;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -10,19 +10,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.Plugin;
+import ru.jekarus.skyfortress.module.fight.DamageRecord;
+import ru.jekarus.skyfortress.module.fight.FightRecord;
 import ru.jekarus.skyfortress.state.SkyFortress;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class FightSystem implements Listener {
+public class SfFightSystem implements Listener {
 
-    private static FightSystem INS;
+    private static SfFightSystem INS;
 
     public static void register(Plugin plugin, SkyFortress sf) {
         assert INS == null : "FightSystem already registered";
-        INS = new FightSystem(plugin, sf);
+        INS = new SfFightSystem(plugin, sf);
 
         Bukkit.getPluginManager().registerEvents(INS, plugin);
     }
@@ -37,7 +39,7 @@ public class FightSystem implements Listener {
     private final SkyFortress sf;
     private final Map<UUID, ru.jekarus.skyfortress.module.fight.FightRecord> fightsRecord = new HashMap<>();
 
-    public FightSystem(Plugin plugin, SkyFortress sf) {
+    public SfFightSystem(Plugin plugin, SkyFortress sf) {
         this.sf = sf;
     }
 
@@ -49,10 +51,13 @@ public class FightSystem implements Listener {
         final var killerRecord = fightRecord.getKillerRecord();
         if (killerRecord.getEntity() instanceof Player killer) {
             final var sfpState = sf.getPlayerState(killer);
-            sfpState.kills++;
+            if(sfpState.team != null) {
+                sfpState.kills++;
 
-            final var sftState = sf.getTeamState(sfpState.team);
-            sftState.experience += 2;
+                final var sftState = sf.getTeamState(sfpState.team);
+                sftState.experience += 2;
+                SfSidebar.updateAll();
+            }
         }
 
         fightRecord.assistants()
@@ -62,6 +67,7 @@ public class FightSystem implements Listener {
                         sfpState.assists++;
                         final var sftState = sf.getTeamState(sfpState.team);
                         sftState.experience += 0.5;
+                        SfSidebar.updateAll();
                     }
                 });
 

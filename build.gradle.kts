@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")  // no nms
-//    compileOnly(files("./run/versions/1.18.2/paper-1.18.2.jar"))  // nms obfuscated
+    compileOnly(files("./run/versions/1.18.2/paper-1.18.2.jar"))  // nms obfuscated
 //    paperweightDevelopmentBundle("io.papermc.paper:dev-bundle:1.18.2-R0.1-SNAPSHOT")  // nms deobfuscated
 
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
@@ -34,6 +34,7 @@ dependencies {
     // project dependencies
     implementation("fr.mrmicky:fastboard:1.2.1")  // (1.7.10 - 1.18) MIT license
     implementation("xyz.xenondevs:particle:1.7.1")  // (1.8 - 1.18.2) MIT license
+    implementation("io.github.skytasul:guardianbeam:2.2.4")  // (1.8 - 1.18.2) MIT license
 }
 
 java {

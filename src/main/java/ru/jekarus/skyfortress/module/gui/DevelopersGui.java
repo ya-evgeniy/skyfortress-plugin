@@ -1,58 +1,36 @@
-package ru.jekarus.skyfortress.module;
+package ru.jekarus.skyfortress.module.gui;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import ru.jekarus.skyfortress.Area3i;
-import ru.jekarus.skyfortress.ChestGuiBase;
+import ru.jekarus.skyfortress.module.AreaOutline;
+import ru.jekarus.skyfortress.module.SfSidebar;
 import ru.jekarus.skyfortress.state.SkyFortress;
 import ru.jekarus.skyfortress.Vec3i;
 import ru.jekarus.skyfortress.config.SfConfig;
 import ru.jekarus.skyfortress.config.SfTeam;
 
-import java.util.List;
-
 public class DevelopersGui extends ChestGuiBase {
 
-    private static DevelopersGui INST;
-
-    private final Plugin plugin;
     private final SkyFortress sf;
 
-    public static void register(Plugin plugin, SkyFortress sf) {
-        if(INST == null) INST = new DevelopersGui(plugin, sf);
-        plugin.getServer().getPluginManager().registerEvents(INST, plugin);
-    }
-
-    public static void unregister() {
-        if(INST != null) {
-            HandlerList.unregisterAll(INST);
-            INST = null;
-        }
-    }
-
-    public DevelopersGui(Plugin plugin, SkyFortress sf) {
+    public DevelopersGui(SkyFortress sf) {
         super(6, "Гуи разработчика");
-
-        this.plugin = plugin;
         this.sf = sf;
+        build(getView());
+    }
 
+    public void build(ChestGuiView view) {
         int x;
         x = 0;
         for (SfTeam sft : SfTeam.values()) {
-            set(
-                    x, 0,
+            view.set(x, 0, new SfGuiElement(
                     Material.WHITE_WOOL,
                     "тп join " + sft.name
             ).setOnClick(e -> {
@@ -60,48 +38,44 @@ public class DevelopersGui extends ChestGuiBase {
                 if(e.getClick() == ClickType.SHIFT_LEFT) {
                     sf.playerJoin(sft, (Player) e.getWhoClicked());
                 }
-            });
+            }));
             x++;
         }
 
         x = 0;
         for (SfTeam sft : SfTeam.values()) {
-            set(
-                    x, 1,
+            view.set(x, 1, new SfGuiElement(
                     Material.STONE_BUTTON,
                     "тп ready " + sft.name
             ).setOnClick(e -> {
                 clickLoc(e, sft.ready, sft.face);
-            });
+            }));
             x++;
         }
 
         x = 0;
         for (SfTeam sft : SfTeam.values()) {
-            set(
-                    x, 2,
+            view.set(x, 2, new SfGuiElement(
                     Material.RED_BED,
                     "тп спавн " + sft.name
             ).setOnClick(e -> {
                 clickLoc(e, sft.spawn, sft.face);
-            });
+            }));
             x++;
         }
 
         x = 0;
         for (SfTeam sft : SfTeam.values()) {
-            set(
-                    x, 3,
+            view.set(x, 3, new SfGuiElement(
                     Material.BEDROCK,
                     "тп захват " + sft.name
             ).setOnClick(e -> {
                 clickArea(e, sft.capture, sft.face);
-            });
+            }));
             x++;
         }
 
-        set(
-                SfTeam.values().length, 0,
+        view.set(SfTeam.values().length, 0, new SfGuiElement(
                 Material.BEDROCK,
                 "тп exit area"
         ).setOnClick(e -> {
@@ -109,10 +83,9 @@ public class DevelopersGui extends ChestGuiBase {
             if(e.getClick() == ClickType.SHIFT_LEFT) {
                 sf.playerLeave(((Player) e.getWhoClicked()));
             }
-        });
+        }));
 
-        set(
-                SfTeam.values().length, 1,
+        view.set(SfTeam.values().length, 1, new SfGuiElement(
                 Material.STONE_BUTTON,
                 "тп force start"
         ).setOnClick(e -> {
@@ -122,10 +95,9 @@ public class DevelopersGui extends ChestGuiBase {
             } else if(e.getClick() == ClickType.SHIFT_RIGHT) {
                 sf.gameStop();
             }
-        });
+        }));
 
-        set(
-                SfTeam.values().length + 1, 0,
+        view.set(SfTeam.values().length + 1, 0, new SfGuiElement(
                 Material.EXPERIENCE_BOTTLE,
                 "experience",
                 "ЛКМ: +=2",
@@ -156,30 +128,35 @@ public class DevelopersGui extends ChestGuiBase {
                             state.experience = 0;
                         }
                     }
+                    SfSidebar.updateAll();
                 }
             }
-        });
+        }));
 
         int y;
         y = 0;
-        for (SfConfig.ObjectLoc dragon : SfConfig.DRAGONS) {
-            set(
-                    SfTeam.values().length + 2, y,
+        for (SfConfig.ObjectLoc obj : SfConfig.DRAGONS) {
+            view.set(SfTeam.values().length + 2, y, new SfGuiElement(
                     Material.DRAGON_EGG,
                     "dragon"
             ).setOnClick(e -> {
-                clickLoc(e, dragon.loc(), dragon.dir().toVector());
-            });
+                clickArea(e, Area3i.of(
+                        obj.loc().add(new Vec3i(-1, -1, -1).mul(SfConfig.OBJECT_HOME_RADIUS)),
+                        obj.loc().add(new Vec3i(1, 1, 1).mul(SfConfig.OBJECT_HOME_RADIUS))
+                ), obj.dir().toVector());
+            }));
             y++;
         }
-        for (SfConfig.ObjectLoc dragon : SfConfig.WITHERS) {
-            set(
-                    SfTeam.values().length + 2, y,
+        for (SfConfig.ObjectLoc obj : SfConfig.WITHERS) {
+            view.set(SfTeam.values().length + 2, y, new SfGuiElement(
                     Material.WITHER_SKELETON_SKULL,
                     "wither"
             ).setOnClick(e -> {
-                clickLoc(e, dragon.loc(), dragon.dir().toVector());
-            });
+                clickArea(e, Area3i.of(
+                        obj.loc().add(new Vec3i(-1, -1, -1).mul(SfConfig.OBJECT_HOME_RADIUS)),
+                        obj.loc().add(new Vec3i(1, 1, 1).mul(SfConfig.OBJECT_HOME_RADIUS))
+                ), obj.dir().toVector());
+            }));
             y++;
         }
     }
@@ -199,50 +176,16 @@ public class DevelopersGui extends ChestGuiBase {
     }
 
     public void clickArea(InventoryClickEvent event, Area3i a, BlockFace face) {
+        clickArea(event, a, face.getDirection());
+    }
+    public void clickArea(InventoryClickEvent event, Area3i a, Vector vec) {
         if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.RIGHT) {
             final var player = (Player) event.getWhoClicked();
             player.closeInventory();
             AreaOutline.show(player, a);
         }
         if (event.getClick() == ClickType.LEFT) {
-            a.middle().teleport(event.getWhoClicked(), face);
-        }
-    }
-
-    @EventHandler
-    public void onChat(AsyncChatEvent event) {
-        final var msg = PlainTextComponentSerializer.plainText().serialize(event.message());
-        if(event.getPlayer().isOp()) {
-            if(msg.equals("!dev")) {
-                final var item = new ItemStack(Material.EMERALD);
-                final ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(ChatColor.RED + "Инструмент разработчиков");
-                meta.setLore(List.of("!dev"));
-                item.setItemMeta(meta);
-                event.getPlayer().getInventory().addItem(item);
-                event.setCancelled(true);
-            }
-            if (msg.equals("!exp")) {
-                final var sfpState = sf.getPlayerState(event.getPlayer());
-                if (sfpState.team != null) {
-                    final var sftState = sf.getTeamState(sfpState.team);
-                    event.getPlayer().sendMessage("lvl: " + sftState.getLevel() + " exp: " + sftState.experience);
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if(event.getPlayer().isOp()) {
-            if (event.getItem() != null && event.getItem().getType() == Material.EMERALD) {
-                final var lore = event.getItem().getItemMeta().getLore();
-                if(lore != null && !lore.isEmpty()) {
-                    if (lore.get(lore.size() - 1).equals("!dev")) {
-                        openInventory(event.getPlayer());
-                    }
-                }
-            }
+            a.middle().teleport(event.getWhoClicked(), vec);
         }
     }
 

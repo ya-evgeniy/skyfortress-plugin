@@ -14,6 +14,10 @@ public record Vec3i(int x, int y, int z) {
         this(l.getBlockX(), l.getBlockY(), l.getBlockZ());
     }
 
+    public Vec3i(int i) {
+        this(i, i, i);
+    }
+
     public Location toLocation(World world) {
         return new Location(world, x + 0.5, y + 0.2, z + 0.5);
     }
@@ -59,6 +63,14 @@ public record Vec3i(int x, int y, int z) {
                 this.x - that.x,
                 this.y - that.y,
                 this.z - that.z
+        );
+    }
+
+    public Vec3i mul(int value) {
+        return new Vec3i(
+                this.x * value,
+                this.y * value,
+                this.z * value
         );
     }
 

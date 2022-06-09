@@ -2,39 +2,40 @@ package ru.jekarus.skyfortress.state;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import ru.jekarus.skyfortress.GameStartEvent;
 import ru.jekarus.skyfortress.GameStopEvent;
+import ru.jekarus.skyfortress.config.SfShop;
 import ru.jekarus.skyfortress.config.SfTeam;
 import ru.jekarus.skyfortress.module.SfSidebar;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SkyFortress {
 
-    private boolean gameStarted = false;
     private final Map<SfTeam, Boolean> ready = new EnumMap<>(SfTeam.class);
     private final Map<SfTeam, SfTeamState> teamsState = new EnumMap<>(SfTeam.class);
     private final Map<UUID, SfPlayerState> playersState = new HashMap<>();
 
+    public World world;
+    private boolean gameStarted = false;
     private @NotNull PluginManager pluginMan;
     private @NotNull Scoreboard scoreboard;
 
-    public SkyFortress() {
-    }
+    public SkyFortress() {}
 
     public void init() {
+        world = Bukkit.getServer().getWorlds().get(0);
         pluginMan = Bukkit.getServer().getPluginManager();
         scoreboard = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
     }
 
     public SfTeamState getTeamState(SfTeam sft) {
+        Objects.requireNonNull(sft);
         return this.teamsState.computeIfAbsent(sft, v -> new SfTeamState());
     }
 

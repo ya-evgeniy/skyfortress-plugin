@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
+import ru.jekarus.skyfortress.module.damage.SfDamageImpl;
+import ru.jekarus.skyfortress.state.SfPlayerState;
 import ru.jekarus.skyfortress.state.SkyFortress;
 import ru.jekarus.skyfortress.config.SfTeam;
 
@@ -55,6 +57,18 @@ public class SfSidebar implements Listener {
         }
         return board;
     }
+
+    public void renderDamageScale(List<String> lines, Player player) {
+        final SfPlayerState state;
+        if((state = sf.getPlayerState(player)) != null && state.team != null) {
+            final var ts = sf.getTeamState(state.team);
+
+            lines.add(ChatColor.GRAY + "Опыт: " + ChatColor.WHITE + "%.2f".formatted(ts.experience));
+            lines.add(ChatColor.GRAY + "Уровень: " + ChatColor.WHITE + "%d".formatted(ts.getLevel()));
+            lines.add(ChatColor.GRAY + "Скейл: " + ChatColor.WHITE + "%.2f".formatted(SfDamageImpl.calcScale(1, ts.getLevel())));
+        }
+    }
+
     public void formatSidebar(Player player) {
         var fb = get(player);
         fb.updateTitle(ChatColor.GOLD + "Sky Fortress " + ChatColor.GRAY + "3.0.0");
@@ -72,6 +86,7 @@ public class SfSidebar implements Listener {
                                 ChatColor.GRAY + sft.displayNameTo
                 );
             }
+            renderDamageScale(lines, player);
             fb.updateLines(lines);
         } else {
             final var lines = new ArrayList<String>();
@@ -80,6 +95,7 @@ public class SfSidebar implements Listener {
 
                 lines.add(ChatColor.GRAY + "Команда " + sft.chat + sft.displayNameOf + ": " + ChatColor.WHITE + state.health);
             }
+            renderDamageScale(lines, player);
             fb.updateLines(lines);
         }
     }

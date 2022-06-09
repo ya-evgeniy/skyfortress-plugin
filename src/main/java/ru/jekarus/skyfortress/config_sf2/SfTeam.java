@@ -1,4 +1,4 @@
-package ru.jekarus.skyfortress.config;
+package ru.jekarus.skyfortress.config_sf2;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -19,74 +19,62 @@ public enum SfTeam {
     RED(
             "sf_red", "Красная", "Красные", "Красных",
             ChatColor.RED, NamedTextColor.RED,
-            Area3i.of(
-                    new Vec3i(498, 101, 4),
-                    new Vec3i(502, 103, 9)
-            ),
-            new Vec3i(500, 101, 4),
-            new Vec3i(2606, 97, 0), BlockFace.WEST,
-            new Area3i(new Vec3i(2614, 122, 10)),
+            new Area3i(
+                    new Vec3i(198, 100, 3),
+                    new Vec3i(202, 101, 5)
+            ), new Vec3i(200, 100, 3),
+            new Vec3i(-358, 51, 0), BlockFace.WEST,
+            new Vec3i(-347, 82, -9),
             new Vec3i[] {
-                    new Vec3i(2600, 97, 10),
-                    new Vec3i(2598, 97, 10),
-            },
-            new Vec3i(2576, 97, 31),
-            new Vec3i(2576, 97, -31),
-            new Vec3i(2541, 95, -41)
+                    new Vec3i(-359, 51, -6),
+                    new Vec3i(-357, 51, -6),
+                    new Vec3i(-355, 51, -6),
+            }
     ),
     GREEN(
             "sf_green", "Зеленая", "Зеленые", "Зеленых",
             ChatColor.GREEN, NamedTextColor.GREEN,
-            Area3i.of(
-                    new Vec3i(492, 101, -2),
-                    new Vec3i(496, 103, 2)
-            ),
-            new Vec3i(496, 101, 0),
-            new Vec3i(2500, 97, 106), BlockFace.NORTH,
-            new Area3i(new Vec3i(2490, 122, 114)),
+            new Area3i(
+                    new Vec3i(195, 100, -2),
+                    new Vec3i(197, 101, 2)
+            ), new Vec3i(197, 100, 0),
+            new Vec3i(-500, 51, 142), BlockFace.NORTH,
+            new Vec3i(-491, 82, 153),
             new Vec3i[] {
-                    new Vec3i(2490, 97, 100),
-                    new Vec3i(2490, 97, 98),
-            },
-            new Vec3i(2469, 97, 76),
-            new Vec3i(2531, 97, 76),
-            new Vec3i(2541, 95, 41)
+                    new Vec3i(-492, 51, 140),
+                    new Vec3i(-492, 51, 142),
+                    new Vec3i(-492, 51, 144),
+            }
     ),
     BLUE(
             "sf_blue", "Синяя", "Синие", "Синих",
             ChatColor.BLUE, NamedTextColor.BLUE,
-            Area3i.of(
-                    new Vec3i(498, 101, -8),
-                    new Vec3i(502, 103, -4)
-            ),
-            new Vec3i(500, 101, -4),
-            new Vec3i(2394, 97, 0), BlockFace.EAST,
-            new Area3i(new Vec3i(2386, 122, -10)),
+            new Area3i(
+                    new Vec3i(198, 100, -5),
+                    new Vec3i(202, 101, -3)
+            ), new Vec3i(200, 100, -3),
+            new Vec3i(-642, 51, 0), BlockFace.EAST,
+            new Vec3i(-653, 82, 9),
             new Vec3i[] {
-                    new Vec3i(2400, 97, -10),
-                    new Vec3i(2402, 97, -10),
-            },
-            new Vec3i(2424, 97, -31),
-            new Vec3i(2424, 97, 31),
-            new Vec3i(2459, 95, 41)
+                    new Vec3i(-639, 51, 7),
+                    new Vec3i(-641, 51, 7),
+                    new Vec3i(-643, 51, 7),
+            }
     ),
     YELLOW(
-            "sf_yellow", "Желтая", "Жёлтые", "Жёлтых",
+            "sf_yellow", "Жёлтая", "Жёлтые", "Жёлтых",
             ChatColor.YELLOW, NamedTextColor.YELLOW,
-            Area3i.of(
-                    new Vec3i(504, 101, -2),
-                    new Vec3i(508, 103, 2)
-            ),
-            new Vec3i(504, 101, 0),
-            new Vec3i(2500, 97, -106), BlockFace.SOUTH,
-            new Area3i(new Vec3i(2510, 122, -114)),
+            new Area3i(
+                    new Vec3i(203, 100, -2),
+                    new Vec3i(205, 101, 2)
+            ), new Vec3i(203, 100, 0),
+            new Vec3i(-500, 51, -142), BlockFace.SOUTH,
+            new Vec3i(-509, 82, -153),
             new Vec3i[] {
-                    new Vec3i(2510, 97, -100),
-                    new Vec3i(2510, 97, -98),
-            },
-            new Vec3i(2531, 97, -76),
-            new Vec3i(2469, 97, -76),
-            new Vec3i(2459, 95, -41)
+                    new Vec3i(-506, 51, -139),
+                    new Vec3i(-506, 51, -141),
+                    new Vec3i(-506, 51, -143),
+            }
     );
 
     public final String name;
@@ -99,11 +87,8 @@ public enum SfTeam {
     public final Vec3i ready;
     public final Vec3i spawn;
     public final BlockFace face;
-    public final Area3i capture;
+    public final Vec3i capture;
     public final Vec3i[] shops;
-    public final Vec3i stone;
-    public final Vec3i wood;
-    public final Vec3i iron;
 
     private @Nullable Team cachedTeam;
 
@@ -112,9 +97,8 @@ public enum SfTeam {
             ChatColor chat, NamedTextColor color,
             Area3i join, Vec3i ready,
             Vec3i spawn, BlockFace face,
-            Area3i capture,
-            Vec3i[] shops,
-            Vec3i stone, Vec3i wood, Vec3i iron
+            Vec3i capture,
+            Vec3i[] shops
     ) {
         this.name = name;
         this.displayName = displayName;
@@ -128,12 +112,8 @@ public enum SfTeam {
         this.face = face;
         this.capture = capture;
         this.shops = shops;
-        this.stone = stone;
-        this.wood = wood;
-        this.iron = iron;
     }
 
-    @Nullable
     public static SfTeam get(String name) {
         for (SfTeam sft : SfTeam.values()) {
             if (sft.name.endsWith(name)) return sft;
@@ -141,7 +121,6 @@ public enum SfTeam {
         return null;
     }
 
-    @Nullable
     public static SfTeam get(Player player) {
         final var team = Bukkit.getServer().getScoreboardManager().getMainScoreboard().getPlayerTeam(player);
         if (team == null) return null;
